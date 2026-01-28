@@ -428,9 +428,8 @@ function SidebarContent({ className, onClick, ...props }: SidebarContentProps) {
       'a,button,[role="button"],[role="link"],[data-slot="sidebar-header"],[data-sidebar="header"],[data-slot="sidebar-menu-button"],[data-slot="sidebar-menu-sub-button"],[data-slot="sidebar-menu-action"]',
     );
 
-    if (interactive) {
-      if (isMobile) setOpenMobile(false);
-      else setOpen(false);
+    if (interactive && isMobile) {
+      setOpenMobile(false);
     }
   };
 
