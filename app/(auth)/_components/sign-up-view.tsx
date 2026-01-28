@@ -20,6 +20,7 @@ const formSchema = z.object({
 
 export default function SignUpView() {
     const [error, setError] = useState<string | null>(null);
+    const [pending, setPending] = useState(false);
     const router = useRouter();
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -30,6 +31,7 @@ export default function SignUpView() {
         },
     });
     const onSubmit = (data: z.infer<typeof formSchema>) => {
+        setPending(true);
         setError(null);
         authClient.signUp.email(
             {
@@ -41,9 +43,11 @@ export default function SignUpView() {
                 onSuccess: () => {
                     router.push('/');
                     toast.success('Account created successfully!');
+                    setPending(false);
                 },
                 onError: (error) => {
-                    toast.error('Sign-up error: ' + error);
+                    toast.error(error.error.message || 'Sign-up failed. Please try again.');
+                    setPending(false);
                 }
             }
         )
@@ -61,12 +65,17 @@ export default function SignUpView() {
                                 aria-label="go home">
                                 <Image src="/logo1.png" alt="Logo" width={54} height={54} className='bg-black rounded-sm py-1 px-2' />
                             </Link>
-                            <h1 className="mb-1 mt-4 text-xl font-semibold">Create a Tailark Account</h1>
+                            <h1 className="mb-1 mt-4 text-xl font-semibold">Create a BeBetter.ai Account</h1>
                             <p className="text-sm">Welcome! Create an account to get started</p>
                         </div>
 
                         <div className="mt-6 grid grid-cols-2 gap-3">
                             <Button
+                                onClick={() => {
+                                    authClient.signIn.social({
+                                        provider: "google"
+                                    })
+                                }}
                                 type="button"
                                 variant="outline">
                                 <svg
@@ -90,6 +99,12 @@ export default function SignUpView() {
                                 <span>Google</span>
                             </Button>
                             <Button
+                                disabled={pending}
+                                onClick={() => {
+                                    authClient.signIn.social({
+                                        provider: "github"
+                                    })
+                                }}
                                 type="button"
                                 variant="outline">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-github" viewBox="0 0 16 16">
@@ -157,7 +172,7 @@ export default function SignUpView() {
                                     </div>
                                 )} />
                         </div>
-                        <Button className="w-full mt-4" type="submit">Sign Up</Button>
+                        <Button disabled={pending} className="w-full mt-4" type="submit">{pending ? 'Signing Up...' : 'Sign Up'}</Button>
                     </div>
 
                     <div className="bg-muted rounded-(--radius) border p-3">

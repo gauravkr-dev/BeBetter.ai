@@ -19,6 +19,7 @@ const formSchema = z.object({
 
 export default function SignInView() {
     const [error, setError] = useState<string | null>(null);
+    const [pending, setPending] = useState(false);
     const router = useRouter();
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -29,6 +30,7 @@ export default function SignInView() {
     });
 
     const onSubmit = (data: z.infer<typeof formSchema>) => {
+        setPending(true);
         setError(null);
         authClient.signIn.email(
             {
@@ -39,15 +41,11 @@ export default function SignInView() {
                 onSuccess: () => {
                     router.push('/');
                     toast.success('Signed in successfully!');
+                    setPending(false);
                 },
                 onError: (error) => {
-                    const safeMessage =
-                        error instanceof Error
-                            ? error.message
-                            : typeof error === 'string'
-                                ? error
-                                : String(error ?? '');
-                    toast.error(safeMessage || 'Sign-in failed. Please check your credentials and try again.');
+                    setPending(false);
+                    toast.error(error.error.message || 'Sign-in failed. Please try again.');
                 }
             }
         )
@@ -65,12 +63,18 @@ export default function SignInView() {
                                 aria-label="go home">
                                 <Image src="/logo1.png" alt="Logo" width={54} height={54} className='bg-black rounded-sm py-1 px-2' />
                             </Link>
-                            <h1 className="mb-1 mt-4 text-xl font-semibold">Sign In to Tailark</h1>
+                            <h1 className="mb-1 mt-4 text-xl font-semibold">Sign In to BeBetter.ai</h1>
                             <p className="text-sm">Welcome back! Sign in to continue</p>
                         </div>
 
                         <div className="mt-6 grid grid-cols-2 gap-3">
                             <Button
+                                disabled={pending}
+                                onClick={() => {
+                                    authClient.signIn.social({
+                                        provider: "google"
+                                    })
+                                }}
                                 type="button"
                                 variant="outline">
                                 <svg
@@ -94,6 +98,12 @@ export default function SignInView() {
                                 <span>Google</span>
                             </Button>
                             <Button
+                                disabled={pending}
+                                onClick={() => {
+                                    authClient.signIn.social({
+                                        provider: "github"
+                                    })
+                                }}
                                 type="button"
                                 variant="outline">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-github" viewBox="0 0 16 16">
@@ -144,7 +154,7 @@ export default function SignInView() {
                                 )} />
                         </div>
 
-                        <Button className="w-full mt-4" type="submit">Sign In</Button>
+                        <Button disabled={pending} className="w-full mt-4" type="submit">{pending ? 'Signing In...' : 'Sign In'}</Button>
                     </div>
 
                     <div className="bg-muted rounded-(--radius) border p-3">
