@@ -1,23 +1,25 @@
 import React from 'react'
 import { DashboardSidebar } from './_components/sidebar'
-import { SidebarProvider } from '@/components/animate-ui/components/radix/sidebar'
+import {
+    SidebarProvider,
+    SidebarInset,
+} from '@/components/animate-ui/components/radix/sidebar'
 import DashboardNavbar from './_components/dashboard-navbar'
-
 
 interface layoutProps {
     children: React.ReactNode
 }
 
-const layout = ({ children }: layoutProps) => {
+const Layout = ({ children }: layoutProps) => {
     return (
-        <SidebarProvider>
+        <SidebarProvider className="min-h-screen bg-background text-foreground">
             <DashboardSidebar />
-            <main className="flex flex-col h-screen w-screen bg-muted">
+            <SidebarInset className="flex-1 overflow-y-auto">
                 <DashboardNavbar />
                 {children}
-            </main>
+            </SidebarInset>
         </SidebarProvider>
     )
 }
 
-export default layout
+export default Layout

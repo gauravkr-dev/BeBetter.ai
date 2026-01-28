@@ -1,9 +1,21 @@
+import { auth } from '@/lib/auth'
+import { headers } from 'next/headers'
+import { redirect } from 'next/navigation'
 import React from 'react'
 
-const page = () => {
+const page = async () => {
+    const session = await auth.api.getSession({
+        headers: await headers(),
+    })
+
+    if (!session) {
+        redirect('/sign-in')
+    }
     return (
-        <div>
-            Hii from dashboard page
+        <div className="p-6">
+            <div className="rounded-lg bg-card p-6 text-card-foreground">
+                Hii from dashboard page
+            </div>
         </div>
     )
 }

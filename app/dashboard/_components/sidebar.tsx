@@ -86,7 +86,7 @@ export const DashboardSidebar = () => {
                                 <SidebarMenuButton asChild className={cn(pathname === item.href && 'bg-sidebar-accent hover:bg-sidebar-accent hover:text-sidebar-accent-foreground text-sidebar-accent-foreground')}>
                                     <Link href={item.href} className="flex items-center gap-2">
                                         <item.icon className="mr-2 h-4 w-4" />
-                                        <span className="text-sm tracking-tight">{item.label}</span>
+                                        <span className="text-xs">{item.label}</span>
                                     </Link>
                                 </SidebarMenuButton>
                             </SidebarMenuItem>

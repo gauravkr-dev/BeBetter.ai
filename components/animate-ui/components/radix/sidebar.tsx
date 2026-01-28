@@ -410,7 +410,30 @@ function SidebarSeparator({ className, ...props }: SidebarSeparatorProps) {
 
 type SidebarContentProps = React.ComponentProps<'div'>;
 
-function SidebarContent({ className, ...props }: SidebarContentProps) {
+function SidebarContent({ className, onClick, ...props }: SidebarContentProps) {
+  const { isMobile, setOpen, setOpenMobile } = useSidebar();
+
+  const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      onClick?.(e as any);
+    } catch {
+      // ignore consumer onClick errors
+    }
+
+    const target = e.target as HTMLElement | null;
+    if (!target) return;
+
+    const interactive = target.closest(
+      'a,button,[role="button"],[role="link"],[data-slot="sidebar-header"],[data-sidebar="header"],[data-slot="sidebar-menu-button"],[data-slot="sidebar-menu-sub-button"],[data-slot="sidebar-menu-action"]',
+    );
+
+    if (interactive) {
+      if (isMobile) setOpenMobile(false);
+      else setOpen(false);
+    }
+  };
+
   return (
     <div
       data-slot="sidebar-content"
@@ -419,10 +442,12 @@ function SidebarContent({ className, ...props }: SidebarContentProps) {
         'flex min-h-0 flex-1 flex-col gap-2 overflow-auto group-data-[collapsible=icon]:overflow-hidden',
         className,
       )}
+      onClick={handleClick}
       {...props}
     />
   );
 }
+
 
 type SidebarGroupProps = React.ComponentProps<'div'>;
 
@@ -446,7 +471,7 @@ function SidebarGroupLabel({
   asChild = false,
   ...props
 }: SidebarGroupLabelProps) {
-  const Comp = asChild ? Slot.Root : 'div';
+  const Comp = asChild ? Slot : 'div';
 
   return (
     <Comp
@@ -471,7 +496,7 @@ function SidebarGroupAction({
   asChild = false,
   ...props
 }: SidebarGroupActionProps) {
-  const Comp = asChild ? Slot.Root : 'button';
+  const Comp = asChild ? Slot : 'button';
 
   return (
     <Comp
@@ -632,7 +657,7 @@ function SidebarMenuAction({
   showOnHover = false,
   ...props
 }: SidebarMenuActionProps) {
-  const Comp = asChild ? Slot.Root : 'button';
+  const Comp = asChild ? Slot : 'button';
 
   return (
     <Comp
@@ -760,7 +785,7 @@ function SidebarMenuSubButton({
   className,
   ...props
 }: SidebarMenuSubButtonProps) {
-  const Comp = asChild ? Slot.Root : 'a';
+  const Comp = asChild ? Slot : 'a';
 
   return (
     <HighlightItem activeClassName="bg-sidebar-accent text-sidebar-accent-foreground rounded-md">

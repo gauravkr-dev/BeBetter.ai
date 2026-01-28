@@ -16,7 +16,7 @@ const DashboardNavbar = () => {
                         <Separator orientation="vertical" className="mr-2 h-12" />
                     </div>
                 </div>
-                <ThemeTogglerButton className={cn("h-6 w-6")} />
+                <ThemeTogglerButton className={cn("h-6 w-6 hover:cursor-pointer rounded-full")} />
             </nav>
         </>
     )
