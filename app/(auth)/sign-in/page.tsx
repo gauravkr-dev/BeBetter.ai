@@ -1,10 +1,9 @@
 import React from 'react'
+import SignInView from '../_components/sign-in-view'
 
 const page = () => {
     return (
-        <div>
-            Sign In Page
-        </div>
+        <SignInView />
     )
 }
 
