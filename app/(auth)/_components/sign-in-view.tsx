@@ -41,7 +41,13 @@ export default function SignInView() {
                     toast.success('Signed in successfully!');
                 },
                 onError: (error) => {
-                    toast.error('Sign-in error: ' + error);
+                    const safeMessage =
+                        error instanceof Error
+                            ? error.message
+                            : typeof error === 'string'
+                                ? error
+                                : String(error ?? '');
+                    toast.error(safeMessage || 'Sign-in failed. Please check your credentials and try again.');
                 }
             }
         )
