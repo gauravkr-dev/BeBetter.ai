@@ -70,10 +70,10 @@ const UserProfile = () => {
                                     </AvatarFallback>
                                 </Avatar>
                                 <div className="grid flex-1 text-left text-sm leading-tight">
-                                    <span className="truncate font-semibold">
+                                    <span className="truncate font-medium">
                                         {data.user.name}
                                     </span>
-                                    <span className="truncate text-xs">
+                                    <span className="truncate text-xs text-muted-foreground">
                                         {data.user.email}
                                     </span>
                                 </div>
@@ -98,10 +98,10 @@ const UserProfile = () => {
                                         </AvatarFallback>
                                     </Avatar>
                                     <div className="grid flex-1 text-left text-sm leading-tight">
-                                        <span className="truncate font-semibold">
+                                        <span className="truncate font-medium">
                                             {data.user.name}
                                         </span>
-                                        <span className="truncate text-xs">
+                                        <span className="truncate text-xs text-muted-foreground">
                                             {data.user.email}
                                         </span>
                                     </div>

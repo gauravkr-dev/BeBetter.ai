@@ -1,9 +1,10 @@
 import React from 'react'
+import { InterviewHeader } from './_components/interview-header'
 
 const InterviewPage = () => {
     return (
         <div>
-            Hii from interview page
+            <InterviewHeader />
         </div>
     )
 }
