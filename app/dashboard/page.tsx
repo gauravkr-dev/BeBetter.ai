@@ -9,7 +9,7 @@ const page = async () => {
     })
 
     if (!session) {
-        redirect('/sign-in')
+        redirect('/')
     }
     return (
         <div className="p-6">
