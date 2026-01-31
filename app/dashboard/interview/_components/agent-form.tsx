@@ -41,6 +41,26 @@ export const AgentForm = ({ onSuccess, onCancel, initialValues }: AgentFormProps
         })
     )
 
+    const updateAgent = useMutation(
+        trpc.agents.update.mutationOptions({
+            onSuccess: async () => {
+                await queryClient.invalidateQueries(
+                    trpc.agents.getMany.queryOptions(),
+                );
+                if (initialValues?.id) {
+                    await queryClient.invalidateQueries(
+                        trpc.agents.getOne.queryOptions({ id: initialValues.id }),
+                    );
+                }
+                toast.success(`Agent ${initialValues ? "updated" : "created"} successfully.`);
+                onSuccess?.();
+            },
+            onError: (error) => {
+                toast.error(error?.message || `Failed to ${initialValues ? "update" : "create"} agent.`);
+            }
+        })
+    )
+
     const form = useForm<z.infer<typeof agentsInsertSchema>>({
         resolver: zodResolver(agentsInsertSchema),
         defaultValues: {
@@ -51,12 +71,11 @@ export const AgentForm = ({ onSuccess, onCancel, initialValues }: AgentFormProps
     })
 
     const isEdit = !!initialValues?.id;
-    const isPending = createAgent.isPending;
+    const isPending = createAgent.isPending || updateAgent.isPending;
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const onSubmit = (values: z.infer<typeof agentsInsertSchema>) => {
         if (isEdit) {
-            // Update logic to be implemented
+            updateAgent.mutate({ ...values, id: initialValues!.id });
         }
         else {
             createAgent.mutate(form.getValues());
