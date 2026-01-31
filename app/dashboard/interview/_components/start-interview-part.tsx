@@ -5,19 +5,22 @@ import { ArrowRight } from 'lucide-react';
 import { formatDistanceToNow } from "date-fns";
 import { Button } from '@/components/ui/button';
 import { EmptyState } from './empty-state';
+import { useAgentsFilter } from '@/modules/agents/hooks/use-filter';
+import { DataPagination } from './data-pagination';
 
 
 
 const StartInterviewPart = () => {
+    const [filters, setFilters] = useAgentsFilter();
 
     const trpc = useTRPC();
-    const { data } = useSuspenseQuery(trpc.agents.getMany.queryOptions());
+    const { data } = useSuspenseQuery(trpc.agents.getMany.queryOptions({ page: filters.page }));
 
 
     return (
         <>
             <div className="grid grid-cols-2 md:grid-cols-4 w-full gap-4 mx-auto items-center justify-center mt-6 px-4 md:px-12">
-                {data.map((agent) => (
+                {data.items.map((agent) => (
                     <div key={agent.id} className="p-4 mb-4 border rounded-lg w-48 h-48 dark:bg-[#121212] hover:translate-y-[-2px] transition-all duration-200 ease-in-out">
                         <div className='w-full px-1 flex gap-3 items-start'>
                             <div className='border font-medium flex items-center justify-center border-primary rounded-full flex-shrink-0 h-8 w-8'>
@@ -39,7 +42,12 @@ const StartInterviewPart = () => {
                     </div>
                 ))}
             </div>
-            {data.length === 0 && (
+            <DataPagination
+                page={filters.page}
+                totalPages={data.totalPages}
+                onPageChange={(newPage) => setFilters({ page: newPage })}
+            />
+            {data.items.length === 0 && (
                 <EmptyState
                     title="No Interview Available"
                     description="Create AI interviewers to start practicing your interviews."

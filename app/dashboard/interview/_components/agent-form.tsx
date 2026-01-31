@@ -92,7 +92,7 @@ export const AgentForm = ({ onSuccess, onCancel, initialValues }: AgentFormProps
                     control={form.control}
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Your Experience</FormLabel>
+                            <FormLabel>Your Experience (Optional)</FormLabel>
                             <FormControl>
                                 <Textarea placeholder="Enter your experience level" {...field} />
                             </FormControl>
