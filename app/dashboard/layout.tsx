@@ -14,7 +14,7 @@ const Layout = ({ children }: layoutProps) => {
     return (
         <SidebarProvider className="min-h-screen bg-background text-foreground">
             <DashboardSidebar />
-            <SidebarInset className="flex-1 overflow-y-auto">
+            <SidebarInset className="">
                 <DashboardNavbar />
                 {children}
             </SidebarInset>

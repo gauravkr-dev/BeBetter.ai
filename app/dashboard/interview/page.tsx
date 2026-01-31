@@ -31,8 +31,8 @@ const InterviewPage = async () => {
             {/* Start Interview Section */}
             <button className='group text-sm flex items-center mt-6 px-4 md:px-12'>
                 <div className='bg-blue-100 px-3 py-1.5 rounded text-black'>
-                    <span>Start Interview <span className='group-hover:translate-x-0.5 transition inline-flex'></span></span>
-                    <ArrowRight className='group-hover:translate-x-0.5 transition size-5 inline-flex' />
+                    <span>Start Interview</span>
+                    <ArrowRight className='group-hover:translate-x-0.5 transition size-5 inline-flex ml-1' />
                 </div>
             </button>
             <HydrationBoundary state={dehydrate(queryClient)}>
@@ -43,6 +43,14 @@ const InterviewPage = async () => {
 
                 </Suspense>
             </HydrationBoundary>
+
+            {/* // Feedback Section */}
+            <button className='group text-sm flex items-center my-6 px-4 md:px-12'>
+                <div className='bg-blue-100 px-3 py-1.5 rounded text-black'>
+                    <span>Check Feedback</span>
+                    <ArrowRight className='group-hover:translate-x-0.5 transition size-5 inline-flex ml-1' />
+                </div>
+            </button>
 
         </div>
     )

@@ -1,4 +1,4 @@
-import React from 'react'
+"use client";
 
 import {
     DropdownMenu,
@@ -25,7 +25,7 @@ import {
     SidebarMenuItem,
     SidebarMenuButton,
 } from '@/components/animate-ui/components/radix/sidebar';
-import { LogOut, User } from 'lucide-react';
+import { LogOut } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { authClient } from '@/lib/auth-client';
 import { toast } from 'sonner';
@@ -109,10 +109,6 @@ const UserProfile = () => {
                             </DropdownMenuLabel>
                             <DropdownMenuSeparator />
                             <DropdownMenuGroup>
-                                <DropdownMenuItem>
-                                    <User />
-                                    Profile
-                                </DropdownMenuItem>
                                 <DropdownMenuItem
                                     className="text-red-600"
                                     onClick={handleSignOut}>

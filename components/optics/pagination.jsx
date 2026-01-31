@@ -8,15 +8,16 @@ import {
     MoreHorizontalIcon,
 } from "lucide-react";
 
-function Pagination({ className = "", ...props }) {
+function Pagination({ className = "", children, currentPage, totalPages, onPageChange }) {
     return (
         <nav
             role="navigation"
             aria-label="pagination"
             data-slot="pagination"
             className={cn("mx-auto flex w-full justify-center", className)}
-            {...props}
-        />
+        >
+            {children}
+        </nav>
     );
 }
 
@@ -30,8 +31,12 @@ function PaginationContent({ className = "", ...props }) {
     );
 }
 
-function PaginationItem({ ...props } = {}) {
-    return <li data-slot="pagination-item" {...props} />;
+function PaginationItem({ className = "", children, page, ...props } = {}) {
+    return (
+        <li data-slot="pagination-item" className={cn(className)} {...props}>
+            {children}
+        </li>
+    );
 }
 
 function PaginationLink({
