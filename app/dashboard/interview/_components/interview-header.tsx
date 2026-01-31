@@ -1,6 +1,5 @@
 "use client";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/optics/card";
-import { Button } from "@/components/optics/button";
+import { Card, CardHeader, CardTitle, CardDescription } from "@/components/optics/card";
 import Image from "next/image";
 export const InterviewHeader = () => {
     return (
@@ -18,9 +17,9 @@ export const InterviewHeader = () => {
                         and get detailed feedback to improve your skills.
                     </CardDescription>
 
-                    <Button variant="decorations" className="w-32" >
+                    <button className="w-32 bg-primary text-primary-foreground text-xs py-2 px-3 rounded hover:cursor-pointer hover:bg-primary/90" >
                         Create Interview
-                    </Button>
+                    </button>
 
 
                 </CardHeader>
