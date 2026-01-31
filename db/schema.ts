@@ -108,6 +108,7 @@ export const agents = pgTable("agents", {
     experience: text("experience").notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
+        .defaultNow()
         .$onUpdate(() => /* @__PURE__ */ new Date())
         .notNull(),
 });

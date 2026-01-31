@@ -3,7 +3,7 @@ import { Card, CardHeader, CardTitle, CardDescription } from "@/components/optic
 import Image from "next/image";
 export const InterviewHeader = () => {
     return (
-        <div className="flex flex-row items-center justify-center gap-8 mt-4 mx-4 md:mx-12">
+        <div className="flex flex-row items-center justify-center gap-8 mt-4 px-4 md:px-12">
             <Card
                 className="w-full flex flex-row items-center justify-center dark:bg-[#121212] px-4 py-6"
                 decorations
