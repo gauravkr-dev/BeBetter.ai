@@ -29,10 +29,12 @@ const InterviewPage = async () => {
             <InterviewHeader />
 
             {/* Start Interview Section */}
-            <h2 className='group text-xl font-medium flex items-center mt-6 px-4 md:px-12'>
-                <span>Start Interview <span className='group-hover:translate-x-0.5 transition inline-flex'>---</span></span>
-                <ArrowRight className='group-hover:translate-x-0.5 transition size-5 inline-flex' />
-            </h2>
+            <button className='group text-sm flex items-center mt-6 px-4 md:px-12'>
+                <div className='bg-blue-100 px-3 py-1.5 rounded text-black'>
+                    <span>Start Interview <span className='group-hover:translate-x-0.5 transition inline-flex'></span></span>
+                    <ArrowRight className='group-hover:translate-x-0.5 transition size-5 inline-flex' />
+                </div>
+            </button>
             <HydrationBoundary state={dehydrate(queryClient)}>
                 <Suspense fallback={<div className='mt-4 px-4 md:px-12 text-center justify-center flex'>Loading...</div>}>
                     <ErrorBoundary fallback={<div className='mt-4 px-4 md:px-12 text-center justify-center flex text-red-500'>Failed to load interview agents.</div>}>

@@ -3,7 +3,8 @@ import { agents } from "@/db/schema";
 import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
 import { agentsInsertSchema } from "../schemas";
 import z from "zod";
-import { eq } from "drizzle-orm";
+import { and, count, desc, eq } from "drizzle-orm";
+import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE, MIN_PAGE_SIZE } from "@/constants";
 
 export const agentsRouter = createTRPCRouter({
     getOne: protectedProcedure.input(z.object({ id: z.string() })).query(async ({ input }) => {
@@ -13,13 +14,41 @@ export const agentsRouter = createTRPCRouter({
             .where(eq(agents.id, input.id));
         return existingAgent;
     }),
-    getMany: protectedProcedure.query(async () => {
-        const data = await db
-            .select()
-            .from(agents);
+    getMany: protectedProcedure
+        .input(z.object({
+            page: z.number().default(DEFAULT_PAGE),
+            pageSize: z.number().min(MIN_PAGE_SIZE).max(MAX_PAGE_SIZE).default(DEFAULT_PAGE_SIZE),
+        }).optional())
+        .query(async ({ input, ctx }) => {
+            const data = await db
+                .select()
+                .from(agents)
+                .where(
+                    and(
+                        eq(agents.userId, ctx.auth.user.id),
+                    )
+                )
+                .orderBy(desc(agents.createdAt), desc(agents.id))
+                .limit(input?.pageSize ?? DEFAULT_PAGE_SIZE)
+                .offset(((input?.page ?? DEFAULT_PAGE) - 1) * (input?.pageSize ?? DEFAULT_PAGE_SIZE));
 
-        return data;
-    }),
+            const [total] = await db
+                .select({ count: count() })
+                .from(agents)
+                .where(
+                    and(
+                        eq(agents.userId, ctx.auth.user.id),
+                    )
+                );
+            const totalPages = Math.ceil(Number(total.count) / (input?.pageSize ?? DEFAULT_PAGE_SIZE));
+
+
+            return {
+                items: data,
+                total: Number(total.count),
+                totalPages,
+            }
+        }),
     create: protectedProcedure
         .input(agentsInsertSchema)
         .mutation(async ({ input, ctx }) => {
