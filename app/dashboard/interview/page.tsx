@@ -29,7 +29,7 @@ const InterviewPage = async () => {
             <InterviewHeader />
 
             {/* Start Interview Section */}
-            <h2 className='group text-xl font-medium flex items-center mt-4 px-4 md:px-12'>
+            <h2 className='group text-xl font-medium flex items-center mt-6 px-4 md:px-12'>
                 <span>Start Interview <span className='group-hover:translate-x-0.5 transition inline-flex'>---</span></span>
                 <ArrowRight className='group-hover:translate-x-0.5 transition size-5 inline-flex' />
             </h2>
