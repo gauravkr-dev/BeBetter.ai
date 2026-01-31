@@ -18,7 +18,7 @@ export const InterviewHeader = () => {
                         and get detailed feedback to improve your skills.
                     </CardDescription>
 
-                    <Button variant="decorations" className=" w-32" >
+                    <Button variant="decorations" className="w-32" >
                         Create Interview
                     </Button>
 
