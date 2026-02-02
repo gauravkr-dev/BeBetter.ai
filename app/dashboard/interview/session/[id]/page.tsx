@@ -10,6 +10,10 @@ import { useRouter } from "next/navigation";
 import { startSpeechRecognition } from "./speech";
 import { speak, stopSpeaking } from "@/lib/tts";
 import { getInterviewSystemPrompt } from "@/lib/prompts/interviewSystemPrompt";
+import { AiCallingPage } from "./_components/ai-calling-page";
+import { authClient } from "@/lib/auth-client";
+import Image from "next/image";
+
 
 
 interface InterviewSessionProps {
@@ -19,12 +23,13 @@ interface InterviewSessionProps {
 const InterviewSession = ({ params }: InterviewSessionProps) => {
     const router = useRouter();
     const trpc = useTRPC();
-
+    const { data } = authClient.useSession();
     const resolvedParams = React.use(params as Promise<{ id: string }>);
     const { id } = resolvedParams;
 
     const [interimText, setInterimText] = useState("");
     const [agentText, setAgentText] = useState("");
+    const [agentSpeaking, setAgentSpeaking] = useState(false);
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const recognitionRef = useRef<any>(null);
@@ -129,6 +134,16 @@ const InterviewSession = ({ params }: InterviewSessionProps) => {
 
                     setAgentText(res.agentText);
 
+                    // 5️⃣ speak agent + resume mic AFTER finish
+                    agentSpeakingRef.current = true;
+                    setAgentSpeaking(true);
+
+                    speak(res.agentText, () => {
+                        agentSpeakingRef.current = false;
+                        setAgentSpeaking(false);
+                        safeStart(); // ✅ SAME instance, started safely
+                    });
+
                     // 4️⃣ save AGENT
                     await addTranscript.mutateAsync({
                         sessionId: session?.id ?? id,
@@ -137,13 +152,7 @@ const InterviewSession = ({ params }: InterviewSessionProps) => {
                         sequence: seqRef.current++,
                     });
 
-                    // 5️⃣ speak agent + resume mic AFTER finish
-                    agentSpeakingRef.current = true;
 
-                    speak(res.agentText, () => {
-                        agentSpeakingRef.current = false;
-                        safeStart(); // ✅ SAME instance, started safely
-                    });
 
                 } catch (err) {
                     console.error(err);
@@ -200,40 +209,30 @@ const InterviewSession = ({ params }: InterviewSessionProps) => {
 
     /* -------- UI -------- */
 
-    const formatRemaining = (ms: number) => {
-        const totalSeconds = Math.ceil(ms / 1000);
-        const minutes = Math.floor(totalSeconds / 60);
-        const seconds = totalSeconds % 60;
-        return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
-    };
+    // const formatRemaining = (ms: number) => {
+    //     const totalSeconds = Math.ceil(ms / 1000);
+    //     const minutes = Math.floor(totalSeconds / 60);
+    //     const seconds = totalSeconds % 60;
+    //     return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+    // };
 
     return (
-        <div className="p-6 flex flex-col gap-3 items-center">
-            <h1 className="text-xl font-semibold">Interview Running…</h1>
-            {remainingMs !== null && (
-                <div className="text-sm text-muted-foreground">
-                    Time Left: {formatRemaining(remainingMs)}
-                </div>
-            )}
-            <button
-                className="px-4 py-2 bg-red-600 text-white rounded"
-                onClick={() => endSession.mutate({ sessionId: id })}
-            >
-                End Interview
-            </button>
+        <>
+            {/* <h1 className="text-xl font-semibold">Interview Running…</h1> */}
+            {/** determine which side should show loader */}
+            <AiCallingPage
+                agentName={agent?.name}
+                userName={data?.user?.name ?? ""}
+                userImageUrl={data?.user?.image ?? undefined}
+                remainingMs={remainingMs ?? undefined}
+                onEnd={() => endSession.mutate({ sessionId: id })}
+                activeSpeaker={agentSpeaking ? "agent" : interimText ? "candidate" : null}
+                agentText={agentText}
+                interimText={interimText}
+            />
 
-            {interimText && (
-                <p className="italic text-blue-500">
-                    Speaking: {interimText}
-                </p>
-            )}
-
-            {agentText && (
-                <p className="text-green-600">
-                    Agent: {agentText}
-                </p>
-            )}
-        </div>
+            
+        </>
     );
 };
 
