@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm";
-import { pgTable, text, timestamp, boolean, index } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, boolean, index, integer, pgEnum } from "drizzle-orm/pg-core";
 import { nanoid } from "nanoid";
 
 // User table definition
@@ -106,6 +106,60 @@ export const agents = pgTable("agents", {
         .references(() => user.id, { onDelete: "cascade" }),
     instructions: text("instructions"),
     experience: text("experience"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+        .defaultNow()
+        .$onUpdate(() => /* @__PURE__ */ new Date())
+        .notNull(),
+});
+
+// Interview Sessions table definition
+
+export const interviewSessions = pgTable("interview_sessions", {
+    id: text("id")
+        .primaryKey()
+        .$default(() => nanoid()),
+
+    userId: text("user_id")
+        .notNull()
+        .references(() => user.id, { onDelete: "cascade" }),
+    agentId: text("agent_id")
+        .notNull()
+        .references(() => agents.id, { onDelete: "cascade" }),
+
+    durationMinutes: integer("duration_minutes"),
+    status: text("status").notNull(), // created | in_progress | completed
+
+    startedAt: timestamp("started_at"),
+    endedAt: timestamp("ended_at"),
+
+    createdAt: timestamp("created_at").defaultNow(),
+    updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const speakerEnum = pgEnum("speaker", [
+    "user",
+    "agent",
+]);
+
+export const sessionTranscripts = pgTable("session_transcripts", {
+    id: text("id")
+        .primaryKey()
+        .$default(() => nanoid()),
+
+    sessionId: text("session_id")
+        .notNull()
+        .references(() => interviewSessions.id, { onDelete: "cascade" }),
+    speaker: speakerEnum("speaker").notNull(),
+
+    text: text("text").notNull(),
+
+    /**
+     * Sequence maintains correct order
+     * helpful when timestamps are close
+     */
+    sequence: integer("sequence").notNull(),
+
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
         .defaultNow()

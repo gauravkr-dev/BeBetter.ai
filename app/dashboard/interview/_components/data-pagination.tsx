@@ -9,6 +9,20 @@ export const DataPagination = ({ page, totalPages, onPageChange }: DataPaginatio
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const PaginationItemAny: any = PaginationItem;
 
+    // Show a sliding window of page buttons with a maximum visible pages
+    const maxVisible = 3;
+    let startPage = 1;
+    let endPage = totalPages;
+
+    if (totalPages > maxVisible) {
+        const half = Math.floor(maxVisible / 2);
+        // center the window around current `page` when possible
+        startPage = Math.max(1, page - half);
+        // make sure window doesn't overflow the last page
+        startPage = Math.min(startPage, totalPages - maxVisible + 1);
+        endPage = startPage + maxVisible - 1;
+    }
+
     return (
         <Pagination
             currentPage={page}
@@ -24,8 +38,8 @@ export const DataPagination = ({ page, totalPages, onPageChange }: DataPaginatio
                     Previous
                 </PaginationPrevious>
 
-                {Array.from({ length: totalPages }, (_, i) => {
-                    const p = i + 1;
+                {Array.from({ length: endPage - startPage + 1 }, (_, i) => {
+                    const p = startPage + i;
                     return (
                         <PaginationItemAny key={p} page={p}>
                             <PaginationLink
@@ -46,5 +60,5 @@ export const DataPagination = ({ page, totalPages, onPageChange }: DataPaginatio
                 </PaginationNext>
             </PaginationContent>
         </Pagination>
-    )
+    );
 }

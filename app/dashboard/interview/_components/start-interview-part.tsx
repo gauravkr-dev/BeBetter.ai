@@ -13,15 +13,33 @@ import { toast } from 'sonner';
 import { useConfirm } from '@/hooks/use-confirm';
 import { UpdateAgentDialog } from './update-agent-dialog';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 
 const StartInterviewPart = () => {
     const [filters, setFilters] = useAgentsFilter();
     const queryClient = useQueryClient();
     const [updateAgentDialogOpen, setUpdateAgentDialogOpen] = useState(false);
+    const router = useRouter();
 
     const trpc = useTRPC();
     const { data } = useSuspenseQuery(trpc.agents.getMany.queryOptions({ page: filters.page }));
+
+
+    const createSession = useMutation(
+        trpc.interview.create.mutationOptions({
+            onSuccess: (session) => {
+                toast.success("Interview session created successfully.");
+                // Navigate to the newly created session using the returned session id
+                router.push(`/dashboard/interview/session/${session?.id}`);
+            },
+            onError: (error) => {
+                toast.error(error?.message || "Failed to create interview session.");
+            }
+        })
+
+    )
+
 
     const removeAgent = useMutation(
         trpc.agents.remove.mutationOptions({
@@ -52,7 +70,7 @@ const StartInterviewPart = () => {
             />
             <div className="grid grid-cols-2 md:grid-cols-4 w-full gap-4 mx-auto items-center justify-center mt-6 px-4 md:px-12">
                 {data.items.map((agent) => (
-                    <div key={agent.id} className="relative p-4 mb-4 border rounded-lg w-48 h-48 dark:bg-[#121212] hover:translate-y-[-2px] transition-all duration-200 ease-in-out">
+                    <div key={agent.id} className="relative p-4 mb-4 border rounded-lg w-48 h-48 dark:bg-[#121212] hover:translate-y-[-2px] transition-all duration-200 ease-in-out flex flex-col justify-between overflow-hidden">
                         <div className='w-full px-1 flex gap-3 items-start'>
                             <div className='border font-medium flex items-center justify-center border-primary rounded-full flex-shrink-0 h-8 w-8'>
                                 {agent.name.charAt(0).toUpperCase()}
@@ -62,11 +80,23 @@ const StartInterviewPart = () => {
                                 <p className="text-xs text-muted-foreground truncate">{formatDistanceToNow(new Date(agent.createdAt), { addSuffix: true, })}</p>
                             </div>
                         </div>
-                        <div>
-                            <p className='text-sm mt-2'><span className="rounded bg-yellow-200 font-medium text-yellow-900">{agent.name}</span> is ready to start the interview.</p>
-                            <p className='text-sm mt-2'>Let&apos;s begin!</p>
+                        <div className="flex-1 min-h-0 mt-2 overflow-hidden">
+                            <p className='text-sm break-words'>
+                                <span className="rounded bg-yellow-200 font-medium text-yellow-900 inline-block max-w-[9rem] align-middle truncate">{agent.name}</span>
+                                <span className="ml-1 text-ellipsis overflow-hidden"> is ready to start the interview.</span>
+                            </p>
+                            <p className='text-sm mt-2 truncate'>Let&apos;s begin!</p>
                         </div>
-                        <Button className='group mt-4 w-full text-sm h-8 hover:cursor-pointer' variant='outline'>
+                        <Button
+                            className='group mt-4 w-full text-sm h-8 hover:cursor-pointer'
+                            variant='outline'
+                            onClick={() =>
+                                createSession.mutate({
+                                    userId: agent.userId,
+                                    agentId: agent.id,
+                                    durationMinutes: 60,
+                                })
+                            }>
                             Start
                             <ArrowRight className='size-4 group-hover:translate-x-1 transition-transform' />
                         </Button>
