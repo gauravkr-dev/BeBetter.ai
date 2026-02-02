@@ -4,7 +4,7 @@ import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-q
 import { ArrowRight } from 'lucide-react';
 import { formatDistanceToNow } from "date-fns";
 import { Button } from '@/components/ui/button';
-import { EmptyState } from './empty-state';
+import EmptyState from './empty-state';
 import { useAgentsFilter } from '@/modules/agents/hooks/use-filter';
 import { DataPagination } from './data-pagination';
 import { AgentDeleteUpdateDialog } from './agent-delete-update-dialog';
@@ -124,7 +124,6 @@ const StartInterviewPart = () => {
             {data.items.length === 0 && (
                 <EmptyState
                     title="No Interview Available"
-                    description="Create AI interviewers to start practicing your interviews."
                 />
             )}
         </>

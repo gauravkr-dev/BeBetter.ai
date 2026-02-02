@@ -3,22 +3,22 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const Loader = () => {
-    return (
-        <StyledWrapper>
-            <div className="loader">
-                <div className="l" />
-                <div className="l" />
-                <div className="l" />
-                <div className="l" />
-                <div className="l" />
-                <div className="l" />
-                <div className="l" />
-                <div className="l" />
-                <div className="l" />
-            </div>
-        </StyledWrapper>
-    );
+const SpeakerUi = () => {
+  return (
+    <StyledWrapper>
+      <div className="loader">
+        <div className="l" />
+        <div className="l" />
+        <div className="l" />
+        <div className="l" />
+        <div className="l" />
+        <div className="l" />
+        <div className="l" />
+        <div className="l" />
+        <div className="l" />
+      </div>
+    </StyledWrapper>
+  );
 }
 
 const StyledWrapper = styled.div`
@@ -69,4 +69,4 @@ const StyledWrapper = styled.div`
     }
   }`;
 
-export default Loader;
+export default SpeakerUi;

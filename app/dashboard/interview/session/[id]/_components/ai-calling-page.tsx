@@ -4,7 +4,7 @@ import Image from "next/image";
 import { Card, CardHeader, CardTitle } from "@/components/optics/card";
 import { Button } from "@/components/ui/button";
 import { Phone } from "lucide-react";
-import Loader from "./speaker-ui";
+import SpeakerUi from "./speaker-ui";
 
 
 interface AiCallingPageProps {
@@ -53,8 +53,8 @@ export const AiCallingPage = ({ agentName, userName, userImageUrl, remainingMs, 
                         </p>
                         <p className="text-sm text-center">Interviewer</p>
                         <div className="absolute bottom-3 left-3">
-                            {/** show loader on agent side when agent is speaking */}
-                            {activeSpeaker === "agent" && <Loader />}
+                            {/** show speaker UI on agent side when agent is speaking */}
+                            {activeSpeaker === "agent" && <SpeakerUi />}
                         </div>
                     </CardHeader>
 
@@ -76,8 +76,8 @@ export const AiCallingPage = ({ agentName, userName, userImageUrl, remainingMs, 
                         </p>
                         <p className="text-sm text-center">Candidate</p>
                         <div className="absolute bottom-3 right-3">
-                            {/** show loader on candidate side when candidate is speaking */}
-                            {activeSpeaker === "candidate" && <Loader />}
+                            {/** show speaker UI on candidate side when candidate is speaking */}
+                            {activeSpeaker === "candidate" && <SpeakerUi />}
                         </div>
                     </CardHeader>
                 </div>
