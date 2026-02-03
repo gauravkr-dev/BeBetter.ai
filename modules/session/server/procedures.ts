@@ -5,10 +5,11 @@ import {
     startSession,
     endSession,
 } from "./service";
-import { getAgentReply } from "@/lib/llm";
+import { getAgentReply } from "@/lib/interview-brain";
 import { db } from "@/db";
 import { interviewSessions } from "@/db/schema";
 import { eq } from "drizzle-orm";
+import { inngest } from "@/inngest/client";
 
 export const interviewRouter = createTRPCRouter({
     create: protectedProcedure
@@ -29,10 +30,29 @@ export const interviewRouter = createTRPCRouter({
             return startSession(input.sessionId);
         }),
 
+    // end: protectedProcedure
+    //     .input(z.object({ sessionId: z.string() }))
+    //     .mutation(({ input }) => {
+    //         return endSession(input.sessionId);
+    //     }),
+
     end: protectedProcedure
         .input(z.object({ sessionId: z.string() }))
-        .mutation(({ input }) => {
-            return endSession(input.sessionId);
+        .mutation(async ({ input, ctx }) => {
+
+            // 1️⃣ session end
+            await endSession(input.sessionId);
+
+            // 2️⃣ 🔥 INNGEST EVENT EMIT
+            await inngest.send({
+                name: "session.completed",
+                data: {
+                    sessionId: input.sessionId,
+                    userId: ctx.auth.user.id,
+                },
+            });
+
+            return { success: true };
         }),
 
     agentReply: protectedProcedure

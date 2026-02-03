@@ -41,7 +41,7 @@ if (!process.env.OPENROUTER_API_KEY) {
     throw new Error("OPENROUTER_API_KEY is missing in env");
 }
 
-export const llm = new OpenAI({
+export const InterviewBrain = new OpenAI({
     apiKey: process.env.OPENROUTER_API_KEY,
     baseURL: "https://openrouter.ai/api/v1",
     defaultHeaders: {
@@ -59,7 +59,7 @@ export const getAgentReply = async ({
     agentInstruction,
     userText,
 }: GetAgentReplyParams) => {
-    const response = await llm.chat.completions.create({
+    const response = await InterviewBrain.chat.completions.create({
         model: "arcee-ai/trinity-large-preview:free", // ✅ free + fast
         temperature: 0.7,
         messages: [

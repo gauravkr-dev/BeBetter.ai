@@ -166,3 +166,23 @@ export const sessionTranscripts = pgTable("session_transcripts", {
         .$onUpdate(() => /* @__PURE__ */ new Date())
         .notNull(),
 });
+
+export const interviewFeedback = pgTable("interview_feedback", {
+    id: text("id")
+        .primaryKey()
+        .$default(() => nanoid()),
+
+    userId: text("user_id")
+        .notNull()
+        .references(() => user.id, { onDelete: "cascade" }),
+    sessionId: text("session_id")
+        .notNull()
+        .references(() => interviewSessions.id, { onDelete: "cascade" }),
+    overallFeedback: text("overall_feedback"),     // 👈 summary
+
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+        .defaultNow()
+        .$onUpdate(() => /* @__PURE__ */ new Date())
+        .notNull(),
+});
