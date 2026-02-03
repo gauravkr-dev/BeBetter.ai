@@ -17,7 +17,7 @@ export const JobsFilterForm = ({ onSuccess, onCancel }: JobsFilterFormProps) => 
     const router = useRouter();
     const [submitting, setSubmitting] = useState(false);
     const filterone = ["Full-time", "Part-time", "Contract", "Internship", "Remote"];
-    const filtertwo = ["India", "United States", "Canada", "United Kingdom", "Germany", "Australia", "France", "Netherlands", "Singapore", "Brazil", "Japan", "Italy", "Spain", "Sweden", "Switzerland"];
+    const filtertwo = ["India", "United States", "Canada", "United Kingdom", "Germany", "Australia"];
     const filterthree = ["Software Developer", "Web Developer", "Full Stack Developer", "Frontend Developer", "Backend Developer", "Mobile App Developer", "Software Engineer", "Data Scientist", "Product Manager", "UX Designer", "DevOps Engineer", "QA Engineer", "System Administrator", "Database Administrator", "Network Engineer", "Security Analyst", "Cloud Engineer", "AI/ML Engineer", "Game Developer", "Embedded Systems Engineer", "IT Support Specialist", "Technical Writer", "Business Analyst", "Scrum Master", "IT Project Manager", "Solutions Architect", "IT Consultant", "Data Engineer", "Big Data Engineer", "Site Reliability Engineer", "IT Auditor", "IT Trainer", "IT Sales Specialist", "IT Recruiter"];
 
     const filterSchema = z.object({
