@@ -16,7 +16,6 @@ import {
 } from '@/components/animate-ui/components/radix/sidebar';
 
 import {
-    BringToFront,
     HandCoins,
     MessagesSquare,
     NotebookText,
@@ -44,22 +43,17 @@ const Section = [
     {
         icon: Wallet,
         label: 'Jobs Listings',
-        href: '/dashboard/career-hub/jobs',
-    },
-    {
-        icon: BringToFront,
-        label: 'Internships',
-        href: '/dashboard/career-hub/internships',
+        href: '/dashboard/jobs',
     },
     {
         icon: Users,
         label: 'Hackathons',
-        href: '/dashboard/career-hub/hackathons',
+        href: '/dashboard/hackathons',
     },
     {
         icon: HandCoins,
         label: 'Scholarships',
-        href: '/dashboard/career-hub/scholarships',
+        href: '/dashboard/scholarships',
     },
     {
         label: 'Chatbot',
