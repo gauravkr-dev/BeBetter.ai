@@ -7,8 +7,8 @@ import {
 } from "./service";
 import { getAgentReply } from "@/lib/interview-brain";
 import { db } from "@/db";
-import { interviewSessions } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { interviewSessions, interviewFeedback } from "@/db/schema";
+import { and, desc, eq } from "drizzle-orm";
 import { inngest } from "@/inngest/client";
 
 export const interviewRouter = createTRPCRouter({
@@ -81,5 +81,40 @@ export const interviewRouter = createTRPCRouter({
                 .where(eq(interviewSessions.id, input.id));
 
             return session;
+        }),
+    getByUser: protectedProcedure
+        .query(async ({ ctx }) => {
+            const sessions = await db
+                .select()
+                .from(interviewSessions)
+                .where(eq(interviewSessions.userId, ctx.auth.user.id));
+
+            return sessions;
+        }),
+    getFeedbackByAgent: protectedProcedure
+        .input(z.object({ agentId: z.string() }))
+        .query(async ({ input, ctx }) => {
+            // Find the most recent completed session for this user + agent
+            const [session] = await db
+                .select()
+                .from(interviewSessions)
+                .where(
+                    and(
+                        eq(interviewSessions.userId, ctx.auth.user.id),
+                        eq(interviewSessions.agentId, input.agentId),
+                        eq(interviewSessions.status, "completed"),
+                    )
+                )
+                .orderBy(desc(interviewSessions.endedAt))
+                .limit(1);
+
+            if (!session) return { session: null, feedback: null };
+
+            const [feedback] = await db
+                .select()
+                .from(interviewFeedback)
+                .where(eq(interviewFeedback.sessionId, session.id));
+
+            return { session, feedback: feedback ?? null };
         }),
 });

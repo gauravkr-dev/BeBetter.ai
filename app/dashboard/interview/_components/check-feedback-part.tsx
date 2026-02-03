@@ -1,47 +1,29 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
-import { useTRPC } from '@/trpc/client'
-import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
-import { ArrowRight } from 'lucide-react';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+
+import { useTRPC } from "@/trpc/client";
+import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
+import EmptyState from "./empty-state";
+import { DataPagination } from "./data-pagination";
+import { useAgentsFilter } from "@/modules/agents/hooks/use-filter";
+import { Button } from "@/components/ui/button";
+import { ArrowRight } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
-import { Button } from '@/components/ui/button';
-import EmptyState from './empty-state';
-import { useAgentsFilter } from '@/modules/agents/hooks/use-filter';
-import { DataPagination } from './data-pagination';
-import { AgentDeleteUpdateDialog } from './agent-delete-update-dialog';
-import { cn } from '@/lib/utils';
-import { toast } from 'sonner';
-import { useConfirm } from '@/hooks/use-confirm';
-import { UpdateAgentDialog } from './update-agent-dialog';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { AgentDeleteUpdateDialog } from "./agent-delete-update-dialog";
+import { toast } from "sonner";
+import { cn } from "@/lib/utils";
+import { useConfirm } from "@/hooks/use-confirm";
+import { useRouter } from "next/navigation";
 
-
-const StartInterviewPart = () => {
+export const CheckFeedbackPart = () => {
     const [filters, setFilters] = useAgentsFilter();
     const queryClient = useQueryClient();
-    const [updateAgentDialogOpen, setUpdateAgentDialogOpen] = useState(false);
-    const router = useRouter();
-
     const trpc = useTRPC();
     const { data } = useSuspenseQuery(trpc.agents.getMany.queryOptions({ page: filters.page }));
     const { data: sessions } = useSuspenseQuery(trpc.interview.getByUser.queryOptions());
-
-
-    const createSession = useMutation(
-        trpc.interview.create.mutationOptions({
-            onSuccess: (session) => {
-                toast.success("Interview session created successfully.");
-                // Navigate to the newly created session using the returned session id
-                router.push(`/dashboard/interview/session/${session?.id}`);
-            },
-            onError: (error) => {
-                toast.error(error?.message || "Failed to create interview session.");
-            }
-        })
-
-    )
-
+    const completedAgentIds = (sessions ?? []).filter((s: any) => s?.status === 'completed').map((s: any) => s.agentId);
+    const completedAgents = data.items.filter((agent: any) => completedAgentIds.includes(agent.id));
 
     const removeAgent = useMutation(
         trpc.agents.remove.mutationOptions({
@@ -50,31 +32,24 @@ const StartInterviewPart = () => {
                 await queryClient.invalidateQueries(
                     trpc.agents.getMany.queryOptions({ page: filters.page }),
                 );
-                toast.success("Agent deleted successfully.");
+                toast.success("Feedback deleted successfully.");
             },
             onError: (error) => {
-                toast.error(error?.message || "Failed to delete agent.");
+                toast.error(error?.message || "Failed to delete feedback.");
             }
         })
     )
 
     const [RemoveConfirmation, confirmRemove] = useConfirm(
-        "Delete Agent",
-        "Are you sure you want to delete this agent? This action cannot be undone.",
+        "Delete Feedback",
+        "Are you sure you want to delete this feedback? This action cannot be undone.",
     )
-    // compute agentIds that have completed sessions for current user
-    const completedAgentIds = (sessions ?? []).filter((s: any) => s?.status === 'completed').map((s: any) => s.agentId);
-    const visibleAgents = data.items.filter((agent: any) => !completedAgentIds.includes(agent.id));
+    const router = useRouter();
     return (
         <>
             <RemoveConfirmation />
-            <UpdateAgentDialog
-                open={updateAgentDialogOpen}
-                onOpenChange={setUpdateAgentDialogOpen}
-                initialValues={data.items[0]}
-            />
             <div className="grid grid-cols-2 md:grid-cols-4 w-full gap-4 mx-auto items-center justify-center mt-6 px-4 md:px-12">
-                {visibleAgents.map((agent: any) => (
+                {completedAgents.map((agent: any) => (
                     <div key={agent.id} className="relative p-4 mb-4 border rounded-lg w-48 h-48 dark:bg-[#121212] hover:translate-y-[-2px] transition-all duration-200 ease-in-out flex flex-col justify-between overflow-hidden">
                         <div className='w-full px-1 flex gap-3 items-start'>
                             <div className='border font-medium flex items-center justify-center border-primary rounded-full flex-shrink-0 h-8 w-8'>
@@ -87,26 +62,19 @@ const StartInterviewPart = () => {
                         </div>
                         <div className="flex-1 min-h-0 mt-2 overflow-hidden">
                             <p className='text-sm break-words'>
-                                <span className="rounded bg-yellow-200 font-medium text-yellow-900 inline-block max-w-[9rem] align-middle truncate">{agent.name}</span>
-                                <span className="ml-1 text-ellipsis overflow-hidden"> is ready to start the interview.</span>
+                                <span className="rounded bg-green-200 font-medium text-green-900 inline-block max-w-[9rem] align-middle truncate">{agent.name}</span>
+                                <span className="ml-1 text-ellipsis overflow-hidden"> has given your feedback.</span>
                             </p>
-                            <p className='text-sm mt-2 truncate'>Let&apos;s begin!</p>
+                            <p className='text-sm mt-2 truncate'>Let&apos;s check it now!</p>
                         </div>
                         <Button
                             className='group mt-4 w-full text-sm h-8 hover:cursor-pointer'
                             variant='outline'
-                            onClick={() =>
-                                createSession.mutate({
-                                    userId: agent.userId,
-                                    agentId: agent.id,
-                                    durationMinutes: 60,
-                                })
-                            }>
-                            Start
+                            onClick={() => { router.push(`/dashboard/interview/feedback/${agent.id}`) }}>
+                            View
                             <ArrowRight className='size-4 group-hover:translate-x-1 transition-transform' />
                         </Button>
                         <AgentDeleteUpdateDialog
-                            onEdit={() => setUpdateAgentDialogOpen(true)}
                             onRemove={() => {
                                 confirmRemove().then((confirmed) => {
                                     if (confirmed) {
@@ -119,20 +87,19 @@ const StartInterviewPart = () => {
                     </div>
                 ))}
             </div>
-            {visibleAgents.length > 0 && (
+            {completedAgents.length > 0 && (
                 <DataPagination
                     page={filters.page}
                     totalPages={data.totalPages}
                     onPageChange={(newPage) => setFilters({ page: newPage })}
                 />
             )}
-            {visibleAgents.length === 0 && (
+            {completedAgents.length === 0 && (
                 <EmptyState
                     title="No Interview Available"
                 />
             )}
+
         </>
     )
 }
-
-export default StartInterviewPart
