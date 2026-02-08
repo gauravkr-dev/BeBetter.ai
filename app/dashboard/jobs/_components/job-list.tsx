@@ -10,6 +10,9 @@ import { JobsFilterDialog } from "./jobs-filter-dialog";
 export default function JobList() {
     const [jobs, setJobs] = useState<any[]>([]);
     const [isFilterOpen, setIsFilterOpen] = useState(false);
+    const [watchlist, setWatchlist] = useState<any[]>([]);
+    const [showWatchlist, setShowWatchlist] = useState(false);
+
 
     const searchParams = useSearchParams();
 
@@ -21,6 +24,26 @@ export default function JobList() {
             .then(res => res.json())
             .then(setJobs);
     }, [searchParams]);
+
+    useEffect(() => {
+        const saved = localStorage.getItem("watchlist");
+        if (saved) setWatchlist(JSON.parse(saved));
+    }, []);
+
+    const toggleWatchlist = (job: any) => {
+        const exists = watchlist.find(j => j.id === job.id);
+
+        let updated;
+        if (exists) {
+            updated = watchlist.filter(j => j.id !== job.id);
+        } else {
+            updated = [...watchlist, job];
+        }
+
+        setWatchlist(updated);
+        localStorage.setItem("watchlist", JSON.stringify(updated));
+    };
+
 
     const renderCategory = (category: any) => {
         if (!category) return null;
@@ -35,6 +58,8 @@ export default function JobList() {
         const days = Math.floor(diff / (1000 * 60 * 60 * 24));
         return days === 0 ? "Today" : `${days} days ago`;
     }
+
+    const displayedJobs = showWatchlist ? watchlist : jobs;
     return (
         <>
             <div className="flex items-center justify-between px-3 md:px-8 mt-6">
@@ -51,12 +76,12 @@ export default function JobList() {
                 </div>
                 <div className="flex items-center gap-2">
                     <button
-                        onClick={() => setIsFilterOpen(true)}
+                        onClick={() => setShowWatchlist(prev => !prev)}
                         className="flex items-center hover:cursor-pointer group text-sm border font-medium rounded px-3 py-2 hover:bg-gray-100 dark:hover:bg-neutral-800 transition"
                         aria-label="Open job filters"
                     >
-                        <Heart className="size-4 mr-2" />
-                        Watchlist
+                        {showWatchlist ? "All Jobs" : <><Heart className="size-4 mr-2" /> Watchlist</>}
+
                         <ArrowRight className="group-hover:translate-x-0.5 transition size-4 inline-flex ml-2" />
                     </button>
                 </div>
@@ -64,19 +89,19 @@ export default function JobList() {
                 <JobsFilterDialog open={isFilterOpen} onOpenChange={setIsFilterOpen} />
             </div>
 
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 my-6 px-3 md:px-8">
-                {jobs.map((job: any) => (
-                    <div key={job.id} className="border px-4 py-3 rounded-xl dark:bg-[#121212] space-y-4">
-                        {/* <h2 className="font-semibold">{job.title}</h2> */}
-                        <div className="flex items-center justify-between">
-                            <div className="flex flex-col justify-between">
-                                <h2 className="text-lg font-medium leading-tight">
+                {displayedJobs.map((job: any) => (
+                    <div key={job.id} className="relative border px-4 pt-20 pb-4 rounded-xl dark:bg-[#121212] space-y-4 h-48 hover:translate-y-[-1.5px] transition">
+                        <div className="absolute left-4 top-4 right-4 flex items-start justify-between">
+                            <div className="flex flex-col max-w-[65%]">
+                                <h2 className="text-lg font-medium leading-tight line-clamp-2 overflow-hidden break-words">
                                     {job.title}
                                 </h2>
-                                <p className="text-xs">{job.company.display_name}</p>
+                                <p className="text-xs mt-1 truncate">{job.company.display_name}</p>
                             </div>
 
-                            <div className="flex items-center justify-between gap-2">
+                            <div className="flex flex-row items-end gap-2 ml-4">
                                 <p className="text-xs border rounded-full px-2 py-1 truncate">{timeAgo(job.created)}</p>
                                 {job.category && (
                                     <span className="text-xs border px-2 py-1 rounded-full whitespace-nowrap">
@@ -86,18 +111,21 @@ export default function JobList() {
                             </div>
                         </div>
 
-                        <p className="mt-3 text-xs line-clamp-2">
+                        <p className="mt-2 text-xs line-clamp-2">
                             {job.description}
                         </p>
 
-                        <div className="flex items-center justify-between">
+                        <div className="flex items-center justify-between mt-auto">
                             <span className="flex items-center gap-1 text-sm">
                                 <MapPin className=" text-blue-500 size-4" />
                                 <p className="text-sm">{job.location.display_name}</p>
 
                             </span>
                             <div className="flex items-center justify-between gap-2">
-                                <div className="flex items-center justify-center">
+                                <div
+                                    className="flex items-center justify-center"
+                                    onClick={() => toggleWatchlist(job)}
+                                >
                                     <LikeButton>Like</LikeButton>
                                 </div>
                                 <a
