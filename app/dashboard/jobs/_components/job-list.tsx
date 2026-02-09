@@ -6,12 +6,15 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { LikeButton } from "@/components/like-button";
 import { JobsFilterDialog } from "./jobs-filter-dialog";
+import Loader from "@/components/Loader";
+import EmptyState from "../../interview/_components/empty-state";
 
 export default function JobList() {
     const [jobs, setJobs] = useState<any[]>([]);
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [watchlist, setWatchlist] = useState<any[]>([]);
     const [showWatchlist, setShowWatchlist] = useState(false);
+    const [loading, setLoading] = useState(true);
 
 
     const searchParams = useSearchParams();
@@ -22,7 +25,10 @@ export default function JobList() {
 
         fetch(url)
             .then(res => res.json())
-            .then(setJobs);
+            .then(data => {
+                setJobs(data);
+                setLoading(false);
+            });
     }, [searchParams]);
 
     useEffect(() => {
@@ -60,6 +66,25 @@ export default function JobList() {
     }
 
     const displayedJobs = showWatchlist ? watchlist : jobs;
+    if (loading) {
+        return (
+            <div className="px-3 md:px-8 mb-12">
+                <div className="flex items-center justify-center min-h-[70vh]">
+                    <Loader className="" />
+                </div>
+            </div>
+        );
+    }
+
+    // if (displayedJobs.length === 0) {
+    //     return (
+    //         <EmptyState
+    //             title={showWatchlist ? "Your watchlist is empty" : "No jobs found with the current filters"}
+    //             className=" min-h-[70vh] "
+    //         />
+    //     )
+    // }
+
     return (
         <>
             <div className="flex items-center justify-between px-3 md:px-8 mt-6">
@@ -91,56 +116,63 @@ export default function JobList() {
 
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 my-6 px-3 md:px-8">
-                {displayedJobs.map((job: any) => (
-                    <div key={job.id} className="relative border px-4 pt-20 pb-4 rounded-xl dark:bg-[#121212] space-y-4 h-48 hover:translate-y-[-1.5px] transition">
-                        <div className="absolute left-4 top-4 right-4 flex items-start justify-between">
-                            <div className="flex flex-col max-w-[65%]">
-                                <h2 className="text-lg font-medium leading-tight line-clamp-2 overflow-hidden break-words">
-                                    {job.title}
-                                </h2>
-                                <p className="text-xs mt-1 truncate">{job.company.display_name}</p>
-                            </div>
-
-                            <div className="flex flex-row items-end gap-2 ml-4">
-                                <p className="text-xs border rounded-full px-2 py-1 truncate">{timeAgo(job.created)}</p>
-                                {job.category && (
-                                    <span className="text-xs border px-2 py-1 rounded-full whitespace-nowrap">
-                                        {renderCategory(job.category)}
-                                    </span>
-                                )}
-                            </div>
-                        </div>
-
-                        <p className="mt-2 text-xs line-clamp-2">
-                            {job.description}
-                        </p>
-
-                        <div className="flex items-center justify-between mt-auto">
-                            <span className="flex items-center gap-1 text-sm">
-                                <MapPin className=" text-blue-500 size-4" />
-                                <p className="text-sm">{job.location.display_name}</p>
-
-                            </span>
-                            <div className="flex items-center justify-between gap-2">
-                                <div
-                                    className="flex items-center justify-center"
-                                    onClick={() => toggleWatchlist(job)}
-                                >
-                                    <LikeButton>Like</LikeButton>
+                {displayedJobs.length === 0 ? (
+                    <EmptyState
+                        title={showWatchlist ? "Your watchlist is empty" : "No jobs found"}
+                        className=" min-h-[60vh] col-span-full "
+                    />
+                ) : (
+                    displayedJobs.map((job: any) => (
+                        <div key={job.id} className="relative border px-4 pt-20 pb-4 rounded-xl dark:bg-[#121212] space-y-4 h-48 hover:translate-y-[-1.5px] transition">
+                            <div className="absolute left-4 top-4 right-4 flex items-start justify-between">
+                                <div className="flex flex-col max-w-[65%]">
+                                    <h2 className="text-lg font-medium leading-tight line-clamp-2 overflow-hidden break-words">
+                                        {job.title}
+                                    </h2>
+                                    <p className="text-xs mt-1 truncate">{job.company.display_name}</p>
                                 </div>
-                                <a
-                                    href={job.redirect_url}
-                                    target="_blank"
-                                    className=" flex items-center gap-1 text-xs border px-2 py-1 rounded-full hover:text-blue-500 transition"
-                                >
-                                    Apply <ExternalLink className="size-3.5" />
-                                </a>
 
+                                <div className="flex flex-row items-end gap-2 ml-4">
+                                    <p className="text-xs border rounded-full px-2 py-1 truncate">{timeAgo(job.created)}</p>
+                                    {job.category && (
+                                        <span className="text-xs border px-2 py-1 rounded-full whitespace-nowrap">
+                                            {renderCategory(job.category)}
+                                        </span>
+                                    )}
+                                </div>
                             </div>
-                        </div>
 
-                    </div>
-                ))}
+                            <p className="mt-2 text-xs line-clamp-2">
+                                {job.description}
+                            </p>
+
+                            <div className="flex items-center justify-between mt-auto">
+                                <span className="flex items-center gap-1 text-sm">
+                                    <MapPin className=" text-blue-500 size-4" />
+                                    <p className="text-sm">{job.location.display_name}</p>
+
+                                </span>
+                                <div className="flex items-center justify-between gap-2">
+                                    <LikeButton
+                                        active={Boolean(watchlist.find((j: any) => j.id === job.id))}
+                                        onChange={() => toggleWatchlist(job)}
+                                    >
+                                        Like
+                                    </LikeButton>
+                                    <a
+                                        href={job.redirect_url}
+                                        target="_blank"
+                                        className=" flex items-center gap-1 text-xs border px-2 py-1 rounded-full hover:text-blue-500 transition"
+                                    >
+                                        Apply <ExternalLink className="size-3.5" />
+                                    </a>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    ))
+                )}
             </div>
         </>
     );

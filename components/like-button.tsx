@@ -21,26 +21,44 @@ const Icon: React.FC<IconProps> = ({ className }) => (
 )
 
 interface LikeButtonProps
-    extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+    extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "onChange"> {
     className?: string
     children?: React.ReactNode
     iconCount?: number
+    /** Controlled active state. If provided, the component becomes controlled. */
+    active?: boolean
+    /** Called when user toggles the button. Receives the next active state. */
+    onChange?: (active: boolean) => void
 }
 
 export function LikeButton({
     className,
     children,
     iconCount = 20,
+    active,
+    onChange,
     ...props
 }: LikeButtonProps) {
     const [scope, animate] = useAnimate()
-    const [liked, setLiked] = useState<boolean>(false)
+    const [liked, setLiked] = useState<boolean>(active ?? false)
+
+    // keep internal state in sync when used as a controlled component
+    React.useEffect(() => {
+        if (typeof active === "boolean") setLiked(active)
+    }, [active])
 
     const randomNumber = (min: number, max: number): number =>
         Math.floor(Math.random() * (max - min + 1) + min)
 
     const handleClick = () => {
-        setLiked(!liked)
+        const next = !liked
+
+        // If controlled, notify parent. Otherwise update internal state.
+        if (typeof active === "boolean") {
+            onChange?.(next)
+        } else {
+            setLiked(next)
+        }
 
         const icons = Array.from({ length: iconCount })
         const iconsAnimation = icons.map((_, index) => [

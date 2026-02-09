@@ -2,9 +2,14 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const Loader = () => {
+interface LoaderProps {
+    className?: string;
+}
+
+const Loader: React.FC<LoaderProps> = ({ className }) => {
     return (
-        <StyledWrapper className="flex flex-col items-center justify-center">
+        <StyledWrapper className={`flex flex-col items-center justify-center ${className}`}>
+
             <div className="three-body">
                 <div className="three-body__dot" />
                 <div className="three-body__dot" />
