@@ -123,7 +123,7 @@ export default function JobList() {
                     />
                 ) : (
                     displayedJobs.map((job: any) => (
-                        <div key={job.id} className="relative border px-4 pt-20 pb-4 rounded-xl dark:bg-[#121212] space-y-4 h-48 hover:translate-y-[-1.5px] transition">
+                        <div key={job.id} className="relative border px-4 pt-20 pb-4 rounded-xl dark:bg-[#121212] space-y-4 h-48 hover:translate-y-[-1.5px] transition overflow-hidden">
                             <div className="absolute left-4 top-4 right-4 flex items-start justify-between">
                                 <div className="flex flex-col max-w-[65%]">
                                     <h2 className="text-lg font-medium leading-tight line-clamp-2 overflow-hidden break-words">
@@ -132,10 +132,10 @@ export default function JobList() {
                                     <p className="text-xs mt-1 truncate">{job.company.display_name}</p>
                                 </div>
 
-                                <div className="flex flex-row items-end gap-2 ml-4">
+                                <div className="flex flex-row items-end gap-2 ml-4 flex-shrink-0">
                                     <p className="text-xs border rounded-full px-2 py-1 truncate">{timeAgo(job.created)}</p>
                                     {job.category && (
-                                        <span className="text-xs border px-2 py-1 rounded-full whitespace-nowrap">
+                                        <span className="text-xs border px-2 py-1 rounded-full max-w-[160px] overflow-hidden text-ellipsis truncate inline-block">
                                             {renderCategory(job.category)}
                                         </span>
                                     )}

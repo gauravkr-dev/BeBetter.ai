@@ -16,10 +16,9 @@ import {
 } from '@/components/animate-ui/components/radix/sidebar';
 
 import {
-    HandCoins,
     MessagesSquare,
     NotebookText,
-    Users,
+    ScrollText,
     VideoIcon,
     Wallet,
 } from 'lucide-react';
@@ -46,14 +45,9 @@ const Section = [
         href: '/dashboard/jobs',
     },
     {
-        icon: Users,
-        label: 'Hackathons',
-        href: '/dashboard/hackathons',
-    },
-    {
-        icon: HandCoins,
-        label: 'Scholarships',
-        href: '/dashboard/scholarships',
+        icon: ScrollText,
+        label: 'Resume Analysis',
+        href: '/dashboard/resume-analysis',
     },
     {
         label: 'Chatbot',
