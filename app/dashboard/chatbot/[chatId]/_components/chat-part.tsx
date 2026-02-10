@@ -11,6 +11,7 @@ import { useParams } from 'next/navigation';
 import axios from 'axios'
 import Markdown from 'react-markdown'
 import remarkGfm from "remark-gfm";
+import { ArrowDown } from 'lucide-react'
 
 const ChatPart = () => {
     const taRef = useRef<HTMLTextAreaElement | null>(null)
@@ -18,6 +19,9 @@ const ChatPart = () => {
     const [loading, setLoading] = useState(false);
     const [messageList, setMessageList] = useState<{ speaker: string, text: string }[]>([
     ]);
+    const containerRef = useRef<HTMLDivElement | null>(null);
+    const bottomRef = useRef<HTMLDivElement | null>(null);
+    const [showScrollDownBtn, setShowScrollDownBtn] = useState(false);
     const { chatId } = useParams();
     console.log(chatId);
 
@@ -82,9 +86,20 @@ const ChatPart = () => {
         }
     }, [chatData]);
 
+    useEffect(() => {
+        bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, [messageList]);
+
+    const handleScroll = () => {
+        const el = containerRef.current;
+        if (!el) return;
+        const isAtBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 50;
+        setShowScrollDownBtn(!isAtBottom);
+    }
+
     return (
-        <div className='flex flex-col gap-4 mt-2 h-[70vh]'>
-            <div className='flex-1 flex flex-col gap-2 p-4 overflow-auto no-scrollbar'>
+        <div className='relative flex flex-col gap-4 mt-2 h-[70vh]'>
+            <div className='flex-1 flex flex-col gap-2 p-4 overflow-auto no-scrollbar' ref={containerRef} onScroll={handleScroll}>
                 {messageList.length === 0 ? (
                     <div className='flex-1 flex items-center justify-center'>
                         <EmptyState title="Your Gaurav Bhaiya is ready for help!" />
@@ -149,6 +164,7 @@ const ChatPart = () => {
                     ))
                 )}
                 {loading && <div className="italic text-gray-500 dark:text-gray-400 text-xs">Thinking...</div>}
+                <div ref={bottomRef} />
             </div>
             <div className='flex items-end md:justify-between gap-4 bottom-4'>
                 <Textarea
@@ -170,6 +186,17 @@ const ChatPart = () => {
                 </Button>
 
             </div>
+            {showScrollDownBtn && (
+                <Button
+                    onClick={() =>
+                        bottomRef.current?.scrollIntoView({ behavior: "smooth" })
+                    }
+                    variant="outline"
+                    className="absolute hover:cursor-pointer bottom-16 right-6 rounded text-xs shadow-md"
+                >
+                    <ArrowDown className='' />
+                </Button>
+            )}
         </div>
     )
 }
