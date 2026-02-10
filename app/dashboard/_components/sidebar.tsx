@@ -34,8 +34,9 @@ import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-q
 import { toast } from 'sonner';
 import { useConfirm } from '@/hooks/use-confirm';
 import { ChatGetOne } from '@/modules/chatbot/server/chat/types';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { ChatTitleDialog } from '../chatbot/[chatId]/_components/chat-title-dialog';
+import { ChatFilter } from '../chatbot/[chatId]/_components/chat-filter';
 
 const id = uuidv4();
 
@@ -76,7 +77,13 @@ export const DashboardSidebar = ({ initialValues }: DashboardSidebarProps) => {
     const trpc = useTRPC();
     const router = useRouter();
     const queryClient = useQueryClient();
-    const { data } = useSuspenseQuery(trpc.chat.list.queryOptions());
+    const [search, setSearch] = useState("");
+    const { data: chats } = useSuspenseQuery(trpc.chat.list.queryOptions());
+
+    const filteredChats = useMemo(() => {
+        if (!search) return chats;
+        return chats.filter(chat => chat.title?.toLowerCase().includes(search.toLowerCase()));
+    }, [search, chats]);
 
     const [hoveredChatId, setHoveredChatId] = useState<string | null>(null);
     const [openDialog, setOpenDialog] = useState(false);
@@ -162,12 +169,13 @@ export const DashboardSidebar = ({ initialValues }: DashboardSidebarProps) => {
                             ))}
                         </SidebarMenu>
                     </SidebarGroup>
+                    <ChatFilter filter={search} setFilter={setSearch} />
 
                     {/* Chat list moved into SidebarContent to avoid layout gap */}
                     <div className="mx-2 mt-2 overflow-auto no-scrollbar flex-1 flex flex-col gap-2">
                         {
                             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                            data?.map((chat: any) => (
+                            filteredChats?.map((chat: any) => (
                                 <SidebarMenuItem
                                     key={chat.id}
                                     className="relative"

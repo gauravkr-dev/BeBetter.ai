@@ -31,7 +31,9 @@ export const chatRouter = createTRPCRouter({
             const data = await db
                 .select()
                 .from(chat)
-                .where(eq(chat.userId, ctx.auth.user.id))
+                .where(
+                    eq(chat.userId, ctx.auth.user.id)
+                )
                 .orderBy(desc(chat.createdAt));
 
             return data;
