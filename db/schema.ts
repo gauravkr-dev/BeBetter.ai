@@ -186,3 +186,41 @@ export const interviewFeedback = pgTable("interview_feedback", {
         .$onUpdate(() => /* @__PURE__ */ new Date())
         .notNull(),
 });
+
+export const chat = pgTable("chat", {
+    id: text("id")
+        .primaryKey()
+        .$default(() => nanoid()),
+
+    userId: text("user_id")
+        .notNull()
+        .references(() => user.id, { onDelete: "cascade" }),
+
+    title: text("title"), // optional (AI generate kar sakta hai)
+
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+        .defaultNow()
+        .$onUpdate(() => new Date())
+        .notNull(),
+});
+
+export const chatMessage = pgTable("chat_message", {
+    id: text("id")
+        .primaryKey()
+        .$default(() => nanoid()),
+
+    chatId: text("chat_id")
+        .notNull()
+        .references(() => chat.id, { onDelete: "cascade" }),
+
+    speaker: speakerEnum("speaker").notNull(), // user | ai | system
+
+    text: text("text").notNull(),
+
+    sequence: integer("sequence").notNull(), // per chat order
+
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+
