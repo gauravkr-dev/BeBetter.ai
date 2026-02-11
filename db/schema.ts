@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm";
-import { pgTable, text, timestamp, boolean, index, integer, pgEnum } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, boolean, index, integer, pgEnum, jsonb } from "drizzle-orm/pg-core";
 import { nanoid } from "nanoid";
 
 // User table definition
@@ -222,5 +222,21 @@ export const chatMessage = pgTable("chat_message", {
 
     createdAt: timestamp("created_at").defaultNow().notNull(),
 });
+
+export const resumeFeedback = pgTable("resume_feedback", {
+    id: text("id")
+        .primaryKey()
+        .$default(() => nanoid()),
+    userId: text("user_id")
+        .notNull()
+        .references(() => user.id, { onDelete: "cascade" }),
+    resumeUrl: text("resume_url").notNull(),
+    feedback: jsonb("feedback").notNull(), // 🔥 structured AI response
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+        .defaultNow()
+        .$onUpdate(() => new Date())
+        .notNull(),
+})
 
 
