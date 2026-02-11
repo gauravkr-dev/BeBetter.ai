@@ -37,6 +37,9 @@ import { ChatGetOne } from '@/modules/chatbot/server/chat/types';
 import { useMemo, useState } from 'react';
 import { ChatTitleDialog } from '../chatbot/[chatId]/_components/chat-title-dialog';
 import { ChatFilter } from '../chatbot/[chatId]/_components/chat-filter';
+import { ChatDeleteUpdateDialog } from '../chatbot/[chatId]/_components/chat-delete-update';
+import { UpdateChatDialog } from '../chatbot/[chatId]/_components/update-chat-dialog';
+import { useCreateChat } from '@/hooks/use-create-chat';
 
 const id = uuidv4();
 
@@ -78,8 +81,9 @@ export const DashboardSidebar = ({ initialValues }: DashboardSidebarProps) => {
     const router = useRouter();
     const queryClient = useQueryClient();
     const [search, setSearch] = useState("");
+    const [openUpdateDialog, setOpenUpdateDialog] = useState(false);
+    const [selectedChat, setSelectedChat] = useState<ChatGetOne | null>(null);
     const { data: chats } = useSuspenseQuery(trpc.chat.list.queryOptions());
-
     const filteredChats = useMemo(() => {
         if (!search) return chats;
         return chats.filter(chat => chat.title?.toLowerCase().includes(search.toLowerCase()));
@@ -88,45 +92,30 @@ export const DashboardSidebar = ({ initialValues }: DashboardSidebarProps) => {
     const [hoveredChatId, setHoveredChatId] = useState<string | null>(null);
     const [openDialog, setOpenDialog] = useState(false);
 
-    const createChat = useMutation(
-        trpc.chat.create.mutationOptions({
-            onSuccess: async (data) => {
-                await queryClient.invalidateQueries(
-                    trpc.chat.list.queryOptions(),
-                );
-                if (initialValues?.id) {
-                    await queryClient.invalidateQueries(
-                        trpc.chat.getById.queryOptions({ chatId: initialValues.id }),
-                    );
-                }
-                console.log("Chat created:", data);
-                router.push(`/dashboard/chatbot/${data.id}`);
-            },
-            onError: () => {
-                toast.error("Failed to create chat.");
-            }
-        })
-    );
-
+    const createChat = useCreateChat();
     const deleteChat = useMutation(
         trpc.chat.delete.mutationOptions({
-            onSuccess: async () => {
-                // invalidate the chat list query to reflect the deletion
+            onSuccess: async (_, variables) => {
                 await queryClient.invalidateQueries(
                     trpc.chat.list.queryOptions(),
                 );
+
+                const deletedChatId = variables.chatId;
+
+                const isCurrentlyOnDeletedChat =
+                    pathname === `/dashboard/chatbot/${deletedChatId}`;
+
+                if (isCurrentlyOnDeletedChat) {
+                    router.push("/dashboard/chatbot");
+                }
+
                 toast.success("Chat deleted successfully.");
             },
             onError: () => {
                 toast.error("Failed to delete chat.");
             }
         })
-    )
-
-    const [RemoveConfirmation, confirmRemove] = useConfirm(
-        "Delete Chat",
-        "Are you sure you want to delete this chat? This action cannot be undone.",
-    )
+    );
 
     const onClickOptions = (href: string) => {
         if (href === `/dashboard/chatbot/${id}`) {
@@ -139,6 +128,14 @@ export const DashboardSidebar = ({ initialValues }: DashboardSidebarProps) => {
 
     return (
         <>
+            <UpdateChatDialog
+                open={openUpdateDialog}
+                onOpenChange={(open) => {
+                    setOpenUpdateDialog(open);
+                    if (!open) setSelectedChat(null);
+                }}
+                initialValues={selectedChat ?? initialValues ?? undefined}
+            />
             <ChatTitleDialog
                 open={openDialog}
                 onOpenChange={setOpenDialog}
@@ -147,7 +144,6 @@ export const DashboardSidebar = ({ initialValues }: DashboardSidebarProps) => {
                         title: title || "Untitled Chat",
                     })
                 }} />
-            <RemoveConfirmation />
             <Sidebar collapsible="icon">
                 <SidebarHeader>
                     <HeaderSidebar />
@@ -190,7 +186,7 @@ export const DashboardSidebar = ({ initialValues }: DashboardSidebarProps) => {
                                             <span className="text-xs">{chat.title}</span>
                                         </Link>
                                     </SidebarMenuButton>
-                                    <Trash2
+                                    {/* <Trash2
                                         className={cn('absolute size-4 right-2 top-1/2 -translate-y-1/2 text-red-500 cursor-pointer', hoveredChatId === String(chat.id) ? 'block' : 'hidden')}
                                         onClick={() => {
                                             confirmRemove().then((confirmed) => {
@@ -198,6 +194,16 @@ export const DashboardSidebar = ({ initialValues }: DashboardSidebarProps) => {
                                                     deleteChat.mutateAsync({ chatId: chat.id });
                                                 }
                                             });
+                                        }}
+                                    /> */}
+                                    <ChatDeleteUpdateDialog
+                                        className={cn('absolute right-2 top-1/2 -translate-y-1/2', hoveredChatId === String(chat.id) ? 'block' : 'hidden')}
+                                        onEdit={() => {
+                                            setSelectedChat(chat as ChatGetOne);
+                                            setOpenUpdateDialog(true);
+                                        }}
+                                        onRemove={() => {
+                                            deleteChat.mutateAsync({ chatId: chat.id });
                                         }}
                                     />
                                 </SidebarMenuItem>
