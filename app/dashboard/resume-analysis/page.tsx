@@ -1,9 +1,10 @@
 import React from 'react'
+import { ResumeHeader } from './_components/resume-header'
 
 const page = () => {
     return (
         <div>
-            Resume Analysis
+            <ResumeHeader />
         </div>
     )
 }
