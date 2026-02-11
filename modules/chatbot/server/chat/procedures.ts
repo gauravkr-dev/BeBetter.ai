@@ -76,5 +76,29 @@ export const chatRouter = createTRPCRouter({
 
             return { success: true };
         }),
-});
+    update: protectedProcedure
+        .input(z.object({ chatId: z.string(), title: z.string().optional() }))
+        .mutation(async ({ ctx, input }) => {
+            const userId = ctx.auth.user.id;
 
+            const [updatedChat] = await db
+                .update(chat)
+                .set({ title: input.title ?? null })
+                .where(
+                    and(
+                        eq(chat.id, input.chatId),
+                        eq(chat.userId, userId)
+                    )
+                )
+                .returning();
+
+            if (!updatedChat) {
+                throw new TRPCError({
+                    code: "NOT_FOUND",
+                    message: "Chat not found or access denied",
+                });
+            }
+
+            return updatedChat;
+        }),
+});
