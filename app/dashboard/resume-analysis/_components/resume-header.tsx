@@ -3,6 +3,7 @@ import { Card, CardHeader, CardTitle, CardDescription } from "@/components/optic
 import Image from "next/image";
 import { useState } from "react";
 import { ResumeUploadDialog } from "./resume-upload-dialog";
+
 export const ResumeHeader = () => {
     const [isOpenDialog, setIsOpenDialog] = useState(false);
     return (

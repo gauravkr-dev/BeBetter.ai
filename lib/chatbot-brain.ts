@@ -1,11 +1,11 @@
 import OpenAI from "openai";
 
-if (!process.env.GEMINI_API_KEY) {
-    throw new Error("GEMINI_API_KEY is missing in env");
+if (!process.env.GEMINI_API_KEY_FOR_CHATBOT && !process.env.GEMINI_API_KEY) {
+    throw new Error("GEMINI_API_KEY_FOR_CHATBOT or GEMINI_API_KEY is missing in env");
 }
 
 export const llm = new OpenAI({
-    apiKey: process.env.GEMINI_API_KEY,
+    apiKey: process.env.GEMINI_API_KEY_FOR_CHATBOT ?? process.env.GEMINI_API_KEY,
     baseURL: "https://generativelanguage.googleapis.com/v1beta/openai/",
 });
 

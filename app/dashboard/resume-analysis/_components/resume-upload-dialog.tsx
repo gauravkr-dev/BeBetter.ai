@@ -1,8 +1,13 @@
+"use client";
 import { ResponsiveDialog } from "@/components/responsive-dialog";
 import { Button } from "@/components/ui/button";
 import { FileUpload } from "@/components/ui/file-upload";
+import axios from "axios";
 import { ArrowRight } from "lucide-react";
+// import { useRouter } from "next/navigation";
 import { useState } from "react";
+// import { v4 as uuidv4 } from "uuid";
+import { authClient } from "@/lib/auth-client";
 
 interface NewAgentDialogProps {
     open: boolean;
@@ -10,12 +15,32 @@ interface NewAgentDialogProps {
 }
 
 export const ResumeUploadDialog = ({ open, onOpenChange }: NewAgentDialogProps) => {
+    const { data } = authClient.useSession();
+    // const id = uuidv4();
+    // const router = useRouter();
     const [files, setFiles] = useState<File[]>([]);
 
     const handleFileUpload = (files: File[]) => {
         setFiles(files);
-        console.log(files);
     };
+
+    const onSubmit = async () => {
+        if (files.length === 0) return;
+
+        const formData = new FormData();
+        formData.append("file", files[0]);
+        // include userId so the server can save which user uploaded the resume
+        formData.append("userId", data?.user?.id || "user-123");
+
+        const response = await axios.post("/api/upload-resume", formData);
+
+        console.log(response.data.url);
+        console.log(response.data.feedback);
+        // router.push(`/dashboard/resume-analysis/${id}`);
+
+        // server will persist the resume + feedback; just close the dialog
+        onOpenChange(false);
+    }
 
     return (
         <ResponsiveDialog
@@ -29,7 +54,9 @@ export const ResumeUploadDialog = ({ open, onOpenChange }: NewAgentDialogProps) 
                 <Button variant="outline" onClick={() => onOpenChange(false)} className="hover:cursor-pointer">
                     Cancel
                 </Button>
-                <Button className="group cursor-pointer" disabled={files.length === 0}>
+                <Button
+                    className="group cursor-pointer"
+                    disabled={files.length === 0} onClick={onSubmit} >
                     Let&apos;s Analyze
                     <ArrowRight className="size-4 group-hover:translate-x-1 transition-transform" />
                 </Button>
