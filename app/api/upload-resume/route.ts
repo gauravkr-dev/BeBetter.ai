@@ -39,7 +39,8 @@ export async function POST(req: NextRequest) {
 
         // AI feedback logic can be added here using the extracted text
 
-        const feedback = await getResumeFeedback({ userInput: docs[0]?.pageContent ?? "" });
+        const feedbackData = await getResumeFeedback({ userInput: docs[0]?.pageContent ?? "" });
+        const feedback = feedbackData.replace('```json', '').replace('```', '');
 
         // persist resume + feedback to DB (userId can be provided by client)
         const userId = formData.get('userId')?.toString() ?? 'user-123';
