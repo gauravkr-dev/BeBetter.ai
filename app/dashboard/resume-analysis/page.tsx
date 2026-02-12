@@ -23,7 +23,7 @@ const page = () => {
 
             <HydrationBoundary state={dehydrate(queryClient)}>
                 <Suspense fallback={<div className='pt-18 pb-18'><Loader /></div>}>
-                    <ErrorBoundary fallback={<div className='mt-4 px-4 md:px-12 text-center justify-center flex text-red-500'>Failed to load interview agents.</div>}>
+                    <ErrorBoundary fallback={<div className='mt-4 px-4 md:px-12 text-center justify-center flex text-red-500'>Failed to load resume analysis list.</div>}>
                         <ResumeList />
                     </ErrorBoundary>
 
