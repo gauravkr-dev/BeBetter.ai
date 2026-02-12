@@ -4,9 +4,9 @@ import { Button } from "@/components/ui/button";
 import { FileUpload } from "@/components/ui/file-upload";
 import axios from "axios";
 import { ArrowRight } from "lucide-react";
-// import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
-// import { v4 as uuidv4 } from "uuid";
+import { v4 as uuidv4 } from "uuid";
 import { authClient } from "@/lib/auth-client";
 import AnalysisLoader from "@/components/analysis-loader";
 
@@ -17,11 +17,10 @@ interface NewAgentDialogProps {
 
 export const ResumeUploadDialog = ({ open, onOpenChange }: NewAgentDialogProps) => {
     const { data } = authClient.useSession();
-    // const id = uuidv4();
-    // const router = useRouter();
+    const router = useRouter();
     const [files, setFiles] = useState<File[]>([]);
     const [loading, setLoading] = useState(false);
-
+    const id = uuidv4();
     const handleFileUpload = (files: File[]) => {
         setFiles(files);
     };
@@ -40,12 +39,13 @@ export const ResumeUploadDialog = ({ open, onOpenChange }: NewAgentDialogProps) 
         formData.append("fileName", files[0].name);
         formData.append("fileType", files[0].type);
         formData.append("fileSize", files[0].size.toString());
+        formData.append("id", id);
 
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const response = await axios.post("/api/upload-resume", formData);
-        console.log(response.data.url);
-        // router.push(`/dashboard/resume-analysis/${id}`);
         onOpenChange(false);
         setLoading(false);
+        router.push(`/dashboard/resume-analysis/${id}`);
     }
 
     return (

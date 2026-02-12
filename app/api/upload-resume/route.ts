@@ -3,7 +3,7 @@ import ImageKit from 'imagekit';
 import { WebPDFLoader } from "@langchain/community/document_loaders/web/pdf";
 import { getResumeFeedback } from '@/lib/resume-analyser';
 import { db } from '@/db';
-import { resumeFeedback } from '@/db/schema';
+import { resumeFeedback, ResumeFeedbackType } from '@/db/schema';
 
 const imagekit = new ImageKit({
     publicKey: process.env.IMAGEKIT_PUBLIC_KEY ?? '',
@@ -35,20 +35,22 @@ export async function POST(req: NextRequest) {
 
         const loader = new WebPDFLoader(file);
         const docs = await loader.load();
-        console.log('Extracted text from PDF:', docs[0]);  //docs[0]?.pageContent
 
         // AI feedback logic can be added here using the extracted text
 
         const feedbackData = await getResumeFeedback({ userInput: docs[0]?.pageContent ?? "" });
-        const feedback = feedbackData.replace('```json', '').replace('```', '');
+        const cleaned = feedbackData.replace('```json', '').replace('```', '');
+        const feedback: ResumeFeedbackType = JSON.parse(cleaned);
 
         // persist resume + feedback to DB (userId can be provided by client)
         const userId = formData.get('userId')?.toString() ?? 'user-123';
         const fileName = formData.get('fileName')?.toString() ?? 'unknown.pdf';
         const fileType = formData.get('fileType')?.toString() ?? 'application/pdf';
         const fileSize = formData.get('fileSize')?.toString() ?? '0';
+        const id = formData.get('id')?.toString() ?? `resume-${Date.now()}`;
         try {
             await db.insert(resumeFeedback).values({
+                id,
                 userId,
                 resumeUrl: uploadResponse.url,
                 feedback,
