@@ -223,6 +223,21 @@ export const chatMessage = pgTable("chat_message", {
     createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+export type ResumeFeedbackType = {
+    overall_score: number
+    overall_feedback: string
+    summary_comment: string
+    sections: {
+        contact_info: { score: number; comment: string }
+        experience: { score: number; comment: string }
+        education: { score: number; comment: string }
+        skills: { score: number; comment: string }
+    }
+    tips_for_improvement: string[]
+    whats_good: string[]
+    needs_improvement: string[]
+}
+
 export const resumeFeedback = pgTable("resume_feedback", {
     id: text("id")
         .primaryKey()
@@ -231,7 +246,7 @@ export const resumeFeedback = pgTable("resume_feedback", {
         .notNull()
         .references(() => user.id, { onDelete: "cascade" }),
     resumeUrl: text("resume_url").notNull(),
-    feedback: jsonb("feedback").notNull(), // 🔥 structured AI response
+    feedback: jsonb("feedback").$type<ResumeFeedbackType>().notNull(),
     fileName: text("file_name").notNull(),
     fileType: text("file_type").notNull(),
     fileSize: text("file_size").notNull(),

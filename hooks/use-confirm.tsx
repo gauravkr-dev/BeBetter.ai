@@ -49,8 +49,8 @@ export const useConfirm = (title: string, description: string): [() => JSX.Eleme
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                    <AlertDialogCancel onClick={handleCancel}>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleConfirm}>Continue</AlertDialogAction>
+                    <AlertDialogCancel onClick={handleCancel} className='cursor-pointer'>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={handleConfirm} className='bg-red-500 hover:bg-red-450 cursor-pointer'>Continue</AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>

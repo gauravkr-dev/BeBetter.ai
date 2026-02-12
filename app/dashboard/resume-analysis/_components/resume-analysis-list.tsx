@@ -12,11 +12,13 @@ import { toast } from "sonner";
 import { useConfirm } from "@/hooks/use-confirm";
 import { cn } from "@/lib/utils";
 import { ResumeDeleteDialog } from "./resume-delete-dialog";
+import { useRouter } from "next/navigation";
 
 export const ResumeList = () => {
     const [filters, setFilters] = useResumeFilter();
     const trpc = useTRPC();
     const queryClient = useQueryClient();
+    const router = useRouter();
     const { data: resumes } = useSuspenseQuery(trpc.resume.getMany.queryOptions({ page: filters.page }));
     // API returns a paginated payload like { items: Resume[], totalPages: number }
     const items: any[] = Array.isArray(resumes) ? resumes : (resumes?.items ?? []);
@@ -56,7 +58,7 @@ export const ResumeList = () => {
                         </div>
                         <div className="flex-1 min-h-0 mt-2 overflow-hidden">
                             <p className='text-sm break-words'>
-                                <span className="rounded bg-yellow-200 font-medium text-yellow-900 inline-block max-w-[9rem] align-middle truncate">{resume.fileName}</span>
+                                <span className="rounded bg-green-200 font-medium text-green-900 inline-block max-w-[9rem] align-middle truncate">{resume.fileName}</span>
                                 <span className="ml-1 text-ellipsis overflow-hidden"> is analyzed.</span>
                             </p>
                             <p className='text-sm mt-2 truncate'>Check it now!</p>
@@ -65,7 +67,7 @@ export const ResumeList = () => {
                             className='group mt-4 w-full text-sm h-8 hover:cursor-pointer'
                             variant='outline'
                             onClick={() =>
-                                console.log("Start analysis for resume id:", resume.id)
+                                router.push(`/dashboard/resume-analysis/${resume.id}`)
                             }>
                             Check
                             <ArrowRight className='size-4 group-hover:translate-x-1 transition-transform' />
