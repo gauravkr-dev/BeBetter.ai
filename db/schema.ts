@@ -232,6 +232,9 @@ export const resumeFeedback = pgTable("resume_feedback", {
         .references(() => user.id, { onDelete: "cascade" }),
     resumeUrl: text("resume_url").notNull(),
     feedback: jsonb("feedback").notNull(), // 🔥 structured AI response
+    fileName: text("file_name").notNull(),
+    fileType: text("file_type").notNull(),
+    fileSize: text("file_size").notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
         .defaultNow()

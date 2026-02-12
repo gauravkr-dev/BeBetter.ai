@@ -43,11 +43,17 @@ export async function POST(req: NextRequest) {
 
         // persist resume + feedback to DB (userId can be provided by client)
         const userId = formData.get('userId')?.toString() ?? 'user-123';
+        const fileName = formData.get('fileName')?.toString() ?? 'unknown.pdf';
+        const fileType = formData.get('fileType')?.toString() ?? 'application/pdf';
+        const fileSize = formData.get('fileSize')?.toString() ?? '0';
         try {
             await db.insert(resumeFeedback).values({
                 userId,
                 resumeUrl: uploadResponse.url,
                 feedback,
+                fileName,
+                fileType,
+                fileSize,
             });
         } catch (err) {
             console.error('Failed to save resume feedback to DB', err);
