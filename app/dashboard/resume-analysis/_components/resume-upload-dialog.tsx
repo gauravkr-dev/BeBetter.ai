@@ -24,13 +24,16 @@ export const ResumeUploadDialog = ({ open, onOpenChange }: NewAgentDialogProps) 
         setFiles(files);
     };
 
+
     const onSubmit = async () => {
         if (files.length === 0) return;
-
         const formData = new FormData();
         formData.append("file", files[0]);
         // include userId so the server can save which user uploaded the resume
         formData.append("userId", data?.user?.id || "user-123");
+        formData.append("fileName", files[0].name);
+        formData.append("fileType", files[0].type);
+        formData.append("fileSize", files[0].size.toString());
 
         const response = await axios.post("/api/upload-resume", formData);
 
