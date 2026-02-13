@@ -257,4 +257,81 @@ export const resumeFeedback = pgTable("resume_feedback", {
         .notNull(),
 })
 
+export const mockTest = pgTable("mock_test", {
+    id: text("id")
+        .primaryKey()
+        .$default(() => nanoid()),
+    userId: text("user_id")
+        .notNull()
+        .references(() => user.id, { onDelete: "cascade" }),
+    question_count: text("question_count").notNull(),
+    describe_topics: text("describe_topics").notNull(),
+    questions_level: text("questions_level").notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+        .defaultNow()
+        .$onUpdate(() => new Date())
+        .notNull(),
+})
 
+export const mockTestQuestions = pgTable("mock_test_questions", {
+    id: text("id")
+        .primaryKey()
+        .$default(() => nanoid()),
+    mockTestId: text("mock_test_id")
+        .notNull()
+        .references(() => mockTest.id, { onDelete: "cascade" }),
+    userId: text("user_id")
+        .notNull()
+        .references(() => user.id, { onDelete: "cascade" }),
+    sequence: integer("sequence").notNull(),
+    question: text("question").notNull(),
+    options: jsonb("options").$type<string[]>().notNull(),
+    correctAnswerIndex: integer("correct_answer_index").notNull(),
+    explanation_for_correctAnswer: text("explanation_for_correct_answer").notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+        .defaultNow()
+        .$onUpdate(() => new Date())
+        .notNull(),
+})
+
+export const mockTestUserAnswer = pgTable("mock_test_user_answer", {
+    id: text("id")
+        .primaryKey()
+        .$default(() => nanoid()),
+    mockTestId: text("mock_test_id")
+        .notNull()
+        .references(() => mockTest.id, { onDelete: "cascade" }),
+    userId: text("user_id")
+        .notNull()
+        .references(() => user.id, { onDelete: "cascade" }),
+    sequence: integer("sequence").notNull(),
+    userAnswerIndex: integer("user_answer_index").notNull(),
+    isCorrect: boolean("is_correct").notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+        .defaultNow()
+        .$onUpdate(() => new Date())
+        .notNull(),
+})
+
+export const mockTestOverallResult = pgTable("mock_test_overall_result", {
+    id: text("id")
+        .primaryKey()
+        .$default(() => nanoid()),
+    mockTestId: text("mock_test_id")
+        .notNull()
+        .references(() => mockTest.id, { onDelete: "cascade" }),
+    userId: text("user_id")
+        .notNull()
+        .references(() => user.id, { onDelete: "cascade" }),
+    overall_score: integer("overall_score").notNull(),
+    overallFeedback: text("overall_feedback").notNull(),
+    summaryComment: text("summary_comment").notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+        .defaultNow()
+        .$onUpdate(() => new Date())
+        .notNull(),
+})
