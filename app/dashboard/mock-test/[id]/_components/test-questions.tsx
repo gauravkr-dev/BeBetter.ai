@@ -3,7 +3,7 @@
 import { useTRPC } from "@/trpc/client";
 import { useState } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import {
     Card,
     CardContent,
@@ -23,6 +23,7 @@ export const TestQuestions = () => {
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [answers, setAnswers] = useState<Record<number, number>>({});
     const [loading, setLoading] = useState(false);
+    const router = useRouter();
     const { data: userData } = authClient.useSession();
     const userId = userData?.user?.id;
 
@@ -48,25 +49,12 @@ export const TestQuestions = () => {
             })
         );
 
-        // await fetch("/api/insert-mock-test-result", {
-        //     method: "POST",
-        //     headers: { "Content-Type": "application/json" },
-        //     body: JSON.stringify({
-        //         mockTestId: id,
-        //         answers: formattedAnswers,
-        //     }),
-        // });
-
-        console.log("Submitting answers:", {
-            mockTestId: id,
-            answers: formattedAnswers,
-            userId,
-        });
         await axios.post("/api/insert-mock-test-result", {
             mockTestId: id,
             answers: formattedAnswers,
             userId,
         });
+        router.push(`/dashboard/mock-test-analysis/${id}`);
         setLoading(false);
         toast.success("Test Submitted Successfully");
     };

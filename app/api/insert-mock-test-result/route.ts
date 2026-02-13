@@ -3,6 +3,7 @@ import { db } from "@/db";
 import {
     mockTestUserAnswer,
     mockTestQuestions,
+    mockTestOverallResult,
 } from "@/db/schema";
 import { NextRequest, NextResponse } from "next/server";
 import { eq } from "drizzle-orm";
@@ -22,6 +23,8 @@ export async function POST(req: NextRequest) {
             .where(eq(mockTestQuestions.mockTestId, mockTestId));
 
         // Prepare rows to insert
+
+        let score = 0;
         const rows = answers.map((answer: any) => {
             const question = questions.find(
                 (q) => q.sequence === answer.sequence
@@ -30,6 +33,9 @@ export async function POST(req: NextRequest) {
             const isCorrect =
                 question?.correctAnswerIndex === answer.userAnswerIndex;
 
+            if (isCorrect) {
+                score++;
+            }
             return {
                 mockTestId,
                 userId,
@@ -43,10 +49,44 @@ export async function POST(req: NextRequest) {
 
         await db.insert(mockTestUserAnswer).values(rows);
 
+        const overall_score =
+            questions.length > 0
+                ? Math.round((score / questions.length) * 100)
+                : 0;
+
+        let overallFeedback = "";
+        let summaryComment = "";
+
+        if (overall_score >= 80) {
+            overallFeedback = "Excellent performance!";
+            summaryComment =
+                "You have a strong grasp of the material. Keep up the great work!";
+        } else if (overall_score >= 50) {
+            overallFeedback = "Good job!";
+            summaryComment =
+                "You have a decent understanding of the material, but there's room for improvement. Review the questions and try again!";
+        } else {
+            overallFeedback = "Needs Improvement!";
+            summaryComment =
+                "It looks like you struggled with this test. Don't be discouraged! Review the material and try again.";
+        }
+
+
+        await db.insert(mockTestOverallResult).values({
+            mockTestId,
+            userId,
+            overall_score,
+            overallFeedback,
+            summaryComment
+
+        })
+
         return NextResponse.json({
             success: true,
             message: "Answers saved successfully",
         });
+
+
 
     } catch (error) {
         console.error(error);
