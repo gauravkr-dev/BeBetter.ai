@@ -1,9 +1,10 @@
 import React from 'react'
+import { GenerateQuiesHeader } from './_components/generate-quies-header'
 
 const MockPage = () => {
     return (
         <div>
-            Hii from mock test page
+            <GenerateQuiesHeader />
         </div>
     )
 }
