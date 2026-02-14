@@ -38,6 +38,7 @@ export const TestQuestions = () => {
     );
 
     const current = questions[currentQuestion];
+    const hasAtLeastOneAnswer = Object.keys(answers).length > 0;
 
     const handleSubmit = async () => {
         setLoading(true);
@@ -63,8 +64,13 @@ export const TestQuestions = () => {
         <div>
             <Card key={current.sequence}>
                 <CardHeader>
-                    <CardTitle>
-                        Question {currentQuestion + 1} of {questions.length}
+                    <CardTitle className="font-serif flex  flex-col md:justify-between gap-2">
+                        <span className="text-blue-500">Question {currentQuestion + 1} of {questions.length}</span>
+                        {currentQuestion === questions.length - 1 && !hasAtLeastOneAnswer && (
+                            <p className="text-sm text-red-500 mt-2">
+                                Please select at least one question before submitting.
+                            </p>
+                        )}
                     </CardTitle>
                 </CardHeader>
 
@@ -86,8 +92,9 @@ export const TestQuestions = () => {
                                 <RadioGroupItem
                                     value={index.toString()}
                                     id={`option-${current.sequence}-${index}`}
+                                    className="cursor-pointer"
                                 />
-                                <Label htmlFor={`option-${current.sequence}-${index}`}>
+                                <Label htmlFor={`option-${current.sequence}-${index}`} className="cursor-pointer">
                                     {option.replace(/`/g, "")}
                                 </Label>
                             </div>
@@ -98,30 +105,32 @@ export const TestQuestions = () => {
 
                 <CardFooter className="flex justify-between mt-4">
                     <Button
+                        className="group cursor-pointer"
                         variant="outline"
                         onClick={() =>
                             setCurrentQuestion((prev) => Math.max(0, prev - 1))
                         }
                     >
-                        <ArrowLeft className="size-4" />
+                        <ArrowLeft className="size-4 group-hover:-translate-x-1 transition-transform" />
                         Previous
                     </Button>
 
                     {currentQuestion === questions.length - 1 ? (
                         <Button
-                            className="bg-blue-500 text-white"
+                            className="bg-blue-500 text-white group cursor-pointer hover:bg-blue-600"
                             onClick={handleSubmit}
-                            disabled={loading}
+                            disabled={loading || !hasAtLeastOneAnswer}
                         >
                             {loading ? "Submitting..." : "Submit"}
-                            <ArrowRight className="size-4" />
+                            <ArrowRight className="size-4 group-hover:translate-x-1 transition-transform" />
                         </Button>
                     ) : (
                         <Button
+                            className="group cursor-pointer"
                             onClick={() => setCurrentQuestion((prev) => prev + 1)}
                         >
                             Next
-                            <ArrowRight className="size-4" />
+                            <ArrowRight className="size-4 group-hover:translate-x-1 transition-transform" />
                         </Button>
                     )}
                 </CardFooter>

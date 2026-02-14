@@ -2,8 +2,19 @@ import React from 'react'
 import { GenerateQuiesHeader } from './_components/generate-quies-header'
 import { ArrowRight } from 'lucide-react'
 import { CheckFeedbackPart } from './_components/check-feedback'
+import { auth } from '@/lib/auth'
+import { headers } from 'next/headers'
+import { redirect } from 'next/navigation'
 
-const MockPage = () => {
+const MockPage = async () => {
+    // Check authentication
+    const session = await auth.api.getSession({
+        headers: await headers(),
+    })
+
+    if (!session) {
+        redirect('/')
+    }
     return (
         <div>
             <GenerateQuiesHeader />
