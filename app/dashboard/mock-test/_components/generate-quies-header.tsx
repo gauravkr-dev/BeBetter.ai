@@ -15,7 +15,7 @@ export const GenerateQuiesHeader = () => {
                     decorations
                 >
                     <CardHeader className="w-full md:w-1/2 flex flex-col items-start justify-center space-y-3">
-                        <CardTitle className="text-xl font-medium">
+                        <CardTitle className="text-xl font-medium font-serif">
                             AI-Powered Mock Test for Targeted Exam Preparation
                         </CardTitle>
                         <CardDescription className="text-sm">

@@ -49,8 +49,8 @@ export const GenerateQuiesForm = ({ onSuccess, onCancel }: GenerateQuiesFormProp
             id: id,
             userId: data?.user?.id,
         });
-        router.push(`/dashboard/mock-test/${id}`);
         toast.success("Mock test generated successfully!");
+        router.push(`/dashboard/mock-test/${id}`);
         onSuccess?.();
         setLoading(false);
     }

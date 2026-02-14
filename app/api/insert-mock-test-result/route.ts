@@ -45,8 +45,6 @@ export async function POST(req: NextRequest) {
             };
         });
 
-        console.log("Inserting rows:", rows);
-
         await db.insert(mockTestUserAnswer).values(rows);
 
         const overall_score =
@@ -61,14 +59,22 @@ export async function POST(req: NextRequest) {
             overallFeedback = "Excellent performance!";
             summaryComment =
                 "You have a strong grasp of the material. Keep up the great work!";
-        } else if (overall_score >= 50) {
+        } else if (overall_score >= 65) {
             overallFeedback = "Good job!";
             summaryComment =
+                "You have a good understanding of the material, but there's still room for improvement. Review the questions and try again!";
+        } else if (overall_score >= 50) {
+            overallFeedback = "Good effort!";
+            summaryComment =
                 "You have a decent understanding of the material, but there's room for improvement. Review the questions and try again!";
-        } else {
+        } else if (overall_score >= 35) {
             overallFeedback = "Needs Improvement!";
             summaryComment =
-                "It looks like you struggled with this test. Don't be discouraged! Review the material and try again.";
+                "You struggled with this test. Review the material and try again.";
+        } else {
+            overallFeedback = "Poor performance!";
+            summaryComment =
+                "You had difficulty with this test. Consider reviewing the material thoroughly and seeking additional help if needed.";
         }
 
 
