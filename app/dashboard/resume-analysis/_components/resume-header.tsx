@@ -15,8 +15,8 @@ export const ResumeHeader = () => {
                     decorations
                 >
                     <CardHeader className="w-full md:w-1/2 flex flex-col items-start justify-center space-y-4">
-                        <CardTitle className="text-xl font-medium">
-                            Analyze Your Resume And Make it Better
+                        <CardTitle className="text-xl font-medium font-serif">
+                            Analyze Your Resume And Make it Job Ready!
                         </CardTitle>
                         <CardDescription className="text-sm">
                             Upload your resume and get AI-powered feedback to improve it and boost your chances of landing your dream job.
