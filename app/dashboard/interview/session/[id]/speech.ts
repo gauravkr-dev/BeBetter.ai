@@ -1,10 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // speech.ts
+
 export function startSpeechRecognition(
     onInterim: (text: string) => void,
     onFinal: (text: string) => void
 ) {
-    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    const SpeechRecognition =
+        (window as any).SpeechRecognition ||
+        (window as any).webkitSpeechRecognition;
 
     if (!SpeechRecognition) {
         console.warn("SpeechRecognition not supported");
@@ -12,7 +15,7 @@ export function startSpeechRecognition(
     }
 
     const recognition = new SpeechRecognition();
-    recognition.lang = "en-US";
+    recognition.lang = "en-IN";
     recognition.interimResults = true;
     recognition.continuous = true;
 
@@ -30,9 +33,52 @@ export function startSpeechRecognition(
         if (final) onFinal(final.trim());
     };
 
-    recognition.onerror = (e: any) => {
-        console.error("STT error:", e);
+    // 🔥 AUTO RESTART WHEN BROWSER STOPS LISTENING
+    recognition.onend = () => {
+        console.log("STT ended");
+
+        if ((window as any).__forceStopSTT) return; // 🛑 STOP PERMANENTLY
+        if ((window as any).__agentSpeaking) return;
+
+        setTimeout(() => {
+            try {
+                recognition.start();
+            } catch { }
+        }, 300);
     };
+
+
+
+
+    // 🔥 HANDLE ERRORS
+    recognition.onerror = (e: any) => {
+        console.warn("STT error:", e.error);
+
+        // Ignore harmless errors
+        if (e.error === "no-speech") {
+            return; // browser auto handles
+        }
+
+        if (e.error === "aborted") {
+            return; // happens when we manually stop()
+        }
+
+        if (e.error === "audio-capture") {
+            console.warn("Mic not available");
+            return;
+        }
+
+        if (e.error === "network") {
+            setTimeout(() => {
+                try {
+                    recognition.start();
+                } catch (err) {
+                    console.warn("Failed to restart STT:", err);
+                }
+            }, 1000);
+        }
+    };
+
 
     recognition.start();
     return recognition;

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
@@ -12,8 +13,6 @@ import { speak, stopSpeaking } from "@/lib/tts";
 import { getInterviewSystemPrompt } from "@/lib/prompts/interviewSystemPrompt";
 import { AiCallingPage } from "./_components/ai-calling-page";
 import { authClient } from "@/lib/auth-client";
-import Image from "next/image";
-
 
 
 interface InterviewSessionProps {
@@ -31,7 +30,6 @@ const InterviewSession = ({ params }: InterviewSessionProps) => {
     const [agentText, setAgentText] = useState("");
     const [agentSpeaking, setAgentSpeaking] = useState(false);
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const recognitionRef = useRef<any>(null);
     const agentSpeakingRef = useRef(false);
     const seqRef = useRef(1);
@@ -45,10 +43,6 @@ const InterviewSession = ({ params }: InterviewSessionProps) => {
     const { data: agent } = useSuspenseQuery(
         trpc.agents.getOne.queryOptions({ id: session?.agentId ?? "" }),
     );
-
-    console.log(agent?.name);
-    console.log(agent?.instructions);
-    console.log(agent?.experience);
 
     /* -------- mutations -------- */
 
@@ -136,12 +130,14 @@ const InterviewSession = ({ params }: InterviewSessionProps) => {
 
                     // 5️⃣ speak agent + resume mic AFTER finish
                     agentSpeakingRef.current = true;
+                    (window as any).__agentSpeaking = true;
                     setAgentSpeaking(true);
 
                     speak(res.agentText, () => {
                         agentSpeakingRef.current = false;
+                        (window as any).__agentSpeaking = false;
                         setAgentSpeaking(false);
-                        safeStart(); // ✅ SAME instance, started safely
+                        safeStart();
                     });
 
                     // 4️⃣ save AGENT
@@ -185,6 +181,7 @@ const InterviewSession = ({ params }: InterviewSessionProps) => {
 
                 if (rem <= 0 && !endedRef.current) {
                     endedRef.current = true;
+                    (window as any).__forceStopSTT = true; // 🔥 ADD THIS
                     try {
                         recognitionRef.current?.stop();
                     } catch (e) {
@@ -201,20 +198,12 @@ const InterviewSession = ({ params }: InterviewSessionProps) => {
 
         return () => {
             if (timerId) clearInterval(timerId);
+            (window as any).__forceStopSTT = true;
             recognitionRef.current?.stop();
             recognitionRef.current = null;
             stopSpeaking();
         };
     }, [id]);
-
-    /* -------- UI -------- */
-
-    // const formatRemaining = (ms: number) => {
-    //     const totalSeconds = Math.ceil(ms / 1000);
-    //     const minutes = Math.floor(totalSeconds / 60);
-    //     const seconds = totalSeconds % 60;
-    //     return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
-    // };
 
     return (
         <>
@@ -230,8 +219,6 @@ const InterviewSession = ({ params }: InterviewSessionProps) => {
                 agentText={agentText}
                 interimText={interimText}
             />
-
-            
         </>
     );
 };
