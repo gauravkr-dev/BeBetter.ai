@@ -1,7 +1,6 @@
 'use client';
 
 import * as React from 'react';
-import { v4 as uuidv4 } from 'uuid';
 
 
 import {
@@ -20,7 +19,6 @@ import {
     CircleUser,
     NotebookText,
     ScrollText,
-    Trash2,
     VideoIcon,
     Wallet,
 } from 'lucide-react';
@@ -32,7 +30,6 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useTRPC } from '@/trpc/client';
 import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { useConfirm } from '@/hooks/use-confirm';
 import { ChatGetOne } from '@/modules/chatbot/server/chat/types';
 import { useMemo, useState } from 'react';
 import { ChatTitleDialog } from '../chatbot/[chatId]/_components/chat-title-dialog';
@@ -40,8 +37,6 @@ import { ChatFilter } from '../chatbot/[chatId]/_components/chat-filter';
 import { ChatDeleteUpdateDialog } from '../chatbot/[chatId]/_components/chat-delete-update';
 import { UpdateChatDialog } from '../chatbot/[chatId]/_components/update-chat-dialog';
 import { useCreateChat } from '@/hooks/use-create-chat';
-
-const id = uuidv4();
 
 const Section = [
     {
@@ -55,14 +50,14 @@ const Section = [
         href: '/dashboard/mock-test'
     },
     {
-        icon: Wallet,
-        label: 'Jobs Listings',
-        href: '/dashboard/jobs',
-    },
-    {
         icon: ScrollText,
         label: 'Resume Analysis',
         href: '/dashboard/resume-analysis',
+    },
+    {
+        icon: Wallet,
+        label: 'Jobs Listings',
+        href: '/dashboard/jobs',
     },
     {
         label: 'Gaurav Bhaiya (Senior)',
