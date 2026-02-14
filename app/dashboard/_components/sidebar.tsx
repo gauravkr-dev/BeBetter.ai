@@ -67,7 +67,7 @@ const Section = [
     {
         label: 'Gaurav Bhaiya (Senior)',
         icon: CircleUser,
-        href: `/dashboard/chatbot/${id}`,
+        href: `/dashboard/chatbot`,
     },
 ];
 
@@ -118,11 +118,7 @@ export const DashboardSidebar = ({ initialValues }: DashboardSidebarProps) => {
     );
 
     const onClickOptions = (href: string) => {
-        if (href === `/dashboard/chatbot/${id}`) {
-            setOpenDialog(true);
-        } else {
-            router.push(href);
-        }
+        router.push(href);
     };
 
 

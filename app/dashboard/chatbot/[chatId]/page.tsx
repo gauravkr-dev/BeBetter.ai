@@ -1,14 +1,21 @@
+import { auth } from '@/lib/auth'
+import { headers } from 'next/headers'
+import { redirect } from 'next/navigation'
 import React from 'react'
-import ChatHeader from './_components/chat-header'
-import ChatPart from './_components/chat-part'
+import ClientPage from './client-page'
 
-const page = () => {
+const Page = async () => {
+    const session = await auth.api.getSession({
+        headers: await headers(),
+    })
+
+    if (!session) {
+        redirect('/')
+    }
+
     return (
-        <div className='px-4 md:px-12 max-h-screen'>
-            <ChatHeader />
-            <ChatPart />
-        </div>
+        <ClientPage />
     )
 }
 
-export default page
+export default Page
