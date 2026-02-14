@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { Card, CardHeader, CardTitle } from "@/components/optics/card";
 import { Button } from "@/components/ui/button";
-import { Phone } from "lucide-react";
+import { Mic, MicOff, Phone } from "lucide-react";
 import SpeakerUi from "./speaker-ui";
 import { LoaderFive } from "@/components/ui/loader";
 
@@ -18,10 +18,12 @@ interface AiCallingPageProps {
     agentText?: string;
     interimText?: string;
     isThinking?: boolean;
+    isMuted?: boolean;
+    onToggleMute?: () => void;
 }
 
 
-export const AiCallingPage = ({ agentName, userName, userImageUrl, remainingMs, onEnd, activeSpeaker, agentText, interimText, isThinking }: AiCallingPageProps) => {
+export const AiCallingPage = ({ agentName, userName, userImageUrl, remainingMs, onEnd, activeSpeaker, agentText, interimText, isThinking, isMuted, onToggleMute }: AiCallingPageProps) => {
     const formatRemaining = (ms: number) => {
         const totalSeconds = Math.ceil(ms / 1000);
         const minutes = Math.floor(totalSeconds / 60);
@@ -85,9 +87,20 @@ export const AiCallingPage = ({ agentName, userName, userImageUrl, remainingMs, 
                     </CardHeader>
                 </div>
 
-                <div className="w-full mt-4 flex justify-center">
+                <div className="w-full mt-4 flex gap-4 justify-center">
                     <Button
-                        className="px-2 py-1 bg-red-600 text-sm text-white rounded hover:bg-red-700 flex items-center gap-2"
+                        variant={"outline"}
+                        className="px-2 py-1 text-sm cursor-pointer rounded"
+                        onClick={() => onToggleMute?.()}
+                    >
+                        {isMuted ? (
+                            <span className="flex items-center gap-1"><MicOff className="size-4" /> Unmute</span>
+                        ) : (
+                            <span className="flex items-center gap-1"><Mic className="size-4" /> Mute</span>
+                        )}
+                    </Button>
+                    <Button
+                        className="px-2 py-1 cursor-pointer bg-red-600 text-sm text-white rounded hover:bg-red-700 flex items-center gap-2"
                         onClick={() => onEnd?.()}
                     >
                         <Phone className="size-4" />

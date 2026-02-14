@@ -31,6 +31,8 @@ const InterviewSession = ({ params }: InterviewSessionProps) => {
     const [agentText, setAgentText] = useState("");
     const [agentSpeaking, setAgentSpeaking] = useState(false);
     const [isThinking, setIsThinking] = useState(false);
+    const [isMuted, setIsMuted] = useState(false);
+
 
 
     const recognitionRef = useRef<any>(null);
@@ -65,6 +67,21 @@ const InterviewSession = ({ params }: InterviewSessionProps) => {
             },
         })
     );
+
+    const toggleMute = () => {
+        if (!recognitionRef.current) return;
+
+        if (isMuted) {
+            (window as any).__forceStopSTT = false;
+            recognitionRef.current.start();
+        } else {
+            (window as any).__forceStopSTT = true;
+            recognitionRef.current.stop();
+        }
+
+        setIsMuted(!isMuted);
+    };
+
 
     /* -------- core voice loop -------- */
 
@@ -223,6 +240,8 @@ const InterviewSession = ({ params }: InterviewSessionProps) => {
                 agentText={agentText}
                 interimText={interimText}
                 isThinking={isThinking}
+                isMuted={isMuted}
+                onToggleMute={toggleMute}
             />
         </>
     );
