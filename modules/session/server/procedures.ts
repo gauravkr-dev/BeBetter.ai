@@ -42,16 +42,18 @@ export const interviewRouter = createTRPCRouter({
 
             // 1️⃣ session end
             await endSession(input.sessionId);
-
-            // 2️⃣ 🔥 INNGEST EVENT EMIT
-            await inngest.send({
-                name: "session.completed",
-                data: {
-                    sessionId: input.sessionId,
-                    userId: ctx.auth.user.id,
-                },
-            });
-
+            try {
+                // 2️⃣ 🔥 INNGEST EVENT EMIT
+                await inngest.send({
+                    name: "session.completed",
+                    data: {
+                        sessionId: input.sessionId,
+                        userId: ctx.auth.user.id,
+                    },
+                });
+            } catch (error) {
+                console.error("Failed to send Inngest event:", error);
+            }
             return { success: true };
         }),
 

@@ -14,7 +14,7 @@ export const InterviewHeader = () => {
                     decorations
                 >
                     <CardHeader className="w-full md:w-1/2 flex flex-col items-start justify-center space-y-4">
-                        <CardTitle className="text-xl font-medium">
+                        <CardTitle className="text-2xl font-medium font-serif">
                             Practice Interviews. Get Better. Get Hired.
                         </CardTitle>
                         <CardDescription className="text-sm">

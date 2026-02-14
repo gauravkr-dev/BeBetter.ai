@@ -62,7 +62,7 @@ export const CheckFeedbackPart = () => {
                         </div>
                         <div className="flex-1 min-h-0 mt-2 overflow-hidden">
                             <p className='text-sm break-words'>
-                                <span className="rounded bg-green-200 font-medium text-green-900 inline-block max-w-[9rem] align-middle truncate">{agent.name}</span>
+                                <span className="rounded bg-green-50 dark:bg-green-900/10 font-medium text-green-500 inline-block max-w-[9rem] align-middle truncate">{agent.name}</span>
                                 <span className="ml-1 text-ellipsis overflow-hidden"> has given your feedback.</span>
                             </p>
                             <p className='text-sm mt-2 truncate'>Let&apos;s check it now!</p>
