@@ -15,6 +15,7 @@ import { useConfirm } from '@/hooks/use-confirm';
 import { UpdateAgentDialog } from './update-agent-dialog';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { DurationInputDialog } from './duration-input-dialog';
 
 
 const StartInterviewPart = () => {
@@ -22,6 +23,13 @@ const StartInterviewPart = () => {
     const queryClient = useQueryClient();
     const [updateAgentDialogOpen, setUpdateAgentDialogOpen] = useState(false);
     const router = useRouter();
+    const [openDurationInputDialog, setOpenDurationInputDialog] = useState(false);
+    const [selectedAgent, setSelectedAgent] = useState<any | null>(null);
+
+    const handleDurationDialogOpenChange = (open: boolean) => {
+        setOpenDurationInputDialog(open);
+        if (!open) setSelectedAgent(null);
+    };
 
     const trpc = useTRPC();
     const { data } = useSuspenseQuery(trpc.agents.getMany.queryOptions({ page: filters.page }));
@@ -67,6 +75,20 @@ const StartInterviewPart = () => {
     const visibleAgents = data.items.filter((agent: any) => !completedAgentIds.includes(agent.id));
     return (
         <>
+            <DurationInputDialog
+                open={openDurationInputDialog}
+                onOpenChange={handleDurationDialogOpenChange}
+                onSubmit={(durationMinutes) => {
+                    if (!selectedAgent) {
+                        toast.error("No agent selected for the interview.");
+                        return;
+                    }
+                    createSession.mutate({
+                        userId: selectedAgent.userId,
+                        agentId: selectedAgent.id,
+                        durationMinutes: parseInt(durationMinutes, 10),
+                    })
+                }} />
             <RemoveConfirmation />
             <UpdateAgentDialog
                 open={updateAgentDialogOpen}
@@ -87,7 +109,7 @@ const StartInterviewPart = () => {
                         </div>
                         <div className="flex-1 min-h-0 mt-2 overflow-hidden">
                             <p className='text-sm break-words'>
-                                <span className="rounded bg-yellow-200 font-medium text-yellow-900 inline-block max-w-[9rem] align-middle truncate">{agent.name}</span>
+                                <span className="rounded bg-blue-50 dark:bg-blue-900/10 font-medium text-blue-500 inline-block max-w-[9rem] align-middle truncate">{agent.name}</span>
                                 <span className="ml-1 text-ellipsis overflow-hidden"> is ready to start the interview.</span>
                             </p>
                             <p className='text-sm mt-2 truncate'>Let&apos;s begin!</p>
@@ -95,13 +117,10 @@ const StartInterviewPart = () => {
                         <Button
                             className='group mt-4 w-full text-sm h-8 hover:cursor-pointer'
                             variant='outline'
-                            onClick={() =>
-                                createSession.mutate({
-                                    userId: agent.userId,
-                                    agentId: agent.id,
-                                    durationMinutes: 60,
-                                })
-                            }>
+                            onClick={() => {
+                                setSelectedAgent(agent);
+                                setOpenDurationInputDialog(true);
+                            }}>
                             Start
                             <ArrowRight className='size-4 group-hover:translate-x-1 transition-transform' />
                         </Button>
