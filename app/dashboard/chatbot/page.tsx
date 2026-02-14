@@ -1,38 +1,21 @@
-"use client"
-import React, { useState } from 'react'
-import EmptyState from '../interview/_components/empty-state'
-import { Button } from '@/components/ui/button'
-import { useCreateChat } from '@/hooks/use-create-chat';
-import { ChatTitleDialog } from './[chatId]/_components/chat-title-dialog';
+import { auth } from '@/lib/auth'
+import { headers } from 'next/headers'
+import { redirect } from 'next/navigation'
+import React from 'react'
+import ChatbotClient from './ChatbotClient'
 
-const Page = () => {
-    const createChat = useCreateChat();
-    const [openDialog, setOpenDialog] = useState(false);
+const page = async () => {
+    const session = await auth.api.getSession({
+        headers: await headers(),
+    })
+
+    if (!session) {
+        redirect('/')
+    }
+
     return (
-        <>
-            <ChatTitleDialog
-                open={openDialog}
-                onOpenChange={setOpenDialog}
-                onSubmit={(title) => {
-                    createChat.mutate({
-                        title: title || "Untitled Chat",
-                    })
-                }} />
-            <div className='flex flex-col items-center justify-center h-full'>
-                <EmptyState
-                    title="Your Gaurav Bhaiya is ready to assist you!" />
-                <Button
-                    variant="outline"
-                    className='mt-4 cursor-pointer'
-                    onClick={() =>
-                        setOpenDialog(true)
-                    }
-                >
-                    Create a new chat
-                </Button>
-            </div>
-        </>
+        <ChatbotClient />
     )
 }
 
-export default Page
+export default page
