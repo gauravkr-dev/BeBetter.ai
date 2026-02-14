@@ -5,6 +5,7 @@ import { Card, CardHeader, CardTitle } from "@/components/optics/card";
 import { Button } from "@/components/ui/button";
 import { Phone } from "lucide-react";
 import SpeakerUi from "./speaker-ui";
+import { LoaderFive } from "@/components/ui/loader";
 
 
 interface AiCallingPageProps {
@@ -16,10 +17,11 @@ interface AiCallingPageProps {
     activeSpeaker?: "agent" | "candidate" | null;
     agentText?: string;
     interimText?: string;
+    isThinking?: boolean;
 }
 
 
-export const AiCallingPage = ({ agentName, userName, userImageUrl, remainingMs, onEnd, activeSpeaker, agentText, interimText }: AiCallingPageProps) => {
+export const AiCallingPage = ({ agentName, userName, userImageUrl, remainingMs, onEnd, activeSpeaker, agentText, interimText, isThinking }: AiCallingPageProps) => {
     const formatRemaining = (ms: number) => {
         const totalSeconds = Math.ceil(ms / 1000);
         const minutes = Math.floor(totalSeconds / 60);
@@ -54,6 +56,7 @@ export const AiCallingPage = ({ agentName, userName, userImageUrl, remainingMs, 
                         <p className="text-sm text-center">Interviewer</p>
                         <div className="absolute bottom-3 left-3">
                             {/** show speaker UI on agent side when agent is speaking */}
+                            {isThinking && activeSpeaker !== "agent" && <LoaderFive text="Thinking..." />}
                             {activeSpeaker === "agent" && <SpeakerUi />}
                         </div>
                     </CardHeader>

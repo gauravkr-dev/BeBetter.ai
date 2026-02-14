@@ -13,6 +13,7 @@ import { speak, stopSpeaking } from "@/lib/tts";
 import { getInterviewSystemPrompt } from "@/lib/prompts/interviewSystemPrompt";
 import { AiCallingPage } from "./_components/ai-calling-page";
 import { authClient } from "@/lib/auth-client";
+import { se } from "date-fns/locale";
 
 
 interface InterviewSessionProps {
@@ -29,6 +30,8 @@ const InterviewSession = ({ params }: InterviewSessionProps) => {
     const [interimText, setInterimText] = useState("");
     const [agentText, setAgentText] = useState("");
     const [agentSpeaking, setAgentSpeaking] = useState(false);
+    const [isThinking, setIsThinking] = useState(false);
+
 
     const recognitionRef = useRef<any>(null);
     const agentSpeakingRef = useRef(false);
@@ -106,7 +109,7 @@ const InterviewSession = ({ params }: InterviewSessionProps) => {
 
                     // 2️⃣ stop mic BEFORE agent speaks
                     recognitionRef.current?.stop();
-
+                    setIsThinking(true);
                     // 3️⃣ get agent reply
                     const res = await agentReply.mutateAsync({
                         sessionId: session?.id ?? id,
@@ -125,7 +128,7 @@ const InterviewSession = ({ params }: InterviewSessionProps) => {
                         safeStart();
                         return;
                     }
-
+                    setIsThinking(false);
                     setAgentText(res.agentText);
 
                     // 5️⃣ speak agent + resume mic AFTER finish
@@ -153,6 +156,7 @@ const InterviewSession = ({ params }: InterviewSessionProps) => {
                 } catch (err) {
                     console.error(err);
                     toast.error("Agent reply failed");
+                    setIsThinking(false);
                     safeStart();
                 }
             }
@@ -218,6 +222,7 @@ const InterviewSession = ({ params }: InterviewSessionProps) => {
                 activeSpeaker={agentSpeaking ? "agent" : interimText ? "candidate" : null}
                 agentText={agentText}
                 interimText={interimText}
+                isThinking={isThinking}
             />
         </>
     );
