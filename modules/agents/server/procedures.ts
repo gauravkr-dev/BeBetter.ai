@@ -73,6 +73,7 @@ export const agentsRouter = createTRPCRouter({
                 .where(
                     and(
                         eq(agents.userId, ctx.auth.user.id),
+                        eq(agents.isInterviewCompleted, true),
                     )
                 )
                 .orderBy(desc(agents.createdAt), desc(agents.id))
@@ -85,6 +86,7 @@ export const agentsRouter = createTRPCRouter({
                 .where(
                     and(
                         eq(agents.userId, ctx.auth.user.id),
+                        eq(agents.isInterviewCompleted, true),
                     )
                 );
             const totalPages = Math.ceil(Number(total.count) / (input?.pageSize ?? DEFAULT_PAGE_SIZE));

@@ -10,6 +10,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import z from "zod";
+import { useRouter } from "next/navigation";
 
 interface AgentFormProps {
     onSuccess?: () => void;
@@ -18,12 +19,12 @@ interface AgentFormProps {
 }
 
 export const AgentForm = ({ onSuccess, onCancel, initialValues }: AgentFormProps) => {
-
     const trpc = useTRPC();
     const queryClient = useQueryClient();
+    const router = useRouter();
     const createAgent = useMutation(
         trpc.agents.create.mutationOptions({
-            onSuccess: async () => {
+            onSuccess: async (data) => {
                 await queryClient.invalidateQueries(
                     trpc.agents.getMany.queryOptions(),
                 );
@@ -32,31 +33,12 @@ export const AgentForm = ({ onSuccess, onCancel, initialValues }: AgentFormProps
                         trpc.agents.getOne.queryOptions({ id: initialValues.id }),
                     );
                 }
-                toast.success(`Agent ${initialValues ? "updated" : "created"} successfully.`);
+                toast.success(`Interview started with agent "${form.getValues("name")}"`);
+                router.push(`/dashboard/interview/${data.id}`);
                 onSuccess?.();
             },
             onError: (error) => {
-                toast.error(error?.message || `Failed to ${initialValues ? "update" : "create"} agent.`);
-            }
-        })
-    )
-
-    const updateAgent = useMutation(
-        trpc.agents.update.mutationOptions({
-            onSuccess: async () => {
-                await queryClient.invalidateQueries(
-                    trpc.agents.getMany.queryOptions(),
-                );
-                if (initialValues?.id) {
-                    await queryClient.invalidateQueries(
-                        trpc.agents.getOne.queryOptions({ id: initialValues.id }),
-                    );
-                }
-                toast.success(`Agent ${initialValues ? "updated" : "created"} successfully.`);
-                onSuccess?.();
-            },
-            onError: (error) => {
-                toast.error(error?.message || `Failed to ${initialValues ? "update" : "create"} agent.`);
+                toast.error(error?.message || "Failed to start interview");
             }
         })
     )
@@ -64,22 +46,15 @@ export const AgentForm = ({ onSuccess, onCancel, initialValues }: AgentFormProps
     const form = useForm<z.infer<typeof agentsInsertSchema>>({
         resolver: zodResolver(agentsInsertSchema),
         defaultValues: {
-            name: initialValues?.name || "",
-            instructions: initialValues?.instructions || "",
-            experience: initialValues?.experience || "",
+            name: "",
+            instructions: "",
+            experience: "",
+            durationMinutes: 30,
         }
     })
 
-    const isEdit = !!initialValues?.id;
-    const isPending = createAgent.isPending || updateAgent.isPending;
-
     const onSubmit = (values: z.infer<typeof agentsInsertSchema>) => {
-        if (isEdit) {
-            updateAgent.mutate({ ...values, id: initialValues!.id });
-        }
-        else {
-            createAgent.mutate(form.getValues());
-        }
+        createAgent.mutate(values);
     }
     return (
         <Form {...form}>
@@ -117,14 +92,25 @@ export const AgentForm = ({ onSuccess, onCancel, initialValues }: AgentFormProps
                             </FormControl>
                         </FormItem>
                     )} />
+                <FormField
+                    name="durationMinutes"
+                    control={form.control}
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Duration (minutes)</FormLabel>
+                            <FormControl>
+                                <Input type="number" placeholder="Enter duration in minutes" {...field} />
+                            </FormControl>
+                        </FormItem>
+                    )} />
                 <div className="flex justify-end mt-4 gap-2">
                     {onCancel && (
-                        <Button variant="outline" type="button" onClick={onCancel} disabled={isPending} className="mr-2 hover:cursor-pointer">
+                        <Button variant="outline" type="button" onClick={onCancel} className="mr-2 hover:cursor-pointer">
                             Cancel
                         </Button>
                     )}
-                    <Button type="submit" disabled={isPending} className="hover:cursor-pointer">
-                        {isEdit ? (isPending ? "Updating..." : "Update") : (isPending ? "Creating..." : "Create")}
+                    <Button type="submit" className="hover:cursor-pointer">
+                        Start Interview
                     </Button>
                 </div>
             </form>

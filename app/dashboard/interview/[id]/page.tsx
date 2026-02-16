@@ -14,6 +14,8 @@ import { getInterviewSystemPrompt } from "@/lib/prompts/interviewSystemPrompt";
 import { AiCallingPage } from "./_components/ai-calling-page";
 import { authClient } from "@/lib/auth-client";
 import { se } from "date-fns/locale";
+import axios from "axios";
+import { user } from "@/db/schema";
 
 
 interface InterviewSessionProps {
@@ -41,12 +43,19 @@ const InterviewSession = ({ params }: InterviewSessionProps) => {
     const endedRef = useRef(false);
     const [remainingMs, setRemainingMs] = useState<number | null>(null);
 
-    const { data: session } = useSuspenseQuery(
-        trpc.interview.getOne.queryOptions({ id: id }),
+    const { data: agent } = useSuspenseQuery(
+        trpc.agents.getOne.queryOptions({ id: id }),
     );
 
-    const { data: agent } = useSuspenseQuery(
-        trpc.agents.getOne.queryOptions({ id: session?.agentId ?? "" }),
+    const updateAgent = useMutation(
+        trpc.agents.update.mutationOptions({
+            onSuccess: async () => {
+                await trpc.agents.getOne.queryOptions({ id: id });
+            },
+            onError: (error) => {
+                toast.error(error?.message || "Failed to update agent");
+            }
+        })
     );
 
     /* -------- mutations -------- */
@@ -55,18 +64,24 @@ const InterviewSession = ({ params }: InterviewSessionProps) => {
         trpc.transcript.add.mutationOptions({})
     );
 
-    const agentReply = useMutation(
-        trpc.interview.agentReply.mutationOptions({})
-    );
 
-    const endSession = useMutation(
-        trpc.interview.end.mutationOptions({
-            onSuccess: () => {
-                toast.success("Interview ended");
-                router.push("/dashboard/interview");
-            },
-        })
-    );
+
+    const endInterview = async () => {
+        if (endedRef.current) return;
+
+        endedRef.current = true;
+
+        try {
+            await updateAgent.mutateAsync({
+                id: agent?.id,
+                isInterviewCompleted: true,
+            });
+            router.push("/dashboard/interview");
+        } catch (err) {
+            toast.error("Failed to end interview");
+        }
+    };
+
 
     const toggleMute = () => {
         if (!recognitionRef.current) return;
@@ -118,7 +133,7 @@ const InterviewSession = ({ params }: InterviewSessionProps) => {
                 try {
                     // 1️⃣ save USER
                     await addTranscript.mutateAsync({
-                        sessionId: session?.id ?? id,
+                        agentId: agent?.id,
                         speaker: "user",
                         text: finalText,
                         sequence: seqRef.current++,
@@ -128,32 +143,32 @@ const InterviewSession = ({ params }: InterviewSessionProps) => {
                     recognitionRef.current?.stop();
                     setIsThinking(true);
                     // 3️⃣ get agent reply
-                    const res = await agentReply.mutateAsync({
-                        sessionId: session?.id ?? id,
-                        agentInstruction:
-                            getInterviewSystemPrompt({
-                                agentName: agent?.name || "Interviewer",
-                                agentInstruction: agent?.instructions || "Be professional and courteous.",
-                                userExperience: agent?.experience || undefined,
-                            }),
-                        userText: finalText,
-                    });
+
+                    const res = await axios.post("/api/interview", {
+                        userInput: finalText,
+                        agentName: agent?.name || "Interviewer",
+                        agentInstruction: agent?.instructions || "Be professional and courteous.",
+                        userExperience: agent?.experience || undefined,
+                        totalDuration: agent?.durationMinutes,
+                        remainingTime: remainingMs ? Math.ceil(remainingMs / 60000) : undefined,
+                        agentId: agent?.id,
+                    })
 
 
 
-                    if (!res?.agentText) {
+                    if (!res?.data?.response) {
                         safeStart();
                         return;
                     }
                     setIsThinking(false);
-                    setAgentText(res.agentText);
+                    setAgentText(res.data.response);
 
                     // 5️⃣ speak agent + resume mic AFTER finish
                     agentSpeakingRef.current = true;
                     (window as any).__agentSpeaking = true;
                     setAgentSpeaking(true);
 
-                    speak(res.agentText, () => {
+                    speak(res.data.response, () => {
                         agentSpeakingRef.current = false;
                         (window as any).__agentSpeaking = false;
                         setAgentSpeaking(false);
@@ -162,9 +177,9 @@ const InterviewSession = ({ params }: InterviewSessionProps) => {
 
                     // 4️⃣ save AGENT
                     await addTranscript.mutateAsync({
-                        sessionId: session?.id ?? id,
+                        agentId: agent?.id,
                         speaker: "agent",
-                        text: res.agentText,
+                        text: res.data.response,
                         sequence: seqRef.current++,
                     });
 
@@ -190,9 +205,9 @@ const InterviewSession = ({ params }: InterviewSessionProps) => {
 
         // setup countdown timer based on session createdAt + duration
         let timerId: ReturnType<typeof setInterval> | null = null;
-        if (session) {
-            const duration = (session.durationMinutes ?? 60) * 60 * 1000;
-            const createdAt = session.createdAt ? new Date(session.createdAt).getTime() : Date.now();
+        if (agent?.createdAt) {
+            const duration = (agent.durationMinutes ?? 60) * 60 * 1000;
+            const createdAt = agent.createdAt ? new Date(agent.createdAt).getTime() : Date.now();
             const endAt = createdAt + duration;
 
             const tick = () => {
@@ -209,7 +224,7 @@ const InterviewSession = ({ params }: InterviewSessionProps) => {
                         // ignore
                     }
                     stopSpeaking();
-                    endSession.mutate({ sessionId: id });
+                    endInterview();
                 }
             };
 
@@ -235,7 +250,7 @@ const InterviewSession = ({ params }: InterviewSessionProps) => {
                 userName={data?.user?.name ?? ""}
                 userImageUrl={data?.user?.image ?? undefined}
                 remainingMs={remainingMs ?? undefined}
-                onEnd={() => endSession.mutate({ sessionId: id })}
+                onEnd={endInterview}
                 activeSpeaker={agentSpeaking ? "agent" : interimText ? "candidate" : null}
                 agentText={agentText}
                 interimText={interimText}
