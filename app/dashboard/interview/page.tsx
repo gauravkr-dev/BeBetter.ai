@@ -1,6 +1,5 @@
 import React, { Suspense } from 'react'
 import { InterviewHeader } from './_components/interview-header'
-import StartInterviewPart from './_components/start-interview-part'
 import { ArrowRight } from 'lucide-react'
 import { getQueryClient, trpc } from '@/trpc/server'
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
@@ -29,25 +28,8 @@ const InterviewPage = async () => {
         <div>
             {/* Interview Header Section */}
             <InterviewHeader />
-
-            {/* Start Interview Section */}
-            <button className='group text-sm flex items-center mt-6 px-4 md:px-12'>
-                <div className='bg-blue-100 px-3 py-1.5 rounded text-black'>
-                    <span>Start Interview</span>
-                    <ArrowRight className='group-hover:translate-x-0.5 transition size-5 inline-flex ml-1' />
-                </div>
-            </button>
-            <HydrationBoundary state={dehydrate(queryClient)}>
-                <Suspense fallback={<div className='pt-18 pb-18'><Loader /></div>}>
-                    <ErrorBoundary fallback={<div className='mt-4 px-4 md:px-12 text-center justify-center flex text-red-500'>Failed to load interview agents.</div>}>
-                        <StartInterviewPart />
-                    </ErrorBoundary>
-
-                </Suspense>
-            </HydrationBoundary>
-
             {/* // Feedback Section */}
-            <button className='group text-sm flex items-center my-6 px-4 md:px-12'>
+            <button className='group text-sm flex items-center px-4 md:px-12 mt-8'>
                 <div className='bg-blue-100 px-3 py-1.5 rounded text-black'>
                     <span>Check Feedback</span>
                     <ArrowRight className='group-hover:translate-x-0.5 transition size-5 inline-flex ml-1' />
@@ -59,7 +41,6 @@ const InterviewPage = async () => {
                     <ErrorBoundary fallback={<div className='mt-4 px-4 md:px-12 text-center justify-center flex text-red-500'>Failed to load interview agents.</div>}>
                         <CheckFeedbackPart />
                     </ErrorBoundary>
-
                 </Suspense>
             </HydrationBoundary>
 

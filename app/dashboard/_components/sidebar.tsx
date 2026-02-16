@@ -149,7 +149,7 @@ export const DashboardSidebar = ({ initialValues }: DashboardSidebarProps) => {
                                     <SidebarMenuButton asChild className={cn(pathname === item.href && 'bg-sidebar-accent hover:bg-sidebar-accent hover:text-sidebar-accent-foreground text-sidebar-accent-foreground')}>
                                         <button className="flex items-center" onClick={() => onClickOptions(item.href)}>
                                             <item.icon className="mr-2 h-4 w-4" />
-                                            <span className="text-xs">{item.label}</span>
+                                            <span className="text-sm">{item.label}</span>
                                         </button>
                                     </SidebarMenuButton>
                                 </SidebarMenuItem>
@@ -174,7 +174,7 @@ export const DashboardSidebar = ({ initialValues }: DashboardSidebarProps) => {
                                             href={`/dashboard/chatbot/${chat.id}`}
                                             className="flex items-center gap-2 border"
                                         >
-                                            <span className="text-xs">{chat.title}</span>
+                                            <span className="text-sm">{chat.title}</span>
                                         </Link>
                                     </SidebarMenuButton>
                                     {/* <Trash2

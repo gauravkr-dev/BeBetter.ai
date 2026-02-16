@@ -20,10 +20,9 @@ export const CheckFeedbackPart = () => {
     const [filters, setFilters] = useAgentsFilter();
     const queryClient = useQueryClient();
     const trpc = useTRPC();
-    const { data } = useSuspenseQuery(trpc.agents.getMany.queryOptions({ page: filters.page }));
-    const { data: sessions } = useSuspenseQuery(trpc.interview.getByUser.queryOptions());
-    const completedAgentIds = (sessions ?? []).filter((s: any) => s?.status === 'completed').map((s: any) => s.agentId);
-    const completedAgents = data.items.filter((agent: any) => completedAgentIds.includes(agent.id));
+    const { data: agents } = useSuspenseQuery(trpc.agents.getMany.queryOptions({ page: filters.page }));
+
+
 
     const removeAgent = useMutation(
         trpc.agents.remove.mutationOptions({
@@ -49,7 +48,7 @@ export const CheckFeedbackPart = () => {
         <>
             <RemoveConfirmation />
             <div className="grid grid-cols-2 md:grid-cols-4 w-full gap-4 mx-auto items-center justify-center mt-6 px-4 md:px-12">
-                {completedAgents.map((agent: any) => (
+                {agents?.items.map((agent: any) => (
                     <div key={agent.id} className="relative p-4 mb-4 border rounded-lg w-48 h-48 dark:bg-[#121212] hover:translate-y-[-2px] transition-all duration-200 ease-in-out flex flex-col justify-between overflow-hidden">
                         <div className='w-full px-1 flex gap-3 items-start'>
                             <div className='border font-medium flex items-center justify-center border-primary rounded-full flex-shrink-0 h-8 w-8'>
@@ -87,16 +86,16 @@ export const CheckFeedbackPart = () => {
                     </div>
                 ))}
             </div>
-            {completedAgents.length > 0 && (
+            {agents?.items.length && agents?.items.length > 0 && (
                 <DataPagination
                     page={filters.page}
-                    totalPages={data.totalPages}
+                    totalPages={agents.totalPages}
                     onPageChange={(newPage) => setFilters({ page: newPage })}
                 />
             )}
-            {completedAgents.length === 0 && (
+            {agents?.items.length === 0 && (
                 <EmptyState
-                    title="No Interview Available"
+                    title="No Feedback Yet"
                 />
             )}
 

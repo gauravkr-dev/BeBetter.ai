@@ -22,8 +22,8 @@ export const InterviewHeader = () => {
                             and get detailed feedback to improve your skills.
                         </CardDescription>
 
-                        <button className="w-32 bg-primary text-primary-foreground text-xs py-2 px-3 rounded hover:cursor-pointer hover:bg-primary/90" onClick={() => setIsOpenDialog(true)}>
-                            Create Interview
+                        <button className="w-32 bg-primary text-primary-foreground text-sm py-2 px-3 rounded hover:cursor-pointer hover:bg-primary/90" onClick={() => setIsOpenDialog(true)}>
+                            Start Interview
                         </button>
 
 

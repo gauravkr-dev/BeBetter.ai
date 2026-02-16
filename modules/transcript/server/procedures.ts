@@ -8,7 +8,7 @@ export const transcriptRouter = createTRPCRouter({
     add: protectedProcedure
         .input(
             z.object({
-                sessionId: z.string(),
+                agentId: z.string(),
                 speaker: z.enum(["user", "agent"]),
                 text: z.string().min(1),
                 sequence: z.number().int(),
@@ -16,7 +16,7 @@ export const transcriptRouter = createTRPCRouter({
         )
         .mutation(async ({ input }) => {
             await db.insert(sessionTranscripts).values({
-                sessionId: input.sessionId,
+                agentId: input.agentId,
                 speaker: input.speaker,
                 text: input.text,
                 sequence: input.sequence,
@@ -24,17 +24,17 @@ export const transcriptRouter = createTRPCRouter({
 
             return { success: true };
         }),
-    getBySession: protectedProcedure
+    getByAgent: protectedProcedure
         .input(
             z.object({
-                sessionId: z.string(),
+                agentId: z.string(),
             })
         )
         .query(async ({ input }) => {
             return await db
                 .select()
                 .from(sessionTranscripts)
-                .where(eq(sessionTranscripts.sessionId, input.sessionId))
+                .where(eq(sessionTranscripts.agentId, input.agentId))
                 .orderBy(asc(sessionTranscripts.sequence));
         }),
 

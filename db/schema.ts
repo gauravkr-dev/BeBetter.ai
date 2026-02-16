@@ -104,8 +104,10 @@ export const agents = pgTable("agents", {
     userId: text("user_id")
         .notNull()
         .references(() => user.id, { onDelete: "cascade" }),
-    instructions: text("instructions"),
+    instructions: text("instructions").notNull(),
     experience: text("experience"),
+    durationMinutes: integer("duration_minutes").notNull(),
+    isInterviewCompleted: boolean("is_interview_completed").default(false).notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
         .defaultNow()
@@ -113,29 +115,6 @@ export const agents = pgTable("agents", {
         .notNull(),
 });
 
-// Interview Sessions table definition
-
-export const interviewSessions = pgTable("interview_sessions", {
-    id: text("id")
-        .primaryKey()
-        .$default(() => nanoid()),
-
-    userId: text("user_id")
-        .notNull()
-        .references(() => user.id, { onDelete: "cascade" }),
-    agentId: text("agent_id")
-        .notNull()
-        .references(() => agents.id, { onDelete: "cascade" }),
-
-    durationMinutes: integer("duration_minutes"),
-    status: text("status").notNull(), // created | in_progress | completed
-
-    startedAt: timestamp("started_at"),
-    endedAt: timestamp("ended_at"),
-
-    createdAt: timestamp("created_at").defaultNow(),
-    updatedAt: timestamp("updated_at").defaultNow(),
-});
 
 export const speakerEnum = pgEnum("speaker", [
     "user",
@@ -147,9 +126,9 @@ export const sessionTranscripts = pgTable("session_transcripts", {
         .primaryKey()
         .$default(() => nanoid()),
 
-    sessionId: text("session_id")
+    agentId: text("agent_id")
         .notNull()
-        .references(() => interviewSessions.id, { onDelete: "cascade" }),
+        .references(() => agents.id, { onDelete: "cascade" }),
     speaker: speakerEnum("speaker").notNull(),
 
     text: text("text").notNull(),
@@ -175,9 +154,9 @@ export const interviewFeedback = pgTable("interview_feedback", {
     userId: text("user_id")
         .notNull()
         .references(() => user.id, { onDelete: "cascade" }),
-    sessionId: text("session_id")
+    agentId: text("agent_id")
         .notNull()
-        .references(() => interviewSessions.id, { onDelete: "cascade" }),
+        .references(() => agents.id, { onDelete: "cascade" }),
     overallFeedback: text("overall_feedback"),     // 👈 summary
 
     createdAt: timestamp("created_at").defaultNow().notNull(),
