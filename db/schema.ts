@@ -105,8 +105,6 @@ export const agents = pgTable("agents", {
         .notNull()
         .references(() => user.id, { onDelete: "cascade" }),
     instructions: text("instructions").notNull(),
-    experience: text("experience"),
-    durationMinutes: integer("duration_minutes").notNull(),
     isInterviewCompleted: boolean("is_interview_completed").default(false).notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")

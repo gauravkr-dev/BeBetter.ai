@@ -1,108 +1,106 @@
+import { createAgent, gemini } from "@inngest/agent-kit"
+import { inngest } from "../client"
+export const GenerateInterviewFeedbackAgent = createAgent({
+  name: "Generate Feedback",
+  description: "Generates feedback for a candidate based on their interview performance.",
+  system: `You are an advanced AI Interview Feedback Agent.
 
-import { inngest } from "../client";
-import { db } from "@/db";
-import { sessionTranscripts, interviewFeedback } from "@/db/schema";
-import { eq, asc } from "drizzle-orm";
-import { gemini } from "@/lib/gemini";
+Your task is to evaluate a candidate's interview performance and return a detailed analysis in the following structured JSON schema format.
 
-export const generateFeedback = inngest.createFunction(
-    {
-        id: "generate-interview-feedback",
+The schema must match the layout and structure of a visual UI that includes overall score, category scores, summary feedback, improvement tips, strengths, and weaknesses.
+
+INPUT: I will provide an interview transcript.
+
+GOAL: Output a JSON report as per the schema below. The report should reflect:
+
+overall_score (0-100)
+
+overall_feedback (short message e.g., "Excellent Performance", "Good but Needs Improvement")
+
+summary_comment (1-2 sentence overall evaluation summary)
+
+Category scores for:
+
+Communication Skills
+Technical Knowledge
+Problem Solving
+Confidence & Clarity
+
+Each category should include:
+
+score (as percentage)
+
+Optional comment about that category
+
+Tips for improvement (3-5 tips)
+
+What's Good (1-3 strengths)
+
+Needs Improvement (1-3 weaknesses)
+
+Output JSON Schema:
+
+{
+  "overall_score": 82,
+
+  "overall_feedback": "Good Performance with Room for Growth",
+
+  "summary_comment": "You demonstrated solid technical understanding, but improving clarity and confidence would significantly enhance your overall performance.",
+
+  "categories": {
+    "communication_skills": {
+      "score": 75,
+      "comment": "Clear explanations, but answers could be more structured."
     },
-    { event: "session.completed" },
-    async ({ event }) => {
-        const { sessionId, userId } = event.data;
 
-        // 1️⃣ Fetch transcripts (ORDERED)
-        const transcripts = await db
-            .select()
-            .from(sessionTranscripts)
-            .where(eq(sessionTranscripts.sessionId, sessionId))
-            .orderBy(asc(sessionTranscripts.sequence));
+    "technical_knowledge": {
+      "score": 88,
+      "comment": "Strong understanding of core concepts and tools."
+    },
 
-        if (transcripts.length < 6) {
-            await db.insert(interviewFeedback).values({
-                sessionId,
-                userId,
-                overallFeedback: "Skipped feedback generation due to insufficient transcript data.",
-            });
+    "problem_solving": {
+      "score": 80,
+      "comment": "Good logical thinking, but solutions could be explained more step-by-step."
+    },
 
-            return { skipped: true };
-        }
-
-
-        // 2️⃣ Format conversation for LLM
-        const conversation = transcripts.map(t => ({
-            role: t.speaker === "user" ? "user" : "assistant",
-            content: t.text,
-        })) as { role: "user" | "assistant"; content: string }[];
-
-        // 3️⃣ Gemini prompt
-        const response = await gemini.chat.completions.create({
-            model: "gemini-3-flash-preview",
-            messages: [
-                {
-                    role: "system",
-                    content: `You are an expert interview evaluator.
-
-You are given the complete content of one finished interview.
-Assume the interview has ended and no more input will come.
-
-Your task:
-- Analyze the candidate’s technical ability, communication, clarity, and professionalism.
-- Produce ONE SINGLE STRING as output.
-- The output must be structured using clear section headings and bullet points.
-- Do NOT return JSON.
-- Do NOT use numbering.
-- Use readable headings and hyphen-style bullet points.
-
-Structure your response exactly like this:
-
-Overall Summary:
-<2–3 lines summary>
-
-Strengths:
-- ...
-- ...
-
-Weaknesses:
-- ...
-- ...
-
-Communication & Clarity:
-- ...
-
-Suggestions for Improvement:
-- ...
-
-Final Verdict:
-<1–2 lines honest assessment>
-
-This entire response will be stored as a single text field called overallFeedback.
-
-
-`,
-                },
-                ...conversation,
-            ],
-            temperature: 0.3,
-        });
-
-        // const raw = response.choices[0].message.content!;
-        // const parsed = JSON.parse(raw);
-
-        console.log("FULL AI RESPONSE 👉", JSON.stringify(response, null, 2));
-        // 4️⃣ Save feedback
-
-        const feedback =
-            response.choices[0]?.message?.content?.trim() ||
-            "The interview ended early. Feedback is based on limited interaction and may not fully reflect the candidate’s abilities.";
-        await db.insert(interviewFeedback).values({
-            sessionId,
-            userId,
-            overallFeedback: feedback,
-        });
-
-        return { success: true };
+    "confidence_clarity": {
+      "score": 70,
+      "comment": "Some hesitation observed during complex questions."
     }
-);
+  },
+
+  "tips_for_improvement": [
+    "Structure your answers using frameworks like STAR or step-by-step explanations.",
+    "Practice explaining technical concepts in a simpler and clearer way.",
+    "Maintain steady pace and avoid rushing through answers.",
+    "Provide more real-world examples to strengthen your responses."
+  ],
+
+  "whats_good": [
+    "Strong technical foundation.",
+    "Logical thinking approach.",
+    "Good engagement with interviewer questions."
+  ],
+
+  "needs_improvement": [
+    "Confidence during difficult questions.",
+    "More structured responses.",
+    "Improve clarity and conciseness."
+  ]
+}
+`,
+  model: gemini({
+    model: "gemini-2.5-flash",
+    apiKey: process.env.GEMINI_API_KEY_FOR_CHATBOT!,
+  })
+})
+
+export const GenerateFeedbackAgent = inngest.createFunction(
+  { id: "interview-feedback" },
+  { event: "agent-interview-feedback" },
+  async ({ event }) => {
+    const { interviewData } = event.data;
+    const result = await GenerateInterviewFeedbackAgent.run(interviewData)
+    return result;
+  }
+)

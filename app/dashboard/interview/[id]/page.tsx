@@ -10,7 +10,6 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { startSpeechRecognition } from "./speech";
 import { speak, stopSpeaking } from "@/lib/tts";
-import { getInterviewSystemPrompt } from "@/lib/prompts/interviewSystemPrompt";
 import { AiCallingPage } from "./_components/ai-calling-page";
 import { authClient } from "@/lib/auth-client";
 import { se } from "date-fns/locale";
@@ -41,8 +40,6 @@ const InterviewSession = ({ params }: InterviewSessionProps) => {
     const agentSpeakingRef = useRef(false);
     const seqRef = useRef(1);
     const endedRef = useRef(false);
-    const [remainingMs, setRemainingMs] = useState<number | null>(null);
-
     const { data: agent } = useSuspenseQuery(
         trpc.agents.getOne.queryOptions({ id: id }),
     );
@@ -67,6 +64,11 @@ const InterviewSession = ({ params }: InterviewSessionProps) => {
 
 
     const endInterview = async () => {
+        // await axios.post("/api/interview-feedback", {
+        //     agentId: agent?.id,
+        // });
+        (window as any).__forceStopSTT = true;
+        recognitionRef.current?.stop();
         if (endedRef.current) return;
 
         endedRef.current = true;
@@ -148,9 +150,6 @@ const InterviewSession = ({ params }: InterviewSessionProps) => {
                         userInput: finalText,
                         agentName: agent?.name || "Interviewer",
                         agentInstruction: agent?.instructions || "Be professional and courteous.",
-                        userExperience: agent?.experience || undefined,
-                        totalDuration: agent?.durationMinutes,
-                        remainingTime: remainingMs ? Math.ceil(remainingMs / 60000) : undefined,
                         agentId: agent?.id,
                     })
 
@@ -202,44 +201,8 @@ const InterviewSession = ({ params }: InterviewSessionProps) => {
     useEffect(() => {
         if (!id) return;
         initSTT();
-
-        // setup countdown timer based on session createdAt + duration
-        let timerId: ReturnType<typeof setInterval> | null = null;
-        if (agent?.createdAt) {
-            const duration = (agent.durationMinutes ?? 60) * 60 * 1000;
-            const createdAt = agent.createdAt ? new Date(agent.createdAt).getTime() : Date.now();
-            const endAt = createdAt + duration;
-
-            const tick = () => {
-                const now = Date.now();
-                const rem = Math.max(0, endAt - now);
-                setRemainingMs(rem);
-
-                if (rem <= 0 && !endedRef.current) {
-                    endedRef.current = true;
-                    (window as any).__forceStopSTT = true; // 🔥 ADD THIS
-                    try {
-                        recognitionRef.current?.stop();
-                    } catch (e) {
-                        // ignore
-                    }
-                    stopSpeaking();
-                    endInterview();
-                }
-            };
-
-            tick();
-            timerId = setInterval(tick, 1000);
-        }
-
-        return () => {
-            if (timerId) clearInterval(timerId);
-            (window as any).__forceStopSTT = true;
-            recognitionRef.current?.stop();
-            recognitionRef.current = null;
-            stopSpeaking();
-        };
     }, [id]);
+
 
     return (
         <>
@@ -249,7 +212,6 @@ const InterviewSession = ({ params }: InterviewSessionProps) => {
                 agentName={agent?.name}
                 userName={data?.user?.name ?? ""}
                 userImageUrl={data?.user?.image ?? undefined}
-                remainingMs={remainingMs ?? undefined}
                 onEnd={endInterview}
                 activeSpeaker={agentSpeaking ? "agent" : interimText ? "candidate" : null}
                 agentText={agentText}

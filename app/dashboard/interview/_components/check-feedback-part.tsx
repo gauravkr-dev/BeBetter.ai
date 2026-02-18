@@ -47,7 +47,7 @@ export const CheckFeedbackPart = () => {
     return (
         <>
             <RemoveConfirmation />
-            <div className="grid grid-cols-2 md:grid-cols-4 w-full gap-4 mx-auto items-center justify-center mt-6 px-4 md:px-12">
+            <div className="grid grid-cols-2 md:grid-cols-4 w-full gap-4 mx-auto items-center justify-center mt-8 px-4 md:px-12">
                 {agents?.items.map((agent: any) => (
                     <div key={agent.id} className="relative p-4 mb-4 border rounded-lg w-48 h-48 dark:bg-[#121212] hover:translate-y-[-2px] transition-all duration-200 ease-in-out flex flex-col justify-between overflow-hidden">
                         <div className='w-full px-1 flex gap-3 items-start'>
@@ -86,14 +86,14 @@ export const CheckFeedbackPart = () => {
                     </div>
                 ))}
             </div>
-            {agents?.items.length && agents?.items.length > 0 && (
+            {agents?.items.length > 0 && (
                 <DataPagination
                     page={filters.page}
                     totalPages={agents.totalPages}
                     onPageChange={(newPage) => setFilters({ page: newPage })}
                 />
             )}
-            {agents?.items.length === 0 && (
+            {agents?.items?.length === 0 && (
                 <EmptyState
                     title="No Feedback Yet"
                 />

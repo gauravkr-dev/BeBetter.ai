@@ -48,8 +48,6 @@ export const AgentForm = ({ onSuccess, onCancel, initialValues }: AgentFormProps
         defaultValues: {
             name: "",
             instructions: "",
-            experience: "",
-            durationMinutes: 30,
         }
     })
 
@@ -78,28 +76,6 @@ export const AgentForm = ({ onSuccess, onCancel, initialValues }: AgentFormProps
                             <FormLabel>Agent Instruction</FormLabel>
                             <FormControl>
                                 <Textarea placeholder="Enter instruction for the agent" {...field} />
-                            </FormControl>
-                        </FormItem>
-                    )} />
-                <FormField
-                    name="experience"
-                    control={form.control}
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Your Experience (Optional)</FormLabel>
-                            <FormControl>
-                                <Textarea placeholder="Enter your experience level" {...field} />
-                            </FormControl>
-                        </FormItem>
-                    )} />
-                <FormField
-                    name="durationMinutes"
-                    control={form.control}
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Duration (minutes)</FormLabel>
-                            <FormControl>
-                                <Input type="number" placeholder="Enter duration in minutes" {...field} />
                             </FormControl>
                         </FormItem>
                     )} />

@@ -12,7 +12,6 @@ interface AiCallingPageProps {
     agentName: string;
     userName: string;
     userImageUrl?: string;
-    remainingMs?: number;
     onEnd?: () => void;
     activeSpeaker?: "agent" | "candidate" | null;
     agentText?: string;
@@ -23,24 +22,13 @@ interface AiCallingPageProps {
 }
 
 
-export const AiCallingPage = ({ agentName, userName, userImageUrl, remainingMs, onEnd, activeSpeaker, agentText, interimText, isThinking, isMuted, onToggleMute }: AiCallingPageProps) => {
-    const formatRemaining = (ms: number) => {
-        const totalSeconds = Math.ceil(ms / 1000);
-        const minutes = Math.floor(totalSeconds / 60);
-        const seconds = totalSeconds % 60;
-        return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
-    };
+export const AiCallingPage = ({ agentName, userName, userImageUrl, onEnd, activeSpeaker, agentText, interimText, isThinking, isMuted, onToggleMute }: AiCallingPageProps) => {
     return (
         <div className="flex flex-col items-center justify-center gap-8 mt-4 px-4 md:px-12">
             <Card
                 className="relative w-full flex flex-col items-center justify-center dark:bg-[#121212] px-4 py-6"
                 decorations
             >
-                {remainingMs != null && (
-                    <div className="absolute top-3 right-3 bg-white/80 dark:bg-black/60 text-sm text-muted-foreground px-3 py-1 rounded-full shadow">
-                        {formatRemaining(remainingMs)}
-                    </div>
-                )}
                 <div>
                     <h3 className="text-lg font-semibold text-center">In Call</h3>
                 </div>
