@@ -2,7 +2,7 @@
 
 import { useTRPC } from "@/trpc/client";
 import { useState } from "react";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 import {
     Card,
@@ -38,6 +38,16 @@ export const TestQuestions = () => {
             mockTestId: id,
         })
     );
+    const updateMockTest = useMutation(
+        trpc.mockTest.update.mutationOptions({
+            onSuccess: async () => {
+                await trpc.mockTest.getById.queryOptions({ mockTestId: id });
+            },
+            onError: (error) => {
+                toast.error(error?.message || "Failed to update agent");
+            }
+        })
+    );
 
     const current = questions[currentQuestion];
     const hasAtLeastOneAnswer = Object.keys(answers).length > 0;
@@ -63,6 +73,11 @@ export const TestQuestions = () => {
             overall_score: response.data.overall_score,
             overallFeedback: response.data.overallFeedback,
             summaryComment: response.data.summaryComment,
+        });
+
+        await updateMockTest.mutateAsync({
+            mockTestId: id,
+            isMockTestCompleted: true,
         });
         router.push(`/dashboard/mock-test-analysis/${id}`);
         setLoading(false);

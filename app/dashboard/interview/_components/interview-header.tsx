@@ -14,9 +14,9 @@ export const InterviewHeader = () => {
     const { data } = useQuery(trpc.premium.getFreeUsage.queryOptions());
     if (!data) {
         return null;
-    };
+    }
 
-    const limitReached = data?.agentsCreated >= MAX_FREE_AGENTS;
+    const limitReached = (data?.agentsCreated) >= MAX_FREE_AGENTS;
     return (
         <>
             <NewAgentDialog open={isOpenDialog} onOpenChange={setIsOpenDialog} />
