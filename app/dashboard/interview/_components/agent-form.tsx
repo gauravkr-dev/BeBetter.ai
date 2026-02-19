@@ -85,7 +85,9 @@ export const AgentForm = ({ onSuccess, onCancel, initialValues }: AgentFormProps
                             Cancel
                         </Button>
                     )}
-                    <Button type="submit" className="hover:cursor-pointer">
+                    <Button type="submit"
+                        className="hover:cursor-pointer"
+                    >
                         Start Interview
                     </Button>
                 </div>

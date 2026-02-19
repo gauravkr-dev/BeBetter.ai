@@ -3,7 +3,6 @@ import { db } from "@/db";
 import {
     mockTestUserAnswer,
     mockTestQuestions,
-    mockTestOverallResult,
 } from "@/db/schema";
 import { NextRequest, NextResponse } from "next/server";
 import { eq } from "drizzle-orm";
@@ -78,16 +77,11 @@ export async function POST(req: NextRequest) {
         }
 
 
-        await db.insert(mockTestOverallResult).values({
-            mockTestId,
-            userId,
-            overall_score,
-            overallFeedback,
-            summaryComment
-
-        })
 
         return NextResponse.json({
+            overall_score,
+            overallFeedback,
+            summaryComment,
             success: true,
             message: "Answers saved successfully",
         });

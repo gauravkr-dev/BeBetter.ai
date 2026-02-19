@@ -312,3 +312,18 @@ export const mockTestOverallResult = pgTable("mock_test_overall_result", {
         .$onUpdate(() => new Date())
         .notNull(),
 })
+
+export const userUsage = pgTable("user_usage", {
+    userId: text("user_id")
+        .primaryKey()
+        .references(() => user.id, { onDelete: "cascade" }),
+    agentsCreated: integer("agents_created").default(0).notNull(),
+    mockTestCreated: integer("mock_test_created").default(0).notNull(),
+    resumeFeedbackReceived: integer("resume_feedback_received").default(0).notNull(),
+    chatsCreated: integer("chats_created").default(0).notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+        .defaultNow()
+        .$onUpdate(() => new Date())
+        .notNull(),
+})

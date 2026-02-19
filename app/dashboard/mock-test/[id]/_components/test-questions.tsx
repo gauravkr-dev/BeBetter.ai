@@ -18,22 +18,24 @@ import { Button } from "@/components/ui/button";
 import axios from "axios";
 import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
+import { useCreateMockTestFeedback } from "@/hooks/use-mocktest-result";
 
 export const TestQuestions = () => {
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [answers, setAnswers] = useState<Record<number, number>>({});
     const [loading, setLoading] = useState(false);
     const router = useRouter();
+    const mockTestFeedback = useCreateMockTestFeedback();
     const { data: userData } = authClient.useSession();
     const userId = userData?.user?.id;
 
     const params = useParams();
-    const { id } = params;
+    const id = (params.id as string) || "";
     const trpc = useTRPC();
 
     const { data: questions } = useSuspenseQuery(
         trpc.mockTestQuestions.getById.queryOptions({
-            mockTestId: id as string,
+            mockTestId: id,
         })
     );
 
@@ -50,10 +52,17 @@ export const TestQuestions = () => {
             })
         );
 
-        await axios.post("/api/insert-mock-test-result", {
+        const response = await axios.post("/api/insert-mock-test-result", {
             mockTestId: id,
             answers: formattedAnswers,
             userId,
+        });
+
+        await mockTestFeedback.mutateAsync({
+            mockTestId: id,
+            overall_score: response.data.overall_score,
+            overallFeedback: response.data.overallFeedback,
+            summaryComment: response.data.summaryComment,
         });
         router.push(`/dashboard/mock-test-analysis/${id}`);
         setLoading(false);
