@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { TRPCReactProvider } from "@/trpc/client";
 import { NuqsAdapter } from "nuqs/adapters/next"
+import { ThemeProvider } from "@/lib/theme-provider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -26,8 +27,15 @@ export default function RootLayout({
           <body
             className={`${inter.className} antialiased`}
           >
-            {children}
-            <Toaster />
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              {children}
+              <Toaster />
+            </ThemeProvider>
           </body>
         </html>
       </TRPCReactProvider>

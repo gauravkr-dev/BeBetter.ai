@@ -40,7 +40,7 @@ const UserProfile = () => {
     const handleSignOut = () => authClient.signOut({
         fetchOptions: {
             onSuccess: () => {
-                router.push("/sign-in");
+                router.push("/");
                 toast.success("Successfully signed out!");
             }
 
