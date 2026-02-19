@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation'
 import React from 'react'
 import { CtaSection } from './_components/home-section'
 import { Navbar } from './_components/navbar'
+import FooterSection from './_components/footer'
 
 
 
@@ -20,6 +21,7 @@ const page = async () => {
         <div>
             <Navbar />
             <CtaSection />
+            <FooterSection />
         </div>
     )
 }

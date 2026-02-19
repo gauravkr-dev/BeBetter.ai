@@ -51,7 +51,7 @@ export const Navbar = () => {
                         <div className="relative flex flex-wrap items-center justify-between gap-6 py-6 transition-all duration-200 lg:gap-0">
                             <div className="flex w-full items-center gap-6 lg:w-auto">
                                 <Link
-                                    aria-label="SmoothUI home"
+                                    aria-label="Go to homepage"
                                     className="flex items-center gap-2"
                                     href="/"
                                 >
