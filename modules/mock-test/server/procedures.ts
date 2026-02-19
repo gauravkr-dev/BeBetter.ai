@@ -2,6 +2,7 @@ import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE, MIN_PAGE_SIZE } from "@
 import { db } from "@/db";
 import { mockTest, mockTestOverallResult, mockTestQuestions, mockTestUserAnswer, userUsage } from "@/db/schema";
 import { createTRPCRouter, premiumProcedure, protectedProcedure } from "@/trpc/init";
+import { TRPCError } from "@trpc/server";
 import { and, asc, count, desc, eq } from "drizzle-orm";
 import z from "zod";
 
@@ -16,7 +17,10 @@ export const mockTestInputRouter = createTRPCRouter({
                 .select()
                 .from(mockTest)
                 .where(
-                    eq(mockTest.userId, ctx.auth.user.id)
+                    and(
+                        eq(mockTest.userId, ctx.auth.user.id),
+                        eq(mockTest.isMockTestCompleted, true)
+                    )
                 )
                 .orderBy(desc(mockTest.createdAt))
                 .limit(input?.pageSize ?? DEFAULT_PAGE_SIZE)
@@ -28,6 +32,7 @@ export const mockTestInputRouter = createTRPCRouter({
                 .where(
                     and(
                         eq(mockTest.userId, ctx.auth.user.id),
+                        eq(mockTest.isMockTestCompleted, true)
                     )
                 );
             const totalPages = Math.ceil(Number(total.count) / (input?.pageSize ?? DEFAULT_PAGE_SIZE));
@@ -66,6 +71,30 @@ export const mockTestInputRouter = createTRPCRouter({
                     )
                 );
             return { success: true };
+        }),
+    update: protectedProcedure
+        .input(z.object({
+            mockTestId: z.string(),
+            isMockTestCompleted: z.boolean(),
+        }))
+        .mutation(async ({ input, ctx }) => {
+            const [updatedMockTest] = await db
+                .update(mockTest)
+                .set(input)
+                .where(
+                    and(
+                        eq(mockTest.id, input.mockTestId),
+                        eq(mockTest.userId, ctx.auth.user.id)
+                    )
+                )
+                .returning();
+            if (!updatedMockTest) {
+                throw new TRPCError({
+                    code: "NOT_FOUND",
+                    message: "Mock test not found or you do not have permission to update it.",
+                });
+            }
+            return updatedMockTest;
         }),
 });
 

@@ -244,6 +244,7 @@ export const mockTest = pgTable("mock_test", {
     question_count: text("question_count").notNull(),
     describe_topics: text("describe_topics").notNull(),
     questions_level: text("questions_level").notNull(),
+    isMockTestCompleted: boolean("is_mock_test_completed").default(false).notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
         .defaultNow()
