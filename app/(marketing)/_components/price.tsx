@@ -3,8 +3,8 @@ import { Check } from 'lucide-react'
 
 export default function Pricing() {
     return (
-        <section className="py-8 md:py-12" id="pricing">
-            <div className="mx-auto max-w-6xl px-6">
+        <section className="py-8 md:py-12 md:px-12 px-4" id="pricing">
+            <div className="md:px-12 px-4">
                 <div className="mx-auto max-w-2xl space-y-6 text-center">
                     <h1 className="text-center text-4xl font-semibold lg:text-5xl">Pricing that Scales with You</h1>
                 </div>

@@ -7,6 +7,7 @@ import { Navbar } from './_components/navbar'
 import FooterSection from './_components/footer'
 import Pricing from './_components/price'
 import AboutSection from './_components/about-section'
+import { FeaturesSection } from './_components/features-section'
 
 
 
@@ -23,6 +24,7 @@ const page = async () => {
         <div>
             <Navbar />
             <CtaSection />
+            <FeaturesSection />
             <AboutSection />
             <Pricing />
             <FooterSection />
