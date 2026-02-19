@@ -3,7 +3,12 @@ import { Check } from 'lucide-react'
 
 export default function Pricing() {
     return (
-        <section className="py-8 md:py-12 md:px-12 px-4" id="pricing">
+        <section className="relative py-8 md:py-12 md:px-12 px-4 dark:bg-[#0A0A0A]" id="pricing">
+            <h1 className="absolute -top-10 left-0 w-full flex items-start justify-center
+                 text-[60px] font-bold
+                select-none pointer-events-none font-serif text-muted-foreground/10">
+                PRICING
+            </h1>
             <div className="md:px-12 px-4">
                 <div className="mx-auto max-w-2xl space-y-6 text-center">
                     <h1 className="text-center text-4xl font-semibold lg:text-5xl">Pricing that Scales with You</h1>

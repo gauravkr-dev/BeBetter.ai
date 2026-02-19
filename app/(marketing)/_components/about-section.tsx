@@ -7,14 +7,18 @@ import Link from "next/link";
 
 export default function AboutSection() {
     return (
-        <section className="w-full py-20 bg-background md:px-12 px-4" id="about">
+        <section className="relative w-full py-20 dark:bg-[#0A0A0A] md:px-12 px-4" id="about">
+            <h1 className="absolute -top-10 left-0 w-full flex items-start justify-center
+                 text-[60px] font-bold
+                select-none pointer-events-none font-serif text-muted-foreground/10">
+                ABOUT
+            </h1>
             <div className="container mx-auto px-6">
                 <div className="grid md:grid-cols-2 gap-24 md:gap-12 items-center">
 
                     {/* Left Side - Founder Image */}
                     <div className="flex justify-center md:justify-start">
                         <div className="relative w-72 h-72 md:w-96 md:h-96">
-
                             {/* Gradient Ring */}
                             <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 p-[4px]">
                                 <div className="w-full h-full rounded-full bg-background flex items-center justify-center">
