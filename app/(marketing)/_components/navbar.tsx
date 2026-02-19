@@ -1,6 +1,8 @@
 "use client";
 
+import { ThemeTogglerButton } from "@/components/animate-ui/components/buttons/theme-toggler";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { Menu, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
@@ -142,6 +144,7 @@ export const Navbar = () => {
                                     </Button>
                                 </Link>
                             </div>
+                            <ThemeTogglerButton className={cn("hidden md:flex absolute -right-24 top-6 h-9 w-9 hover:cursor-pointer rounded-full")} />
 
                             <AnimatePresence>
                                 {menuState && (
