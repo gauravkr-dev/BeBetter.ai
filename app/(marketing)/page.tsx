@@ -6,6 +6,7 @@ import { CtaSection } from './_components/home-section'
 import { Navbar } from './_components/navbar'
 import FooterSection from './_components/footer'
 import Pricing from './_components/price'
+import AboutSection from './_components/about-section'
 
 
 
@@ -22,6 +23,7 @@ const page = async () => {
         <div>
             <Navbar />
             <CtaSection />
+            <AboutSection />
             <Pricing />
             <FooterSection />
         </div>
