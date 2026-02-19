@@ -2,6 +2,8 @@ import { auth } from '@/lib/auth'
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 import React from 'react'
+import { CtaSection } from './_components/home-section'
+import { Navbar } from './_components/navbar'
 
 
 
@@ -16,7 +18,8 @@ const page = async () => {
     }
     return (
         <div>
-            Home Page
+            <Navbar />
+            <CtaSection />
         </div>
     )
 }
