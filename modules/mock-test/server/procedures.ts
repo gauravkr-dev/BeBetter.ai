@@ -1,7 +1,7 @@
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE, MIN_PAGE_SIZE } from "@/constants";
 import { db } from "@/db";
-import { mockTest, mockTestOverallResult, mockTestQuestions, mockTestUserAnswer } from "@/db/schema";
-import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
+import { mockTest, mockTestOverallResult, mockTestQuestions, mockTestUserAnswer, userUsage } from "@/db/schema";
+import { createTRPCRouter, premiumProcedure, protectedProcedure } from "@/trpc/init";
 import { and, asc, count, desc, eq } from "drizzle-orm";
 import z from "zod";
 
@@ -120,5 +120,42 @@ export const mockTestOverallFeedbackRouter = createTRPCRouter({
                 )
                 .orderBy(asc(mockTestOverallResult.createdAt));
             return data;
+        }),
+    create: premiumProcedure('mockTest')
+        .input(z.object({
+            mockTestId: z.string(),
+            overallFeedback: z.string(),
+            overall_score: z.number(),
+            summaryComment: z.string(),
+        }))
+        .mutation(async ({ ctx, input }) => {
+            const [usage] = await db
+                .select()
+                .from(userUsage)
+                .where(eq(userUsage.userId, ctx.auth.user.id));
+
+            if (!usage) {
+                await db.insert(userUsage).values({
+                    userId: ctx.auth.user.id,
+                    mockTestCreated: 0,
+                })
+            }
+
+            const [existingResult] = await db
+                .insert(mockTestOverallResult)
+                .values({
+                    userId: ctx.auth.user.id,
+                    ...input,
+                })
+                .returning();
+
+            await db
+                .update(userUsage)
+                .set({
+                    mockTestCreated: usage.mockTestCreated + 1,
+                })
+                .where(eq(userUsage.userId, ctx.auth.user.id));
+
+            return existingResult;
         }),
 });

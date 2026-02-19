@@ -3,8 +3,20 @@ import { Card, CardHeader, CardTitle, CardDescription } from "@/components/optic
 import Image from "next/image";
 import { useState } from "react";
 import { NewAgentDialog } from "./new-agent-dialog";
+import { useTRPC } from "@/trpc/client";
+import { useQuery } from "@tanstack/react-query";
+import { MAX_FREE_AGENTS } from "@/modules/premium/constant";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 export const InterviewHeader = () => {
     const [isOpenDialog, setIsOpenDialog] = useState(false);
+    const trpc = useTRPC();
+    const { data } = useQuery(trpc.premium.getFreeUsage.queryOptions());
+    if (!data) {
+        return null;
+    };
+
+    const limitReached = data?.agentsCreated >= MAX_FREE_AGENTS;
     return (
         <>
             <NewAgentDialog open={isOpenDialog} onOpenChange={setIsOpenDialog} />
@@ -22,11 +34,19 @@ export const InterviewHeader = () => {
                             and get detailed feedback to improve your skills.
                         </CardDescription>
 
-                        <button className="w-32 bg-primary text-primary-foreground text-sm py-2 px-3 rounded hover:cursor-pointer hover:bg-primary/90" onClick={() => setIsOpenDialog(true)}>
+                        <Button
+                            className="w-32 bg-primary text-primary-foreground text-sm py-2 px-3 rounded hover:cursor-pointer hover:bg-primary/90"
+                            onClick={() => {
+                                if (limitReached) {
+                                    toast.warning("Free limit reached. Please upgrade your plan.");
+                                    return;
+                                }
+
+                                setIsOpenDialog(true);
+                            }}
+                        >
                             Start Interview
-                        </button>
-
-
+                        </Button>
                     </CardHeader>
 
                     <CardHeader className="w-1/2 flex items-center justify-center hidden md:flex">

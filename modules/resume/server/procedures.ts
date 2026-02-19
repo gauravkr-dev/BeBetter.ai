@@ -1,9 +1,11 @@
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE, MIN_PAGE_SIZE } from "@/constants";
 import { db } from "@/db";
-import { resumeFeedback } from "@/db/schema";
-import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
+import { resumeFeedback, userUsage } from "@/db/schema";
+import { createTRPCRouter, premiumProcedure, protectedProcedure } from "@/trpc/init";
 import { and, count, desc, eq } from "drizzle-orm";
 import z from "zod";
+
+type ResumeFeedbackType = typeof resumeFeedback.$inferSelect.feedback;
 
 export const resumeRouter = createTRPCRouter({
     getMany: protectedProcedure
@@ -67,5 +69,45 @@ export const resumeRouter = createTRPCRouter({
                     )
                 );
             return { success: true };
+        }),
+    create: premiumProcedure('resumeFeedback')
+        .input(z.object({
+            id: z.string().optional(),
+            userId: z.string().optional(),
+            resumeUrl: z.string(),
+            feedback: z.custom<ResumeFeedbackType>(),
+            fileName: z.string(),
+            fileType: z.string(),
+            fileSize: z.string(),
+        }))
+        .mutation(async ({ ctx, input }) => {
+            const [usage] = await db
+                .select()
+                .from(userUsage)
+                .where(eq(userUsage.userId, ctx.auth.user.id));
+
+            if (!usage) {
+                await db.insert(userUsage).values({
+                    userId: ctx.auth.user.id,
+                    resumeFeedbackReceived: 0,
+                })
+            }
+
+            const [resumefeedback] = await db
+                .insert(resumeFeedback)
+                .values({
+                    ...input,
+                    userId: input.userId ?? ctx.auth.user.id,
+                })
+                .returning();
+            await db
+                .update(userUsage)
+                .set({
+                    resumeFeedbackReceived: usage.resumeFeedbackReceived + 1,
+                })
+                .where(eq(userUsage.userId, ctx.auth.user.id));
+
+            return resumefeedback;
+
         }),
 });

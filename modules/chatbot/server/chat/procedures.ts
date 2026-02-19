@@ -1,12 +1,12 @@
-import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
-import { chat } from "@/db/schema";
+import { createTRPCRouter, premiumProcedure, protectedProcedure } from "@/trpc/init";
+import { chat, userUsage } from "@/db/schema";
 import z from "zod";
 import { and, desc, eq } from "drizzle-orm";
 import { db } from "@/db";
 import { TRPCError } from "@trpc/server";
 
 export const chatRouter = createTRPCRouter({
-    create: protectedProcedure
+    create: premiumProcedure('chat')
         .input(
             z.object({
                 title: z.string().optional(),
@@ -14,6 +14,17 @@ export const chatRouter = createTRPCRouter({
         )
         .mutation(async ({ ctx, input }) => {
             const userId = ctx.auth.user.id;
+            const [usage] = await db
+                .select()
+                .from(userUsage)
+                .where(eq(userUsage.userId, ctx.auth.user.id));
+
+            if (!usage) {
+                await db.insert(userUsage).values({
+                    userId: ctx.auth.user.id,
+                    chatsCreated: 0,
+                })
+            }
 
             const [newChat] = await db
                 .insert(chat)
@@ -22,6 +33,14 @@ export const chatRouter = createTRPCRouter({
                     title: input.title ?? null,
                 })
                 .returning();
+
+
+            await db
+                .update(userUsage)
+                .set({
+                    chatsCreated: usage.chatsCreated + 1,
+                })
+                .where(eq(userUsage.userId, ctx.auth.user.id));
 
             return newChat;
         }),

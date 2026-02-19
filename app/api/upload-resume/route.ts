@@ -2,8 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import ImageKit from 'imagekit';
 import { WebPDFLoader } from "@langchain/community/document_loaders/web/pdf";
 import { getResumeFeedback } from '@/lib/resume-analyser';
-import { db } from '@/db';
-import { resumeFeedback, ResumeFeedbackType } from '@/db/schema';
+import { ResumeFeedbackType } from '@/db/schema';
 
 const imagekit = new ImageKit({
     publicKey: process.env.IMAGEKIT_PUBLIC_KEY ?? '',
@@ -41,26 +40,6 @@ export async function POST(req: NextRequest) {
         const feedbackData = await getResumeFeedback({ userInput: docs[0]?.pageContent ?? "" });
         const cleaned = feedbackData.replace('```json', '').replace('```', '');
         const feedback: ResumeFeedbackType = JSON.parse(cleaned);
-
-        // persist resume + feedback to DB (userId can be provided by client)
-        const userId = formData.get('userId')?.toString() ?? 'user-123';
-        const fileName = formData.get('fileName')?.toString() ?? 'unknown.pdf';
-        const fileType = formData.get('fileType')?.toString() ?? 'application/pdf';
-        const fileSize = formData.get('fileSize')?.toString() ?? '0';
-        const id = formData.get('id')?.toString() ?? `resume-${Date.now()}`;
-        try {
-            await db.insert(resumeFeedback).values({
-                id,
-                userId,
-                resumeUrl: uploadResponse.url,
-                feedback,
-                fileName,
-                fileType,
-                fileSize,
-            });
-        } catch (err) {
-            console.error('Failed to save resume feedback to DB', err);
-        }
 
         return NextResponse.json({ url: uploadResponse.url, fileId: uploadResponse.fileId, feedback: feedback });
     } catch (error) {

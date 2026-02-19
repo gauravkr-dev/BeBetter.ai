@@ -9,6 +9,7 @@ import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { authClient } from "@/lib/auth-client";
 import AnalysisLoader from "@/components/analysis-loader";
+import { useCreateResumeFeedback } from "@/hooks/use-resume-feedback";
 
 interface NewAgentDialogProps {
     open: boolean;
@@ -16,6 +17,7 @@ interface NewAgentDialogProps {
 }
 
 export const ResumeUploadDialog = ({ open, onOpenChange }: NewAgentDialogProps) => {
+    const resume_feedback = useCreateResumeFeedback();
     const { data } = authClient.useSession();
     const router = useRouter();
     const [files, setFiles] = useState<File[]>([]);
@@ -41,8 +43,17 @@ export const ResumeUploadDialog = ({ open, onOpenChange }: NewAgentDialogProps) 
         formData.append("fileSize", files[0].size.toString());
         formData.append("id", id);
 
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const response = await axios.post("/api/upload-resume", formData);
+
+        await resume_feedback.mutateAsync({
+            id,
+            resumeUrl: response.data.url,
+            feedback: response.data.feedback,
+            fileName: files[0].name,
+            fileType: files[0].type,
+            fileSize: files[0].size.toString(),
+        })
+
         onOpenChange(false);
         setLoading(false);
         router.push(`/dashboard/resume-analysis/${id}`);

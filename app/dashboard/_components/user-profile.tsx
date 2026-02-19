@@ -17,6 +17,7 @@ import {
 
 import {
     ChevronsUpDown,
+    CreditCardIcon,
 } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 
@@ -110,7 +111,13 @@ const UserProfile = () => {
                             <DropdownMenuSeparator />
                             <DropdownMenuGroup>
                                 <DropdownMenuItem
-                                    className="text-red-600"
+                                    className=""
+                                    onClick={() => authClient.customer.portal()}>
+                                    <CreditCardIcon />
+                                    Billing
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                    className="text-red-600 hover:bg-red-500"
                                     onClick={handleSignOut}>
                                     <LogOut />
                                     Log out

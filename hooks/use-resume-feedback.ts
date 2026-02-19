@@ -1,26 +1,22 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { useTRPC } from '@/trpc/client';
 
-export const useCreateChat = () => {
+export const useCreateResumeFeedback = () => {
     const trpc = useTRPC();
-    const router = useRouter();
     const queryClient = useQueryClient();
 
     return useMutation(
-        trpc.chat.create.mutationOptions({
-            onSuccess: async (data) => {
+        trpc.resume.create.mutationOptions({
+            onSuccess: async () => {
                 await queryClient.invalidateQueries(
-                    trpc.chat.list.queryOptions()
+                    trpc.resume.getMany.queryOptions()
                 );
-
-                router.push(`/dashboard/chatbot/${data.id}`);
             },
             onError: (e) => {
-                toast.error(e.message || 'Failed to create chat');
+                toast.error(e.message || 'Failed to create resume feedback.');
             },
         })
     );

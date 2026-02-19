@@ -5,10 +5,21 @@ import { Button } from '@/components/ui/button'
 import { useCreateChat } from '@/hooks/use-create-chat';
 import { ChatTitleDialog } from './[chatId]/_components/chat-title-dialog';
 import { ArrowRight } from 'lucide-react';
+import { useTRPC } from '@/trpc/client';
+import { useQuery } from '@tanstack/react-query';
+import { MAX_FREE_CHATS } from '@/modules/premium/constant';
+import { toast } from 'sonner';
 
 const ChatbotClient = () => {
     const createChat = useCreateChat();
     const [openDialog, setOpenDialog] = useState(false);
+    const trpc = useTRPC();
+    const { data } = useQuery(trpc.premium.getFreeUsage.queryOptions());
+    if (!data) {
+        return null;
+    };
+    const limitReached = data?.chatsCreated >= MAX_FREE_CHATS;
+
     return (
         <>
             <ChatTitleDialog
@@ -25,9 +36,14 @@ const ChatbotClient = () => {
                 <Button
                     variant="outline"
                     className='mt-4 cursor-pointer group'
-                    onClick={() =>
-                        setOpenDialog(true)
-                    }
+                    onClick={() => {
+                        if (limitReached) {
+                            toast.warning("Free limit reached. Please upgrade your plan.");
+                            return;
+                        }
+
+                        setOpenDialog(true);
+                    }}
                 >
                     Create a new chat
                     <ArrowRight className='group-hover:translate-x-1 transition-transform' />
