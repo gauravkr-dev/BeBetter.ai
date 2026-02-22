@@ -26,7 +26,7 @@ const HeaderSidebar = () => {
                                     router.push("/dashboard")
                                 }}
                                 size="lg"
-                                className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+                                className="cursor-pointer data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                             >
                                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-zinc-900 text-white dark:bg-zinc-900">
                                     <Image src="/logo1.png" alt="Logo" width={24} height={24} />

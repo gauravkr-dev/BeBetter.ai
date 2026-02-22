@@ -123,7 +123,7 @@ export default function JobList() {
                     />
                 ) : (
                     displayedJobs.map((job: any) => (
-                        <div key={job.id} className="relative border px-4 pt-20 pb-4 rounded-xl dark:bg-[#121212] space-y-4 h-48 hover:translate-y-[-1.5px] transition overflow-hidden">
+                        <div key={job.id} className="relative border px-4 pt-20 pb-4 rounded-xl dark:bg-[#121212] space-y-4 h-48 hover:translate-y-[-2px] transition overflow-hidden hover:border-blue-500">
                             <div className="absolute left-4 top-4 right-4 flex items-start justify-between">
                                 <div className="flex flex-col max-w-[65%]">
                                     <h2 className="text-lg font-medium leading-tight line-clamp-2 overflow-hidden break-words">

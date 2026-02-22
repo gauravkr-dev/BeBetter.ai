@@ -1,7 +1,11 @@
+import { Button } from '@/components/ui/button'
 import { auth } from '@/lib/auth'
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
+import Image from 'next/image'
 import React from 'react'
+import { ArrowRight } from 'lucide-react'
+import Link from 'next/link'
 
 const page = async () => {
     const session = await auth.api.getSession({
@@ -12,10 +16,80 @@ const page = async () => {
         redirect('/')
     }
     return (
-        <div className="p-6">
-            <div className="rounded-lg bg-card p-6 text-card-foreground">
-                Hii from dashboard page
-            </div>
+        <div className="md:px-8 px-4 my-6">
+            <section className="w-full">
+                <div className="container mx-auto px-6">
+                    <div className="grid md:grid-cols-2 gap-16 items-center">
+
+                        {/* Left Side - Content */}
+                        <div className="space-y-6">
+
+                            <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
+                                Your Future Is Built One Step at a Time 🚀
+                            </h2>
+
+                            <p className="text-muted-foreground leading-relaxed">
+                                Success isn’t about luck. It’s about showing up every single day,
+                                improving a little more than yesterday, and refusing to quit when
+                                things feel difficult.
+                            </p>
+
+                            <p className="text-muted-foreground leading-relaxed">
+                                Every small effort compounds. Every attempt builds confidence.
+                                Keep going — your breakthrough might be closer than you think.
+                            </p>
+
+                            <ul className="space-y-4 pt-4">
+                                <li className="flex items-start gap-3">
+                                    <span className="mt-1 h-2 w-2 rounded-full bg-primary" />
+                                    <p className="text-muted-foreground">
+                                        Stay consistent even when progress feels slow
+                                    </p>
+                                </li>
+
+                                <li className="flex items-start gap-3">
+                                    <span className="mt-1 h-2 w-2 rounded-full bg-primary" />
+                                    <p className="text-muted-foreground">
+                                        Small improvements lead to big transformations
+                                    </p>
+                                </li>
+
+                                <li className="flex items-start gap-3">
+                                    <span className="mt-1 h-2 w-2 rounded-full bg-primary" />
+                                    <p className="text-muted-foreground">
+                                        Discipline today creates freedom tomorrow
+                                    </p>
+                                </li>
+                            </ul>
+
+                            {/* CTA */}
+                            <div className="pt-6">
+                                <Link href="/dashboard/interview">
+                                    <Button className="group cursor-pointer" variant="outline"
+                                    >
+                                        👍 Keep Moving Forward
+                                        <ArrowRight className="group-hover:translate-x-1 transition-transform" />
+                                    </Button>
+                                </Link>
+                            </div>
+
+                        </div>
+
+                        {/* Right Side - Image */}
+                        <div className="relative flex justify-center">
+                            <div className="relative w-full max-w-md aspect-square rounded-2xl flex items-center justify-center">
+                                <Image
+                                    src="/dashboard-image.svg"
+                                    alt="Motivational Illustration"
+                                    fill
+                                    className="object-contain p-6"
+                                />
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
         </div>
     )
 }

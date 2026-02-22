@@ -15,13 +15,7 @@ const ChatbotClient = () => {
     const [openDialog, setOpenDialog] = useState(false);
     const trpc = useTRPC();
     const { data } = useQuery(trpc.premium.getFreeUsage.queryOptions());
-    const { data: currentSubscription } = useQuery(
-        trpc.premium.getCurrentSubscription.queryOptions()
-    )
 
-    if (!currentSubscription && data === undefined) {
-        return null;
-    }
     const limitReached = (data?.chatsCreated ?? 0) >= MAX_FREE_CHATS;
 
     return (

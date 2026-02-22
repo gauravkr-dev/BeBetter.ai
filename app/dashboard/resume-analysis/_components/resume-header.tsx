@@ -13,13 +13,7 @@ export const ResumeHeader = () => {
     const [isOpenDialog, setIsOpenDialog] = useState(false);
     const trpc = useTRPC();
     const { data } = useQuery(trpc.premium.getFreeUsage.queryOptions());
-    const { data: currentSubscription } = useQuery(
-        trpc.premium.getCurrentSubscription.queryOptions()
-    )
 
-    if (!currentSubscription && data === undefined) {
-        return null;
-    }
     const limitReached = (data?.resumeFeedbackReceived ?? 0) >= MAX_FREE_RESUME_FEEDBACKS;
     return (
         <>
