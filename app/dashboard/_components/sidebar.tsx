@@ -37,6 +37,7 @@ import { ChatFilter } from '../chatbot/[chatId]/_components/chat-filter';
 import { ChatDeleteUpdateDialog } from '../chatbot/[chatId]/_components/chat-delete-update';
 import { UpdateChatDialog } from '../chatbot/[chatId]/_components/update-chat-dialog';
 import { useCreateChat } from '@/hooks/use-create-chat';
+import { Separator } from '@/components/ui/separator';
 
 const Section = [
     {
@@ -147,19 +148,20 @@ export const DashboardSidebar = ({ initialValues }: DashboardSidebarProps) => {
                             {Section.map((item) => (
                                 <SidebarMenuItem key={item.href}>
                                     <SidebarMenuButton asChild className={cn(pathname === item.href && 'bg-sidebar-accent hover:bg-sidebar-accent hover:text-sidebar-accent-foreground text-sidebar-accent-foreground')}>
-                                        <button className="flex items-center" onClick={() => onClickOptions(item.href)}>
+                                        <button className="flex items-center  cursor-pointer mb-2" onClick={() => onClickOptions(item.href)}>
                                             <item.icon className="mr-2 h-4 w-4" />
-                                            <span className="text-sm">{item.label}</span>
+                                            <span className="text-sm font-medium">{item.label}</span>
                                         </button>
                                     </SidebarMenuButton>
                                 </SidebarMenuItem>
                             ))}
                         </SidebarMenu>
                     </SidebarGroup>
+                    <Separator className="-mt-2 mb-2" />
                     <ChatFilter filter={search} setFilter={setSearch} />
 
                     {/* Chat list moved into SidebarContent to avoid layout gap */}
-                    <div className="mx-2 mt-2 overflow-auto no-scrollbar flex-1 flex flex-col gap-2">
+                    <div className="mx-2 mt-2 overflow-auto no-scrollbar flex-1 flex flex-col gap-1">
                         {
                             // eslint-disable-next-line @typescript-eslint/no-explicit-any
                             filteredChats?.map((chat: any) => (

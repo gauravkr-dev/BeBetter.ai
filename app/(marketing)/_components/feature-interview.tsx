@@ -69,7 +69,7 @@ export default function FeatureInterviewAI() {
                         <div className="relative w-full max-w-md aspect-square rounded-2xl  flex items-center justify-center">
                             {/* Replace this image with your actual illustration */}
                             <Image
-                                src="/interview-header.svg"
+                                src="/interview.svg"
                                 alt="AI Interview Illustration"
                                 fill
                                 className="object-contain p-6"

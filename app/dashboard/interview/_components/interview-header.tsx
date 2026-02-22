@@ -12,11 +12,15 @@ export const InterviewHeader = () => {
     const [isOpenDialog, setIsOpenDialog] = useState(false);
     const trpc = useTRPC();
     const { data } = useQuery(trpc.premium.getFreeUsage.queryOptions());
-    if (!data) {
+    const { data: currentSubscription } = useQuery(
+        trpc.premium.getCurrentSubscription.queryOptions()
+    )
+
+    if (!currentSubscription && data === undefined) {
         return null;
     }
 
-    const limitReached = (data?.agentsCreated) >= MAX_FREE_AGENTS;
+    const limitReached = (data?.agentsCreated ?? 0) >= MAX_FREE_AGENTS;
     return (
         <>
             <NewAgentDialog open={isOpenDialog} onOpenChange={setIsOpenDialog} />
