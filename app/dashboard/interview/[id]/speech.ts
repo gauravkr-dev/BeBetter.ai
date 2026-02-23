@@ -37,8 +37,15 @@ export function startSpeechRecognition(
     recognition.onend = () => {
         console.log("STT ended");
 
-        if ((window as any).__forceStopSTT) return; // 🛑 STOP PERMANENTLY
-        if ((window as any).__agentSpeaking) return;
+        if ((window as any).__forceStopSTT) {
+            console.log("Mic force stopped");
+            return;
+        }
+
+        if ((window as any).__micLocked) {
+            console.log("Mic locked during agent speech");
+            return;
+        }
 
         setTimeout(() => {
             try {
