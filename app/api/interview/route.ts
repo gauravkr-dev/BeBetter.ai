@@ -8,7 +8,6 @@ import { eq, asc } from "drizzle-orm";
 
 export async function POST(req: Request) {
     const {
-        userInput,
         agentName,
         agentInstruction,
         agentId,
@@ -31,7 +30,6 @@ export async function POST(req: Request) {
     const aiResponse = await getAgentReply({
         agentName: agentName || "Interviewer",
         agentInstruction: agentInstruction || "You are a professional interviewer who asks technical questions.",
-        userText: userInput,
         previousMessages: previousMessages || [],
     });
 

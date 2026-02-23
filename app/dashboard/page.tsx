@@ -5,7 +5,6 @@ import { redirect } from 'next/navigation'
 import Image from 'next/image'
 import React from 'react'
 import { ArrowRight } from 'lucide-react'
-import Link from 'next/link'
 
 const page = async () => {
     const session = await auth.api.getSession({
@@ -64,13 +63,11 @@ const page = async () => {
 
                             {/* CTA */}
                             <div className="pt-6">
-                                <Link href="/dashboard/interview">
-                                    <Button className="group cursor-pointer" variant="outline"
-                                    >
-                                        👍 Keep Moving Forward
-                                        <ArrowRight className="group-hover:translate-x-1 transition-transform" />
-                                    </Button>
-                                </Link>
+                                <Button className="" variant="outline"
+                                >
+                                    Keep Moving Forward
+                                    <ArrowRight className="group-hover:translate-x-1 transition-transform" />
+                                </Button>
                             </div>
 
                         </div>

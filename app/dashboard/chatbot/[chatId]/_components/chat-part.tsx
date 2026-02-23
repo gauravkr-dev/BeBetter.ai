@@ -59,7 +59,6 @@ const ChatPart = () => {
             text: result.data.response,
         });
     }
-    console.log(messageList);
 
     const resize = useCallback(() => {
         const el = taRef.current

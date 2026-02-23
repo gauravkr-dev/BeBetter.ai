@@ -11,6 +11,8 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import z from "zod";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import GenerateLoader from "@/components/generate-loader";
 
 interface AgentFormProps {
     onSuccess?: () => void;
@@ -19,6 +21,7 @@ interface AgentFormProps {
 }
 
 export const AgentForm = ({ onSuccess, onCancel, initialValues }: AgentFormProps) => {
+    const [interviewLoading, setInterviewLoading] = useState(false);
     const trpc = useTRPC();
     const queryClient = useQueryClient();
     const router = useRouter();
@@ -35,10 +38,12 @@ export const AgentForm = ({ onSuccess, onCancel, initialValues }: AgentFormProps
                 }
                 toast.success(`Interview started with agent "${form.getValues("name")}"`);
                 router.push(`/dashboard/interview/${data.id}`);
+                setInterviewLoading(false);
                 onSuccess?.();
             },
             onError: (error) => {
                 toast.error(error?.message || "Failed to start interview");
+                setInterviewLoading(false);
             }
         })
     )
@@ -52,46 +57,55 @@ export const AgentForm = ({ onSuccess, onCancel, initialValues }: AgentFormProps
     })
 
     const onSubmit = (values: z.infer<typeof agentsInsertSchema>) => {
+        setInterviewLoading(true);
         createAgent.mutate(values);
     }
     return (
-        <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-2 px-2">
-                <FormField
-                    name="name"
-                    control={form.control}
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Agent Name</FormLabel>
-                            <FormControl>
-                                <Input placeholder="e.g. Python Expert" {...field} />
-                            </FormControl>
-                        </FormItem>
-                    )} />
-                <FormField
-                    name="instructions"
-                    control={form.control}
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Agent Instruction</FormLabel>
-                            <FormControl>
-                                <Textarea placeholder="Enter instruction for the agent" {...field} />
-                            </FormControl>
-                        </FormItem>
-                    )} />
-                <div className="flex justify-end mt-4 gap-2">
-                    {onCancel && (
-                        <Button variant="outline" type="button" onClick={onCancel} className="mr-2 hover:cursor-pointer">
-                            Cancel
-                        </Button>
-                    )}
-                    <Button type="submit"
-                        className="hover:cursor-pointer"
-                    >
-                        Start Interview
-                    </Button>
+        <>
+            {interviewLoading ? (
+                <div className="flex flex-col items-center justify-center py-20">
+                    <GenerateLoader />
                 </div>
-            </form>
-        </Form>
+            ) : (
+                <Form {...form}>
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-2 px-2">
+                        <FormField
+                            name="name"
+                            control={form.control}
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Agent Name</FormLabel>
+                                    <FormControl>
+                                        <Input placeholder="e.g. Python Expert" {...field} />
+                                    </FormControl>
+                                </FormItem>
+                            )} />
+                        <FormField
+                            name="instructions"
+                            control={form.control}
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Agent Instruction</FormLabel>
+                                    <FormControl>
+                                        <Textarea placeholder="Enter instruction for the agent" {...field} />
+                                    </FormControl>
+                                </FormItem>
+                            )} />
+                        <div className="flex justify-end mt-4 gap-2">
+                            {onCancel && (
+                                <Button variant="outline" type="button" onClick={onCancel} className="mr-2 hover:cursor-pointer">
+                                    Cancel
+                                </Button>
+                            )}
+                            <Button type="submit"
+                                className="hover:cursor-pointer"
+                            >
+                                Start Interview
+                            </Button>
+                        </div>
+                    </form>
+                </Form>
+            )}
+        </>
     )
 }

@@ -61,7 +61,7 @@ const Section = [
         href: '/dashboard/jobs',
     },
     {
-        label: 'Gaurav Bhaiya (Senior)',
+        label: 'Your Senior',
         icon: CircleUser,
         href: `/dashboard/chatbot`,
     },
@@ -149,7 +149,7 @@ export const DashboardSidebar = ({ initialValues }: DashboardSidebarProps) => {
                                 <SidebarMenuItem key={item.href}>
                                     <SidebarMenuButton asChild className={cn(pathname === item.href && 'bg-sidebar-accent hover:bg-sidebar-accent hover:text-sidebar-accent-foreground text-sidebar-accent-foreground')}>
                                         <button className="flex items-center  cursor-pointer mb-2" onClick={() => onClickOptions(item.href)}>
-                                            <item.icon className="mr-2 h-4 w-4" />
+                                            <item.icon className="mr-2 h-4 w-4 font-medium" />
                                             <span className="text-sm font-medium">{item.label}</span>
                                         </button>
                                     </SidebarMenuButton>

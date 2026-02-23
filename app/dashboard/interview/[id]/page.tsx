@@ -147,7 +147,6 @@ const InterviewSession = ({ params }: InterviewSessionProps) => {
                     // 3️⃣ get agent reply
 
                     const res = await axios.post("/api/interview", {
-                        userInput: finalText,
                         agentName: agent?.name || "Interviewer",
                         agentInstruction: agent?.instructions || "Be professional and courteous.",
                         agentId: agent?.id,

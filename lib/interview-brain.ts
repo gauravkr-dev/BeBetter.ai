@@ -22,14 +22,12 @@ interface GetAgentReplyParams {
         role: "user" | "assistant";
         content: string;
     }[];
-    userText: string;
 }
 
 
 export const getAgentReply = async ({
     agentName,
     agentInstruction,
-    userText,
     previousMessages,
 }: GetAgentReplyParams) => {
     const systemPrompt = buildSystemPrompt(agentName, agentInstruction);
@@ -42,10 +40,6 @@ export const getAgentReply = async ({
                 content: systemPrompt,
             },
             ...(previousMessages ?? []),
-            {
-                role: "user",
-                content: userText,
-            },
         ],
     });
 
