@@ -144,6 +144,21 @@ export const sessionTranscripts = pgTable("session_transcripts", {
         .notNull(),
 });
 
+export type InterviewFeedbackType = {
+    overall_score: number
+    overall_feedback: string
+    summary_comment: string
+    categories: {
+        communication_skills: { score: number; comment: string }
+        technical_knowledge: { score: number; comment: string }
+        problem_solving: { score: number; comment: string }
+        confidence_clarity: { score: number; comment: string }
+    }
+    tips_for_improvement: string[]
+    whats_good: string[]
+    needs_improvement: string[]
+}
+
 export const interviewFeedback = pgTable("interview_feedback", {
     id: text("id")
         .primaryKey()
@@ -155,7 +170,7 @@ export const interviewFeedback = pgTable("interview_feedback", {
     agentId: text("agent_id")
         .notNull()
         .references(() => agents.id, { onDelete: "cascade" }),
-    overallFeedback: text("overall_feedback"),     // 👈 summary
+    feedback: jsonb("feedback").$type<InterviewFeedbackType>().notNull(),
 
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")

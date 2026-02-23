@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Phone } from "lucide-react";
 import SpeakerUi from "./speaker-ui";
 import { LoaderFive } from "@/components/ui/loader";
+import { useEffect, useRef } from "react";
 
 
 interface AiCallingPageProps {
@@ -21,6 +22,13 @@ interface AiCallingPageProps {
 
 
 export const AiCallingPage = ({ agentName, userName, userImageUrl, onEnd, activeSpeaker, agentText, interimText, isThinking }: AiCallingPageProps) => {
+    const transcriptRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        if (transcriptRef.current) {
+            transcriptRef.current.scrollTop = transcriptRef.current.scrollHeight;
+        }
+    }, [agentText, interimText]);
     return (
         <div className="flex flex-col items-center justify-center gap-8 mt-4 px-4 md:px-12">
             <Card
@@ -86,7 +94,7 @@ export const AiCallingPage = ({ agentName, userName, userImageUrl, onEnd, active
 
             {/* Transcript UI (moved from session page) */}
 
-            <div className="w-full">
+            <div className="w-full" ref={transcriptRef}>
                 <div className="dark:bg-[#121212] border rounded p-4 h-32 overflow-y-auto">
                     <div className="flex flex-col">
                         {!agentText && !interimText ? (

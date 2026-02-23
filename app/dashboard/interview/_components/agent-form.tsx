@@ -13,6 +13,7 @@ import z from "zod";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import GenerateLoader from "@/components/generate-loader";
+import { ArrowRight } from "lucide-react";
 
 interface AgentFormProps {
     onSuccess?: () => void;
@@ -98,9 +99,10 @@ export const AgentForm = ({ onSuccess, onCancel, initialValues }: AgentFormProps
                                 </Button>
                             )}
                             <Button type="submit"
-                                className="hover:cursor-pointer"
+                                className="hover:cursor-pointer group"
                             >
                                 Start Interview
+                                <ArrowRight className="group-hover:translate-x-1 transition-transform" />
                             </Button>
                         </div>
                     </form>

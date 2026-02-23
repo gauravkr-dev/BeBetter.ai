@@ -1,5 +1,7 @@
 import { createAgent, gemini } from "@inngest/agent-kit"
 import { inngest } from "../client"
+import { db } from "@/db";
+import { interviewFeedback, InterviewFeedbackType } from "@/db/schema";
 export const GenerateInterviewFeedbackAgent = createAgent({
   name: "Generate Feedback",
   description: "Generates feedback for a candidate based on their interview performance.",
@@ -10,6 +12,9 @@ Your task is to evaluate a candidate's interview performance and return a detail
 The schema must match the layout and structure of a visual UI that includes overall score, category scores, summary feedback, improvement tips, strengths, and weaknesses.
 
 INPUT: I will provide an interview transcript.
+The transcript will be provided as plain text below.
+Do not ask for it again.
+Do not respond with anything except valid JSON.
 
 GOAL: Output a JSON report as per the schema below. The report should reflect:
 
@@ -99,8 +104,39 @@ export const GenerateFeedbackAgent = inngest.createFunction(
   { id: "interview-feedback" },
   { event: "agent-interview-feedback" },
   async ({ event }) => {
-    const { interviewData } = event.data;
-    const result = await GenerateInterviewFeedbackAgent.run(interviewData)
-    return result;
+    const { transcript, userId } = event.data.interviewData;
+    const { agentId } = event.data.interviewData;
+
+    const result = await GenerateInterviewFeedbackAgent.run(`
+Here is the complete interview transcript:
+
+${transcript}
+
+Analyze it and generate the JSON report.
+`);
+    const firstTextOutput = result.output.find(o => o.type === "text");
+
+    if (!firstTextOutput) throw new Error("No text output from agent");
+
+    // 1️⃣ Get the raw content
+    const feedbackString = (firstTextOutput as { content: string }).content;
+    console.log("Raw feedback string:", feedbackString);
+    const cleaned = feedbackString.replace('```json', '').replace('```', '');
+    try {
+      const feedback: InterviewFeedbackType = JSON.parse(cleaned);
+
+      await db
+        .insert(interviewFeedback)
+        .values({
+          userId,
+          agentId,
+          feedback,
+        })
+    } catch (err) {
+      console.error("JSON parsing failed:", err);
+      console.error("Raw feedback string:", feedbackString);
+      throw err; // ya handle as per your needs
+    }
+
   }
 )

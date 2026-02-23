@@ -69,7 +69,7 @@ export const CheckFeedbackPart = () => {
                         <Button
                             className='group mt-4 w-full text-sm h-8 hover:cursor-pointer'
                             variant='outline'
-                            onClick={() => { router.push(`/dashboard/interview/feedback/${agent.id}`) }}>
+                            onClick={() => { router.push(`/dashboard/interview-analysis/${agent.id}`) }}>
                             View
                             <ArrowRight className='size-4 group-hover:translate-x-1 transition-transform' />
                         </Button>

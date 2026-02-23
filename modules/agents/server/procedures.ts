@@ -1,9 +1,9 @@
 import { db } from "@/db";
-import { agents, userUsage } from "@/db/schema";
+import { agents, interviewFeedback, userUsage } from "@/db/schema";
 import { createTRPCRouter, premiumProcedure, protectedProcedure } from "@/trpc/init";
 import { agentsInsertSchema, agentsUpdateSchema } from "../schemas";
 import z from "zod";
-import { and, count, desc, eq } from "drizzle-orm";
+import { and, count, desc, eq, asc } from "drizzle-orm";
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE, MIN_PAGE_SIZE } from "@/constants";
 import { TRPCError } from "@trpc/server";
 
@@ -131,3 +131,21 @@ export const agentsRouter = createTRPCRouter({
             return createdAgent;
         })
 })
+
+export const InterviewFeedbackRouter = createTRPCRouter({
+    getById: protectedProcedure
+        .input(z.object({ agentId: z.string() }))
+        .query(async ({ ctx, input }) => {
+            const [data] = await db
+                .select()
+                .from(interviewFeedback)
+                .where(
+                    and(
+                        eq(interviewFeedback.agentId, input.agentId),
+                        eq(interviewFeedback.userId, ctx.auth.user.id)
+                    )
+                )
+                .orderBy(asc(interviewFeedback.createdAt));
+            return data;
+        }),
+});

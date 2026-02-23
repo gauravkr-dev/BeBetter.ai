@@ -1,5 +1,5 @@
 import { createTRPCRouter } from '../init';
-import { agentsRouter } from '@/modules/agents/server/procedures';
+import { agentsRouter, InterviewFeedbackRouter } from '@/modules/agents/server/procedures';
 import { transcriptRouter } from '@/modules/transcript/server/procedures';
 import { chatRouter } from '@/modules/chatbot/server/chat/procedures';
 import { chatMessagesRouter } from '@/modules/chatbot/server/chat-messages/procedures';
@@ -17,6 +17,7 @@ export const appRouter = createTRPCRouter({
     mockTestUserAnswer: mockTestUserAnswerRouter,
     mockTestOverallFeedback: mockTestOverallFeedbackRouter,
     premium: premiumRouter,
+    interviewFeedback: InterviewFeedbackRouter,
 });
 // export type definition of API
 export type AppRouter = typeof appRouter;

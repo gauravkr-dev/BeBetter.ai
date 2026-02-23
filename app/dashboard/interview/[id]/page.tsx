@@ -30,7 +30,7 @@ const InterviewSession = ({ params }: InterviewSessionProps) => {
     const [agentSpeaking, setAgentSpeaking] = useState(false);
     const [isThinking, setIsThinking] = useState(false);
     const [isMuted, setIsMuted] = useState(false);
-
+    const [followupCount, setFollowupCount] = useState(0);
     const recognitionRef = useRef<any>(null);
     const agentSpeakingRef = useRef(false);
     const seqRef = useRef(1);
@@ -38,7 +38,6 @@ const InterviewSession = ({ params }: InterviewSessionProps) => {
     const { data: agent } = useSuspenseQuery(
         trpc.agents.getOne.queryOptions({ id: id }),
     );
-
     const updateAgent = useMutation(
         trpc.agents.update.mutationOptions({
             onSuccess: async () => {
@@ -73,7 +72,12 @@ const InterviewSession = ({ params }: InterviewSessionProps) => {
                 id: agent?.id,
                 isInterviewCompleted: true,
             });
-            router.push("/dashboard/interview");
+
+            await axios.post("/api/interview-feedback", {
+                agentId: agent?.id,
+                userId: agent?.userId,
+            })
+            router.push(`/dashboard/interview-analysis/${agent?.id}`);
         } catch (err) {
             toast.error("Failed to end interview");
         }
@@ -133,7 +137,9 @@ const InterviewSession = ({ params }: InterviewSessionProps) => {
                         agentName: agent?.name || "Interviewer",
                         agentInstruction: agent?.instructions || "Be professional and courteous.",
                         agentId: agent?.id,
+                        followupCount,
                     })
+                    setFollowupCount((c) => c + 1);
 
                     if (endedRef.current) return;
 
