@@ -23,7 +23,7 @@ export const HeaderPart = () => {
     const strokeDashoffset = circumference * (1 - progress);
     return (
 
-        <div className=" md:mx-6 md:px-6 py-4 mx-6 px-4 border flex flex-col mb-4">
+        <div className="md:px-6 py-4 px-4 border flex flex-col mb-4">
             <div className="group text-lg font-medium flex items-center mb-4">
                 <span>Overall Feedback</span>
                 <ArrowRight className="inline-block ml-2 size-5 group-hover:translate-x-2 transition-transform" />

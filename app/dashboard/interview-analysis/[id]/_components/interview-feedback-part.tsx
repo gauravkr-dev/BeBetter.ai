@@ -8,6 +8,7 @@ import Loader from "@/components/Loader";
 import { FirstPart } from "./first-part";
 import { MiddlePart } from "./middle-part";
 import { LastPart } from "./last-part";
+import { useRouter } from "next/navigation";
 
 interface InterviewFeedbackPartProps {
     agentId: string;
@@ -15,7 +16,7 @@ interface InterviewFeedbackPartProps {
 export const InterviewFeedbackPart = ({ agentId }: InterviewFeedbackPartProps) => {
 
     const trpc = useTRPC();
-
+    const router = useRouter();
     const { data } = useSuspenseQuery(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         trpc.interviewFeedback.getById.queryOptions({ agentId: agentId as any }),
@@ -31,8 +32,8 @@ export const InterviewFeedbackPart = ({ agentId }: InterviewFeedbackPartProps) =
 
     return (
         <div>
-            <div className="flex items-center justify-between mb-10 px-4 md:px-6">
-                <Button variant="outline" className="group cursor-pointer" onClick={() => window.history.back()}>
+            <div className="flex items-center justify-between mb-10">
+                <Button variant="outline" className="group cursor-pointer" onClick={() => router.push('/dashboard/interview')}>
                     <ArrowLeft className="size-4 group-hover:-translate-x-1 transition-transform" />
                     Back
                 </Button>

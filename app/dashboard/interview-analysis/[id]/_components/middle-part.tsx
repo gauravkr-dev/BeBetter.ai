@@ -11,7 +11,7 @@ interface MiddlePartProps {
 export const MiddlePart = ({ communication_skills, technical_knowledge, problem_solving, confidence_clarity }: MiddlePartProps) => {
     return (
         <section className="bg-zinc-50 py-6 md:py-8 dark:bg-transparent">
-            <div className="@container mx-auto px-6">
+            <div className="@container mx-auto">
                 <div className="md:grid-cols-2 grid-cols-1 grid gap-8">
 
                     <Card className="group shadow-none rounded-none">

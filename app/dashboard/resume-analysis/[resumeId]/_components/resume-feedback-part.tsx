@@ -32,7 +32,7 @@ export const ResumeFeedbackPart = () => {
 
     return (
         <div>
-            <div className="flex items-center justify-between mb-10 px-4 md:px-6">
+            <div className="flex items-center justify-between mb-10">
                 <Button variant="outline" className="group cursor-pointer" onClick={() => window.history.back()}>
                     <ArrowLeft className="size-4 group-hover:-translate-x-1 transition-transform" />
                     Back

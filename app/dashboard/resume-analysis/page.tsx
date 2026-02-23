@@ -9,6 +9,7 @@ import { getQueryClient, trpc } from '@/trpc/server'
 import { auth } from '@/lib/auth'
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
+import { ErrorState } from '@/components/Error'
 
 const page = async () => {
     // Check authentication
@@ -31,13 +32,17 @@ const page = async () => {
                     <ArrowRight className='group-hover:translate-x-0.5 transition size-5 inline-flex ml-1' />
                 </div>
             </button>
-
             <HydrationBoundary state={dehydrate(queryClient)}>
-                <Suspense fallback={<div className='pt-18 pb-18'><Loader /></div>}>
-                    <ErrorBoundary fallback={<div className='mt-4 px-4 md:px-12 text-center justify-center flex text-red-500'>Failed to load resume analysis list.</div>}>
+                <Suspense fallback={<div className='pt-24'><Loader /></div>}>
+                    <ErrorBoundary
+                        fallback={
+                            <div
+                                className='mt-4 px-4 md:px-12 text-center justify-center flex mt-24 text-red-500'>
+                                <ErrorState />
+                            </div>
+                        }>
                         <ResumeList />
                     </ErrorBoundary>
-
                 </Suspense>
             </HydrationBoundary>
 

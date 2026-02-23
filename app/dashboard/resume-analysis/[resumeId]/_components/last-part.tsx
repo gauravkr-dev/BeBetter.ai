@@ -8,7 +8,7 @@ interface LastPartProps {
 export const LastPart = ({ tips_for_improvement, whats_good, needs_improvement }: LastPartProps) => {
     return (
         <section className="py-6 md:py-12">
-            <div className="space-y-8 px-6 md:space-y-16">
+            <div className="space-y-8 md:space-y-16">
 
                 <div className="relative mx-auto flex flex-col divide-x divide-y border *:p-8">
                     <div className="space-y-3">
