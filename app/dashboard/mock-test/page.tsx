@@ -1,10 +1,15 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import { GenerateQuiesHeader } from './_components/generate-quies-header'
 import { ArrowRight } from 'lucide-react'
 import { CheckFeedbackPart } from './_components/check-feedback'
 import { auth } from '@/lib/auth'
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
+import Loader from '@/components/Loader'
+import { ErrorBoundary } from 'react-error-boundary'
+import { ErrorState } from '@/components/Error'
+import { getQueryClient, trpc } from '@/trpc/server'
 
 const MockPage = async () => {
     // Check authentication
@@ -15,6 +20,8 @@ const MockPage = async () => {
     if (!session) {
         redirect('/')
     }
+    const queryClient = getQueryClient();
+    void queryClient.prefetchQuery(trpc.mockTest.getMany.queryOptions());
     return (
         <div>
             <GenerateQuiesHeader />
@@ -25,7 +32,19 @@ const MockPage = async () => {
                     <ArrowRight className='group-hover:translate-x-0.5 transition size-5 inline-flex ml-1' />
                 </div>
             </button>
-            <CheckFeedbackPart />
+            <HydrationBoundary state={dehydrate(queryClient)}>
+                <Suspense fallback={<div className='pt-24'><Loader /></div>}>
+                    <ErrorBoundary
+                        fallback={
+                            <div
+                                className='mt-4 px-4 md:px-12 text-center justify-center flex mt-24 text-red-500'>
+                                <ErrorState />
+                            </div>
+                        }>
+                        <CheckFeedbackPart />
+                    </ErrorBoundary>
+                </Suspense>
+            </HydrationBoundary>
         </div>
     )
 }

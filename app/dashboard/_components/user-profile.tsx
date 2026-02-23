@@ -59,7 +59,7 @@ const UserProfile = () => {
                         <DropdownMenuTrigger asChild>
                             <SidebarMenuButton
                                 size="lg"
-                                className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+                                className="cursor-pointer data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                             >
                                 <Avatar className="h-8 w-8 rounded-lg">
                                     <AvatarImage
@@ -111,13 +111,13 @@ const UserProfile = () => {
                             <DropdownMenuSeparator />
                             <DropdownMenuGroup>
                                 <DropdownMenuItem
-                                    className=""
+                                    className="cursor-pointer"
                                     onClick={() => authClient.customer.portal()}>
                                     <CreditCardIcon />
                                     Billing
                                 </DropdownMenuItem>
                                 <DropdownMenuItem
-                                    className="text-red-600 hover:bg-red-500"
+                                    className="text-red-600 hover:bg-red-600 cursor-pointer"
                                     onClick={handleSignOut}>
                                     <LogOut />
                                     Log out

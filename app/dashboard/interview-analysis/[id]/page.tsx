@@ -7,6 +7,7 @@ import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
 import { ErrorBoundary } from 'react-error-boundary'
 import Loader from '@/components/Loader'
 import { getQueryClient, trpc } from '@/trpc/server'
+import { ErrorState } from '@/components/Error'
 
 interface Props {
     params: Promise<{ id: string }>
@@ -31,8 +32,14 @@ const page = async ({ params }: Props) => {
     return (
         <div className='px-4 md:px-12 py-6'>
             <HydrationBoundary state={dehydrate(queryClient)}>
-                <Suspense fallback={<div className='pt-18 pb-18'><Loader /></div>}>
-                    <ErrorBoundary fallback={<div className='mt-4 px-4 md:px-12 text-center justify-center flex text-red-500'>Failed to load interview feedback.</div>}>
+                <Suspense fallback={<div className='pt-48'><Loader /></div>}>
+                    <ErrorBoundary
+                        fallback={
+                            <div
+                                className='mt-4 px-4 md:px-12 text-center justify-center flex mt-48 text-red-500'>
+                                <ErrorState />
+                            </div>
+                        }>
                         <InterviewFeedbackPart agentId={id} />
                     </ErrorBoundary>
                 </Suspense>

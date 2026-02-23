@@ -47,7 +47,7 @@ export const LowerPart = () => {
 
     return (
         <section className="">
-            <div className="px-4 md:px-6">
+            <div className="">
                 <div className="mt-12">
                     <Accordion
                         type="single"

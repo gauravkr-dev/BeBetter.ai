@@ -24,7 +24,7 @@ const page = async () => {
                         <div className="space-y-6">
 
                             <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
-                                Your Future Is Built One Step at a Time 🚀
+                                The Work You Do Today Changes Everything.
                             </h2>
 
                             <p className="text-muted-foreground leading-relaxed">

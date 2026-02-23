@@ -9,6 +9,7 @@ import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 import Loader from '@/components/Loader'
 import { CheckFeedbackPart } from './_components/check-feedback-part'
+import { ErrorState } from '@/components/Error'
 
 const InterviewPage = async () => {
 
@@ -37,8 +38,14 @@ const InterviewPage = async () => {
             </button>
 
             <HydrationBoundary state={dehydrate(queryClient)}>
-                <Suspense fallback={<div className='pt-18 pb-18'><Loader /></div>}>
-                    <ErrorBoundary fallback={<div className='mt-4 px-4 md:px-12 text-center justify-center flex text-red-500'>Failed to load interview agents.</div>}>
+                <Suspense fallback={<div className='pt-24'><Loader /></div>}>
+                    <ErrorBoundary
+                        fallback={
+                            <div
+                                className='mt-4 px-4 md:px-12 text-center justify-center flex mt-24 text-red-500'>
+                                <ErrorState />
+                            </div>
+                        }>
                         <CheckFeedbackPart />
                     </ErrorBoundary>
                 </Suspense>
