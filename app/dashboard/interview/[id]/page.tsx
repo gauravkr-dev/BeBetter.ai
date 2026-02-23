@@ -9,13 +9,10 @@ import { useTRPC } from "@/trpc/client";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { startSpeechRecognition } from "./speech";
-import { speak, stopSpeaking } from "@/lib/tts";
+import { speakWithSarvam, stopSarvam } from "@/lib/sarvam-tts";
 import { AiCallingPage } from "./_components/ai-calling-page";
 import { authClient } from "@/lib/auth-client";
-import { se } from "date-fns/locale";
 import axios from "axios";
-import { user } from "@/db/schema";
-
 
 interface InterviewSessionProps {
     params: Promise<{ id: string }> | { id: string };
@@ -33,8 +30,6 @@ const InterviewSession = ({ params }: InterviewSessionProps) => {
     const [agentSpeaking, setAgentSpeaking] = useState(false);
     const [isThinking, setIsThinking] = useState(false);
     const [isMuted, setIsMuted] = useState(false);
-
-
 
     const recognitionRef = useRef<any>(null);
     const agentSpeakingRef = useRef(false);
@@ -64,14 +59,14 @@ const InterviewSession = ({ params }: InterviewSessionProps) => {
 
 
     const endInterview = async () => {
-        // await axios.post("/api/interview-feedback", {
-        //     agentId: agent?.id,
-        // });
-        (window as any).__forceStopSTT = true;
-        recognitionRef.current?.stop();
-        if (endedRef.current) return;
 
         endedRef.current = true;
+
+        (window as any).__forceStopSTT = true;
+        (window as any).__micLocked = true;
+
+        recognitionRef.current?.stop();
+        stopSarvam();   // 🔥 IMPORTANT
 
         try {
             await updateAgent.mutateAsync({
@@ -82,21 +77,6 @@ const InterviewSession = ({ params }: InterviewSessionProps) => {
         } catch (err) {
             toast.error("Failed to end interview");
         }
-    };
-
-
-    const toggleMute = () => {
-        if (!recognitionRef.current) return;
-
-        if (isMuted) {
-            (window as any).__forceStopSTT = false;
-            recognitionRef.current.start();
-        } else {
-            (window as any).__forceStopSTT = true;
-            recognitionRef.current.stop();
-        }
-
-        setIsMuted(!isMuted);
     };
 
 
@@ -142,6 +122,9 @@ const InterviewSession = ({ params }: InterviewSessionProps) => {
                     });
 
                     // 2️⃣ stop mic BEFORE agent speaks
+                    (window as any).__forceStopSTT = true;
+                    (window as any).__micLocked = true;
+
                     recognitionRef.current?.stop();
                     setIsThinking(true);
                     // 3️⃣ get agent reply
@@ -152,7 +135,7 @@ const InterviewSession = ({ params }: InterviewSessionProps) => {
                         agentId: agent?.id,
                     })
 
-
+                    if (endedRef.current) return;
 
                     if (!res?.data?.response) {
                         safeStart();
@@ -166,13 +149,19 @@ const InterviewSession = ({ params }: InterviewSessionProps) => {
                     (window as any).__agentSpeaking = true;
                     setAgentSpeaking(true);
 
-                    speak(res.data.response, () => {
+                    speakWithSarvam(res.data.response, () => {
                         agentSpeakingRef.current = false;
                         (window as any).__agentSpeaking = false;
                         setAgentSpeaking(false);
-                        safeStart();
-                    });
 
+                        // 🔥 UNLOCK MIC
+                        (window as any).__forceStopSTT = false;
+                        (window as any).__micLocked = false;
+
+                        try {
+                            recognitionRef.current?.start();
+                        } catch { }
+                    });
                     // 4️⃣ save AGENT
                     await addTranscript.mutateAsync({
                         agentId: agent?.id,
@@ -216,8 +205,6 @@ const InterviewSession = ({ params }: InterviewSessionProps) => {
                 agentText={agentText}
                 interimText={interimText}
                 isThinking={isThinking}
-                isMuted={isMuted}
-                onToggleMute={toggleMute}
             />
         </>
     );

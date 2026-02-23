@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { Card, CardHeader, CardTitle } from "@/components/optics/card";
 import { Button } from "@/components/ui/button";
-import { Mic, MicOff, Phone } from "lucide-react";
+import { Phone } from "lucide-react";
 import SpeakerUi from "./speaker-ui";
 import { LoaderFive } from "@/components/ui/loader";
 
@@ -17,12 +17,10 @@ interface AiCallingPageProps {
     agentText?: string;
     interimText?: string;
     isThinking?: boolean;
-    isMuted?: boolean;
-    onToggleMute?: () => void;
 }
 
 
-export const AiCallingPage = ({ agentName, userName, userImageUrl, onEnd, activeSpeaker, agentText, interimText, isThinking, isMuted, onToggleMute }: AiCallingPageProps) => {
+export const AiCallingPage = ({ agentName, userName, userImageUrl, onEnd, activeSpeaker, agentText, interimText, isThinking }: AiCallingPageProps) => {
     return (
         <div className="flex flex-col items-center justify-center gap-8 mt-4 px-4 md:px-12">
             <Card
@@ -76,17 +74,6 @@ export const AiCallingPage = ({ agentName, userName, userImageUrl, onEnd, active
                 </div>
 
                 <div className="w-full mt-4 flex gap-4 justify-center">
-                    <Button
-                        variant={"outline"}
-                        className="px-2 py-1 text-sm cursor-pointer rounded"
-                        onClick={() => onToggleMute?.()}
-                    >
-                        {isMuted ? (
-                            <span className="flex items-center gap-1"><MicOff className="size-4" /> Unmute</span>
-                        ) : (
-                            <span className="flex items-center gap-1"><Mic className="size-4" /> Mute</span>
-                        )}
-                    </Button>
                     <Button
                         className="px-2 py-1 cursor-pointer bg-red-600 text-sm text-white rounded hover:bg-red-700 flex items-center gap-2"
                         onClick={() => onEnd?.()}

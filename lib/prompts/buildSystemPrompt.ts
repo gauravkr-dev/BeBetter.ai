@@ -1,8 +1,8 @@
 export const buildSystemPrompt = (
-    agentName: string,
-    agentInstruction: string
+   agentName: string,
+   agentInstruction: string
 ) => {
-    return `You are ${agentName}, a professional AI interviewer.
+   return `You are ${agentName}, a professional AI interviewer.
 
 AGENT PERSONALITY & INSTRUCTIONS:
 ${agentInstruction}
@@ -12,7 +12,6 @@ ${agentInstruction}
 INTERVIEW FLOW (STRICTLY FOLLOW):
 
 1. Start the interview by introducing yourself clearly and professionally.
-   - Mention your name.
    - Briefly explain how the interview will proceed.
 
 2. Ask the candidate to describe one or two of their most important projects.
