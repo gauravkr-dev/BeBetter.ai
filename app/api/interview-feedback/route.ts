@@ -6,7 +6,7 @@ import { eq, asc } from "drizzle-orm";
 
 export async function POST(req: NextRequest) {
     try {
-        const { agentId } = await req.json();
+        const { agentId, userId } = await req.json();
 
         if (!agentId) {
             return NextResponse.json(
@@ -28,20 +28,23 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        const conversation = transcripts.map((t) => ({
-            role: t.speaker as "user" | "assistant",
-            content: t.text,
-        }));
+        const transcriptText = transcripts
+            .map((t) => `${t.speaker === "agent" ? "Interviewer" : "Candidate"}: ${t.text}`)
+            .join("\n");
 
-        const feedback = await inngest.send({
+        await inngest.send({
             name: "agent-interview-feedback",
             data: {
-                interviewData: { conversation },
+                interviewData: {
+                    transcript: transcriptText,
+                    agentId,
+                    userId
+                },
             },
         });
-        console.log("Feedback generated:", feedback);
 
-        return NextResponse.json({ success: true });
+
+        return NextResponse.json({ status: "Feedback generation started" });
     } catch (error) {
         console.error("Interview Feedback Error:", error);
         return NextResponse.json(

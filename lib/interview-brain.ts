@@ -18,6 +18,7 @@ export const InterviewBrain = new OpenAI({
 interface GetAgentReplyParams {
     agentName: string;
     agentInstruction: string;
+    stage: string;
     previousMessages?: {
         role: "user" | "assistant";
         content: string;
@@ -28,9 +29,10 @@ interface GetAgentReplyParams {
 export const getAgentReply = async ({
     agentName,
     agentInstruction,
+    stage,
     previousMessages,
 }: GetAgentReplyParams) => {
-    const systemPrompt = buildSystemPrompt(agentName, agentInstruction);
+    const systemPrompt = buildSystemPrompt(agentName, agentInstruction, stage);
     const response = await InterviewBrain.chat.completions.create({
         model: "arcee-ai/trinity-large-preview:free", // ✅ free + fast
         temperature: 0.7,

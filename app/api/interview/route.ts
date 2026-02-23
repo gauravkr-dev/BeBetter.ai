@@ -11,6 +11,7 @@ export async function POST(req: Request) {
         agentName,
         agentInstruction,
         agentId,
+        followupCount,
     } = await req.json();
 
 
@@ -26,11 +27,20 @@ export async function POST(req: Request) {
         content: t.text,
     }));
 
+    let stage: string;
+    if (followupCount === 0) {
+        stage = "intro";
+    } else if (followupCount < 5) {
+        stage = "followup";
+    } else {
+        stage = "conclusion";
+    }
     // 🔥 AI CALL DIRECTLY
     const aiResponse = await getAgentReply({
         agentName: agentName || "Interviewer",
         agentInstruction: agentInstruction || "You are a professional interviewer who asks technical questions.",
         previousMessages: previousMessages || [],
+        stage: stage,
     });
 
     // 🔥 CLIENT KO RESPONSE
