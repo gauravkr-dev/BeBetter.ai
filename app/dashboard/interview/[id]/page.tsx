@@ -31,6 +31,7 @@ const InterviewSession = ({ params }: InterviewSessionProps) => {
     const [isThinking, setIsThinking] = useState(false);
     const [isMuted, setIsMuted] = useState(false);
     const [followupCount, setFollowupCount] = useState(0);
+    const followupRef = useRef(0);
     const recognitionRef = useRef<any>(null);
     const agentSpeakingRef = useRef(false);
     const seqRef = useRef(1);
@@ -125,6 +126,10 @@ const InterviewSession = ({ params }: InterviewSessionProps) => {
                         sequence: seqRef.current++,
                     });
 
+                    // Increase followup count immediately when user text is sent
+                    followupRef.current = followupRef.current + 1;
+                    setFollowupCount(followupRef.current);
+
                     // 2️⃣ stop mic BEFORE agent speaks
                     (window as any).__forceStopSTT = true;
                     (window as any).__micLocked = true;
@@ -137,10 +142,8 @@ const InterviewSession = ({ params }: InterviewSessionProps) => {
                         agentName: agent?.name || "Interviewer",
                         agentInstruction: agent?.instructions || "Be professional and courteous.",
                         agentId: agent?.id,
-                        followupCount,
+                        followupCount: followupRef.current,
                     })
-                    setFollowupCount((c) => c + 1);
-
                     if (endedRef.current) return;
 
                     if (!res?.data?.response) {

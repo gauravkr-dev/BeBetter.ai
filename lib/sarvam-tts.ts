@@ -19,7 +19,7 @@ export async function speakWithSarvam(text: string, onEnd?: () => void) {
                 target_language_code: "en-IN",
                 speaker: "shubh",
                 model: "bulbul:v3",
-                pace: 0.9,
+                pace: 0.85,
                 speech_sample_rate: 22050,
                 output_audio_codec: "mp3",
                 enable_preprocessing: true

@@ -94,8 +94,8 @@ export const AiCallingPage = ({ agentName, userName, userImageUrl, onEnd, active
 
             {/* Transcript UI (moved from session page) */}
 
-            <div className="w-full" ref={transcriptRef}>
-                <div className="dark:bg-[#121212] border rounded p-4 h-32 overflow-y-auto">
+            <div className="w-full">
+                <div ref={transcriptRef} className="dark:bg-[#121212] border rounded p-4 h-32 overflow-y-auto">
                     <div className="flex flex-col">
                         {!agentText && !interimText ? (
                             <p className="text-sm text-center text-muted-foreground my-10">Transcript will appear here as the call progresses.</p>

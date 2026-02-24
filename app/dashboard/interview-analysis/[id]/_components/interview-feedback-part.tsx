@@ -4,11 +4,11 @@ import { useSuspenseQuery } from '@tanstack/react-query';
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
-import Loader from "@/components/Loader";
 import { FirstPart } from "./first-part";
 import { MiddlePart } from "./middle-part";
 import { LastPart } from "./last-part";
 import { useRouter } from "next/navigation";
+import { LoaderFive } from "@/components/ui/loader";
 
 interface InterviewFeedbackPartProps {
     agentId: string;
@@ -18,18 +18,22 @@ export const InterviewFeedbackPart = ({ agentId }: InterviewFeedbackPartProps) =
     const trpc = useTRPC();
     const router = useRouter();
     const { data } = useSuspenseQuery(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        trpc.interviewFeedback.getById.queryOptions({ agentId: agentId as any }),
+        trpc.interviewFeedback.getById.queryOptions(
+            { agentId: agentId },
+            {
+                refetchInterval: (query) =>
+                    query.state.data === null ? 3000 : false,
+            }
+        ),
     )
 
-    if (!data) {
+    if (data === null) {
         return (
-            <div className='flex-1 flex items-center justify-center'>
-                <Loader />
+            <div className="flex items-center justify-center h-full">
+                <LoaderFive text="Your Feedback is generating..." />
             </div>
-        );
+        )
     }
-
     return (
         <div>
             <div className="flex items-center justify-between mb-10">

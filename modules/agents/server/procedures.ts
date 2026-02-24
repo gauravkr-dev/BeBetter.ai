@@ -146,6 +146,8 @@ export const InterviewFeedbackRouter = createTRPCRouter({
                     )
                 )
                 .orderBy(asc(interviewFeedback.createdAt));
+
+            if (!data) return null;
             return data;
         }),
 });

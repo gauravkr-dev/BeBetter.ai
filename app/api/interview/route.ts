@@ -28,9 +28,9 @@ export async function POST(req: Request) {
     }));
 
     let stage: string;
-    if (followupCount === 0) {
+    if (followupCount === 1) {
         stage = "intro";
-    } else if (followupCount < 5) {
+    } else if (followupCount < 10) {
         stage = "followup";
     } else {
         stage = "conclusion";
