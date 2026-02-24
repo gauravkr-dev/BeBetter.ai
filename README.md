@@ -4,7 +4,7 @@ Short description: BeBetter.ai is a Next.js TypeScript application that provides
 
 ## Live Demo
 
-- Placeholder: Add your deployed URL here (e.g. https://app.example.com)
+- Placeholder: Add your deployed URL here: https://be-better-ai.vercel.app
 
 ## Tech Stack
 
@@ -163,7 +163,7 @@ cd bebetter.ai
 2. Install dependencies
 
 ```
-npm install
+npm install --legacy-peer-deps
 ```
 
 3. Create `.env` from `.env.example` and populate required secrets
