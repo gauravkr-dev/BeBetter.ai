@@ -6,10 +6,10 @@ import { auth } from '@/lib/auth'
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
-import Loader from '@/components/Loader'
 import { ErrorBoundary } from 'react-error-boundary'
 import { ErrorState } from '@/components/Error'
 import { getQueryClient, trpc } from '@/trpc/server'
+import { LoaderFive } from '@/components/ui/loader'
 
 const MockPage = async () => {
     // Check authentication
@@ -33,7 +33,7 @@ const MockPage = async () => {
                 </div>
             </button>
             <HydrationBoundary state={dehydrate(queryClient)}>
-                <Suspense fallback={<div className='pt-24'><Loader /></div>}>
+                <Suspense fallback={<div className='pt-24 flex items-center justify-center'><LoaderFive text="Loading Mock Test Data..." /></div>}>
                     <ErrorBoundary
                         fallback={
                             <div

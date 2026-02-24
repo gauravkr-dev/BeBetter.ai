@@ -5,9 +5,9 @@ import { redirect } from 'next/navigation'
 import { InterviewFeedbackPart } from './_components/interview-feedback-part'
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
 import { ErrorBoundary } from 'react-error-boundary'
-import Loader from '@/components/Loader'
 import { getQueryClient, trpc } from '@/trpc/server'
 import { ErrorState } from '@/components/Error'
+import { LoaderFive } from '@/components/ui/loader'
 
 interface Props {
     params: Promise<{ id: string }>
@@ -32,7 +32,7 @@ const page = async ({ params }: Props) => {
     return (
         <div className='px-4 md:px-12 py-6'>
             <HydrationBoundary state={dehydrate(queryClient)}>
-                <Suspense fallback={<div className='pt-48'><Loader /></div>}>
+                <Suspense fallback={<div className='pt-48 flex items-center justify-center'><LoaderFive text="Loading Interview Feedback..." /></div>}>
                     <ErrorBoundary
                         fallback={
                             <div

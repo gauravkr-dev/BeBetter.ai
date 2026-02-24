@@ -8,7 +8,7 @@ import {
     MoreHorizontalIcon,
 } from "lucide-react";
 
-function Pagination({ className = "", children, currentPage, totalPages, onPageChange }) {
+function Pagination({ className = "", children }) {
     return (
         <nav
             role="navigation"
@@ -31,7 +31,7 @@ function PaginationContent({ className = "", ...props }) {
     );
 }
 
-function PaginationItem({ className = "", children, page, ...props } = {}) {
+function PaginationItem({ className = "", children, ...props } = {}) {
     return (
         <li data-slot="pagination-item" className={cn(className)} {...props}>
             {children}

@@ -24,12 +24,7 @@ export const DataPagination = ({ page, totalPages, onPageChange }: DataPaginatio
     }
 
     return (
-        <Pagination
-            currentPage={page}
-            totalPages={totalPages}
-            onPageChange={onPageChange}
-            className="my-4"
-        >
+        <Pagination className="my-4">
             <PaginationContent>
                 <PaginationPrevious
                     disabled={page <= 1}

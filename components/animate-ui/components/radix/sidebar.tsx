@@ -411,6 +411,7 @@ function SidebarSeparator({ className, ...props }: SidebarSeparatorProps) {
 type SidebarContentProps = React.ComponentProps<'div'>;
 
 function SidebarContent({ className, onClick, ...props }: SidebarContentProps) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { isMobile, setOpen, setOpenMobile } = useSidebar();
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {

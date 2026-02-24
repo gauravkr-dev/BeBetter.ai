@@ -12,7 +12,6 @@ import axios from 'axios'
 import Markdown from 'react-markdown'
 import remarkGfm from "remark-gfm";
 import { ArrowDown } from 'lucide-react'
-import Loader from '@/components/Loader'
 import { LoaderFive } from '@/components/ui/loader'
 
 const ChatPart = () => {
@@ -105,7 +104,7 @@ const ChatPart = () => {
             <div className='flex-1 flex flex-col gap-2 p-4 overflow-auto no-scrollbar' ref={containerRef} onScroll={handleScroll}>
                 {isInitialLoading ? (
                     <div className='flex-1 flex items-center justify-center'>
-                        <Loader />
+                        <LoaderFive text="Loading conversation..." />
                     </div>
                 ) : messageList.length === 0 ? (
                     <div className='flex-1 flex items-center justify-center'>

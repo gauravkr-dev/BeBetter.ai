@@ -7,9 +7,9 @@ import { ErrorBoundary } from 'react-error-boundary'
 import { auth } from '@/lib/auth'
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
-import Loader from '@/components/Loader'
 import { CheckFeedbackPart } from './_components/check-feedback-part'
 import { ErrorState } from '@/components/Error'
+import { LoaderFive } from '@/components/ui/loader'
 
 const InterviewPage = async () => {
 
@@ -38,7 +38,7 @@ const InterviewPage = async () => {
             </button>
 
             <HydrationBoundary state={dehydrate(queryClient)}>
-                <Suspense fallback={<div className='pt-24'><Loader /></div>}>
+                <Suspense fallback={<div className='pt-24 flex items-center justify-center'><LoaderFive text="Loading Interview Data..." /></div>}>
                     <ErrorBoundary
                         fallback={
                             <div

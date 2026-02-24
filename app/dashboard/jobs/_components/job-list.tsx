@@ -6,8 +6,8 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { LikeButton } from "@/components/like-button";
 import { JobsFilterDialog } from "./jobs-filter-dialog";
-import Loader from "@/components/Loader";
 import EmptyState from "../../interview/_components/empty-state";
+import { LoaderFive } from "@/components/ui/loader";
 
 export default function JobList() {
     const [jobs, setJobs] = useState<any[]>([]);
@@ -68,10 +68,8 @@ export default function JobList() {
     const displayedJobs = showWatchlist ? watchlist : jobs;
     if (loading) {
         return (
-            <div className="px-3 md:px-8 mb-12">
-                <div className="flex items-center justify-center min-h-[70vh]">
-                    <Loader className="" />
-                </div>
+            <div className='pt-48 flex items-center justify-center'>
+                <LoaderFive text="Loading Jobs..." />
             </div>
         );
     }

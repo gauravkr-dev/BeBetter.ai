@@ -29,8 +29,8 @@ export const InterviewFeedbackPart = ({ agentId }: InterviewFeedbackPartProps) =
 
     if (data === null) {
         return (
-            <div className="flex items-center justify-center h-full">
-                <LoaderFive text="Your Feedback is generating..." />
+            <div className="flex pt-48 items-center justify-center h-full">
+                <LoaderFive text="Loading Interview Feedback..." />
             </div>
         )
     }

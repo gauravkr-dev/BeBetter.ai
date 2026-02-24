@@ -19,6 +19,7 @@ const formSchema = z.object({
 })
 
 export default function SignUpView() {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [error, setError] = useState<string | null>(null);
     const [pending, setPending] = useState(false);
     const router = useRouter();
