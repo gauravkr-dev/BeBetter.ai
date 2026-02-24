@@ -4,7 +4,7 @@ Short description: BeBetter.ai is a Next.js TypeScript application that provides
 
 ## Live Demo
 
-- Placeholder: Add your deployed URL here: https://be-better-ai.vercel.app
+- https://be-better-ai.vercel.app
 
 ## Tech Stack
 
