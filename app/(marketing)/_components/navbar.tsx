@@ -53,7 +53,7 @@ export const Navbar = () => {
                                 <Link
                                     aria-label="Go to homepage"
                                     className="flex items-center gap-2"
-                                    href="/"
+                                    href="#home"
                                 >
                                     <Image src="/logo1.png" alt="BeBetter.ai Logo" width={32} height={32} />
                                     <span className="font-semibold">BeBetter.ai</span>

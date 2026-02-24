@@ -29,7 +29,7 @@ const HeaderSidebar = () => {
                                     if (isMobile) {
                                         setOpenMobile(false);
                                     } else {
-                                        setOpen(false);
+                                        setOpen(true);
                                     }
                                 }}
                                 size="lg"
