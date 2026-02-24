@@ -4,21 +4,21 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { useTRPC } from '@/trpc/client';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { BadgeCheck, BadgeX } from 'lucide-react';
-import { useParams } from 'next/navigation';
 
-export const LowerPart = () => {
-    const params = useParams();
-    const { id } = params;
+interface LowerPartProps {
+    mockTestId: string
+}
+export const LowerPart = ({ mockTestId }: LowerPartProps) => {
     const trpc = useTRPC();
     const { data: questions } = useSuspenseQuery(
         trpc.mockTestQuestions.getById.queryOptions({
-            mockTestId: id as string,
+            mockTestId: mockTestId,
         })
     );
 
     const { data: userAnswers } = useSuspenseQuery(
         trpc.mockTestUserAnswer.getById.queryOptions({
-            mockTestId: id as string,
+            mockTestId: mockTestId,
         })
     );
 

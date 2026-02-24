@@ -36,7 +36,7 @@ const page = async ({ params }: Props) => {
                     <ErrorBoundary
                         fallback={
                             <div
-                                className='mt-4 px-4 md:px-12 text-center justify-center flex mt-48 text-red-500'>
+                                className='px-4 md:px-12 text-center justify-center flex mt-48 text-red-500'>
                                 <ErrorState />
                             </div>
                         }>

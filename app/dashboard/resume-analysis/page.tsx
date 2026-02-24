@@ -21,7 +21,7 @@ const page = async () => {
         redirect('/')
     }
     const queryClient = getQueryClient();
-    void queryClient.prefetchQuery(trpc.resume.getMany.queryOptions());
+    void queryClient.prefetchQuery(trpc.resume.getMany.queryOptions({ page: 1 }));
     return (
         <div>
             <ResumeHeader />
@@ -37,7 +37,7 @@ const page = async () => {
                     <ErrorBoundary
                         fallback={
                             <div
-                                className='mt-4 px-4 md:px-12 text-center justify-center flex mt-24 text-red-500'>
+                                className='px-4 md:px-12 text-center justify-center flex mt-24 text-red-500'>
                                 <ErrorState />
                             </div>
                         }>

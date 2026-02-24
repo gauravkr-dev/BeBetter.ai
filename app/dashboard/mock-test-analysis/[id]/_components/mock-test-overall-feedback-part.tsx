@@ -5,7 +5,11 @@ import { ArrowLeft } from "lucide-react"
 import { LowerPart } from "./lower-part"
 import { useRouter } from "next/navigation"
 
-export const MockTestOverallFeedbackPart = () => {
+interface MockTestOverallFeedbackPartProps {
+    mockTestId: string
+}
+
+export const MockTestOverallFeedbackPart = ({ mockTestId }: MockTestOverallFeedbackPartProps) => {
     const router = useRouter();
     return (
         <div className="flex justify-center mb-10 mt-4 flex-col space-y-6">
@@ -13,8 +17,8 @@ export const MockTestOverallFeedbackPart = () => {
                 <ArrowLeft className="size-4 group-hover:-translate-x-1 transition-transform" />
                 Back
             </Button>
-            <HeaderPart />
-            <LowerPart />
+            <HeaderPart mockTestId={mockTestId} />
+            <LowerPart mockTestId={mockTestId} />
         </div>
     )
 }

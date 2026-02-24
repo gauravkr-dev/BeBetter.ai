@@ -2,17 +2,17 @@
 import { useTRPC } from "@/trpc/client";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { ArrowRight } from "lucide-react";
-import { useParams } from "next/navigation";
 
-export const HeaderPart = () => {
+interface HeaderPartProps {
+    mockTestId: string;
+}
+
+export const HeaderPart = ({ mockTestId }: HeaderPartProps) => {
     // mockTestUserAnswer
-
-    const params = useParams();
-    const { id } = params;
     const trpc = useTRPC();
     const { data } = useSuspenseQuery(
         trpc.mockTestOverallFeedback.getById.queryOptions({
-            mockTestId: id as string,
+            mockTestId: mockTestId,
         })
     );
     const radius = 40;

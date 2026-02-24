@@ -25,13 +25,13 @@ const page = async ({ params }: Props) => {
     }
     const queryClient = getQueryClient();
     void queryClient.prefetchQuery(trpc.mockTestOverallFeedback.getById.queryOptions({
-        mockTestId: id as string,
+        mockTestId: id,
     }));
     void queryClient.prefetchQuery(trpc.mockTestQuestions.getById.queryOptions({
-        mockTestId: id as string,
+        mockTestId: id,
     }));
     void queryClient.prefetchQuery(trpc.mockTestUserAnswer.getById.queryOptions({
-        mockTestId: id as string,
+        mockTestId: id,
     }));
     return (
         <div className='px-4 md:px-12 py-6'>
@@ -41,11 +41,11 @@ const page = async ({ params }: Props) => {
                     <ErrorBoundary
                         fallback={
                             <div
-                                className='mt-4 px-4 md:px-12 text-center justify-center flex mt-48 text-red-500'>
+                                className='px-4 md:px-12 text-center justify-center flex mt-48 text-red-500'>
                                 <ErrorState />
                             </div>
                         }>
-                        <MockTestOverallFeedbackPart />
+                        <MockTestOverallFeedbackPart mockTestId={id} />
                     </ErrorBoundary>
                 </Suspense>
             </HydrationBoundary>

@@ -8,6 +8,7 @@ import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { ErrorBoundary } from 'react-error-boundary';
 import Loader from '@/components/Loader';
 import { UpgradeView } from './_components/upgrade-view';
+import { ErrorState } from '@/components/Error';
 
 const page = async () => {
     const session = await auth.api.getSession({
@@ -28,8 +29,14 @@ const page = async () => {
         <div>
             <FreeTrials />
             <HydrationBoundary state={dehydrate(queryClient)}>
-                <Suspense fallback={<Loader />}>
-                    <ErrorBoundary fallback={<div className='text-red-500'>Failed to load upgrade options. Please try again later.</div>}>
+                <Suspense fallback={<div className='pt-24'><Loader /></div>}>
+                    <ErrorBoundary
+                        fallback={
+                            <div
+                                className='px-4 md:px-12 text-center justify-center flex mt-24 text-red-500'>
+                                <ErrorState />
+                            </div>
+                        }>
                         <UpgradeView />
                     </ErrorBoundary>
                 </Suspense>
