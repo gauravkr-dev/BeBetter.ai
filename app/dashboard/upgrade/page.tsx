@@ -6,9 +6,9 @@ import { redirect } from 'next/navigation';
 import { getQueryClient, trpc } from '@/trpc/server';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { ErrorBoundary } from 'react-error-boundary';
-import Loader from '@/components/Loader';
 import { UpgradeView } from './_components/upgrade-view';
 import { ErrorState } from '@/components/Error';
+import { LoaderFive } from '@/components/ui/loader';
 
 const page = async () => {
     const session = await auth.api.getSession({
@@ -29,7 +29,7 @@ const page = async () => {
         <div>
             <FreeTrials />
             <HydrationBoundary state={dehydrate(queryClient)}>
-                <Suspense fallback={<div className='pt-24'><Loader /></div>}>
+                <Suspense fallback={<div className='pt-48 flex items-center justify-center'><LoaderFive text="Loading..." /></div>}>
                     <ErrorBoundary
                         fallback={
                             <div

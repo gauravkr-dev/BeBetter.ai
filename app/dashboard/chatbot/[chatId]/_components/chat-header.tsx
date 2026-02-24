@@ -17,10 +17,10 @@ const ChatHeader = ({ setOpenDialog }: ChatHeaderProps) => {
     return (
         <div className='flex items-center justify-between mt-4'>
 
-            <h1 className='text-lg font-medium mb-4 flex items-center gap-2'> <CircleUser /> Gaurav (Senior)</h1>
+            <h1 className='text-lg font-medium flex items-center gap-2'> <CircleUser /> Gaurav (Senior)</h1>
             <Button
                 variant="outline"
-                className='mt-4 cursor-pointer group'
+                className='cursor-pointer group'
                 onClick={() => {
                     if (limitReached) {
                         toast.warning("Free limit reached. Please upgrade your plan.");

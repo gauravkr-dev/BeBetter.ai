@@ -20,7 +20,7 @@ export const FreeTrials = () => {
                 Your Free Trial Progress
                 <ArrowRight className="group-hover:translate-x-1 transition-transform" />
             </Button>
-            <div className="flex flex-wrap gap-6 mt-6">
+            <div className="grid md:grid-cols-4 gap-4 grid-cols-2">
                 <TrialProgress usage={data.agentsCreated} total={MAX_FREE_AGENTS} title="Interviews" />
                 <TrialProgress usage={data.mockTestCreated} total={MAX_FREE_MOCK_TESTS} title="Mock Tests" />
                 <TrialProgress usage={data.resumeFeedbackReceived} total={MAX_FREE_RESUME_FEEDBACKS} title="Resume" />
