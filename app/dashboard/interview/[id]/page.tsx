@@ -144,7 +144,6 @@ const InterviewSession = ({ params }: InterviewSessionProps) => {
                         agentId: agent?.id,
                         followupCount: followupRef.current,
                     })
-                    console.log("followupCount", followupRef.current);
                     if (endedRef.current) return;
 
                     if (!res?.data?.response) {
