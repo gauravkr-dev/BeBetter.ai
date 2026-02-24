@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation'
 import Image from 'next/image'
 import React from 'react'
 import { ArrowRight } from 'lucide-react'
+import Link from 'next/link'
 
 const page = async () => {
     const session = await auth.api.getSession({
@@ -17,7 +18,7 @@ const page = async () => {
     return (
         <div className="md:px-8 px-4 my-6">
             <section className="w-full">
-                <div className="container mx-auto px-6">
+                <div className="container mx-auto px-6 border rounded py-6 dark:bg-[#121212]">
                     <div className="grid md:grid-cols-2 gap-16 items-center">
 
                         {/* Left Side - Content */}
@@ -39,22 +40,22 @@ const page = async () => {
                             </p>
 
                             <ul className="space-y-4 pt-4">
-                                <li className="flex items-start gap-3">
-                                    <span className="mt-1 h-2 w-2 rounded-full bg-primary" />
+                                <li className="flex items-center gap-3">
+                                    <span className="h-2 w-2 rounded-full bg-primary" />
                                     <p className="text-muted-foreground">
                                         Stay consistent even when progress feels slow
                                     </p>
                                 </li>
 
-                                <li className="flex items-start gap-3">
-                                    <span className="mt-1 h-2 w-2 rounded-full bg-primary" />
+                                <li className="flex items-center gap-3">
+                                    <span className="h-2 w-2 rounded-full bg-primary" />
                                     <p className="text-muted-foreground">
                                         Small improvements lead to big transformations
                                     </p>
                                 </li>
 
-                                <li className="flex items-start gap-3">
-                                    <span className="mt-1 h-2 w-2 rounded-full bg-primary" />
+                                <li className="flex items-center gap-3">
+                                    <span className="h-2 w-2 rounded-full bg-primary" />
                                     <p className="text-muted-foreground">
                                         Discipline today creates freedom tomorrow
                                     </p>
@@ -62,13 +63,6 @@ const page = async () => {
                             </ul>
 
                             {/* CTA */}
-                            <div className="pt-6">
-                                <Button className="" variant="outline"
-                                >
-                                    Keep Moving Forward
-                                    <ArrowRight className="group-hover:translate-x-1 transition-transform" />
-                                </Button>
-                            </div>
 
                         </div>
 
@@ -85,9 +79,43 @@ const page = async () => {
                         </div>
 
                     </div>
+                    <div className="grid md:grid-cols-2 gap-8 mt-6">
+                        <div className='flex flex-col gap-6'>
+                            <Link href="/dashboard/interview" className="group " >
+                                <Button className="w-full cursor-pointer" variant="outline"
+                                >
+                                    Start Interview
+                                    <ArrowRight className="group-hover:translate-x-1 transition-transform" />
+                                </Button>
+                            </Link>
+                            <Link href="/dashboard/mock-test" className="group " >
+                                <Button className="w-full cursor-pointer" variant="outline"
+                                >
+                                    Start Mock Test
+                                    <ArrowRight className="group-hover:translate-x-1 transition-transform" />
+                                </Button>
+                            </Link>
+                        </div>
+                        <div className='flex flex-col gap-6 '>
+                            <Link href="/dashboard/resume-analysis" className="group" >
+                                <Button className="w-full cursor-pointer" variant="outline"
+                                >
+                                    Analyse Your Resume
+                                    <ArrowRight className="group-hover:translate-x-1 transition-transform" />
+                                </Button>
+                            </Link>
+                            <Link href="/dashboard/jobs" className="group " >
+                                <Button className="w-full cursor-pointer" variant="outline"
+                                >
+                                    Explore Jobs
+                                    <ArrowRight className="group-hover:translate-x-1 transition-transform" />
+                                </Button>
+                            </Link>
+                        </div>
+                    </div>
                 </div>
-            </section>
-        </div>
+            </section >
+        </div >
     )
 }
 

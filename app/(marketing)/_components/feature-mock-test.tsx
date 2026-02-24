@@ -42,22 +42,22 @@ export default function FeatureMockTest() {
                         </p>
 
                         <ul className="space-y-4 pt-4">
-                            <li className="flex items-start gap-3">
-                                <span className="mt-1 h-2 w-2 rounded-full bg-primary" />
+                            <li className="flex items-center gap-3">
+                                <span className="h-2 w-2 rounded-full bg-primary" />
                                 <p className="text-muted-foreground">
                                     Select custom topics and define your skill level
                                 </p>
                             </li>
 
-                            <li className="flex items-start gap-3">
-                                <span className="mt-1 h-2 w-2 rounded-full bg-primary" />
+                            <li className="flex items-center gap-3">
+                                <span className="h-2 w-2 rounded-full bg-primary" />
                                 <p className="text-muted-foreground">
                                     AI-generated questions aligned with your preparation
                                 </p>
                             </li>
 
-                            <li className="flex items-start gap-3">
-                                <span className="mt-1 h-2 w-2 rounded-full bg-primary" />
+                            <li className="flex items-center gap-3">
+                                <span className="h-2 w-2 rounded-full bg-primary" />
                                 <p className="text-muted-foreground">
                                     Detailed feedback with accuracy and improvement insights
                                 </p>

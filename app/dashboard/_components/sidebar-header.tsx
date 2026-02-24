@@ -8,12 +8,14 @@ import {
     SidebarMenu,
     SidebarMenuItem,
     SidebarMenuButton,
+    useSidebar,
 } from '@/components/animate-ui/components/radix/sidebar';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
 const HeaderSidebar = () => {
     const router = useRouter();
+    const { isMobile, setOpen, setOpenMobile } = useSidebar();
 
     return (
         <>
@@ -23,7 +25,12 @@ const HeaderSidebar = () => {
                         <DropdownMenuTrigger asChild>
                             <SidebarMenuButton
                                 onClick={() => {
-                                    router.push("/dashboard")
+                                    router.push("/dashboard");
+                                    if (isMobile) {
+                                        setOpenMobile(false);
+                                    } else {
+                                        setOpen(false);
+                                    }
                                 }}
                                 size="lg"
                                 className="cursor-pointer data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"

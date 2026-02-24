@@ -31,22 +31,22 @@ export default function FeatureAISeniorChat() {
                         </p>
 
                         <ul className="space-y-4 pt-4">
-                            <li className="flex items-start gap-3">
-                                <span className="mt-1 h-2 w-2 rounded-full bg-primary" />
+                            <li className="flex items-center gap-3">
+                                <span className="h-2 w-2 rounded-full bg-primary" />
                                 <p className="text-muted-foreground">
                                     Create topic-based chat sections
                                 </p>
                             </li>
 
-                            <li className="flex items-start gap-3">
-                                <span className="mt-1 h-2 w-2 rounded-full bg-primary" />
+                            <li className="flex items-center gap-3">
+                                <span className="h-2 w-2 rounded-full bg-primary" />
                                 <p className="text-muted-foreground">
                                     Ask coding, career, or interview-related questions
                                 </p>
                             </li>
 
-                            <li className="flex items-start gap-3">
-                                <span className="mt-1 h-2 w-2 rounded-full bg-primary" />
+                            <li className="flex items-center gap-3">
+                                <span className="h-2 w-2 rounded-full bg-primary" />
                                 <p className="text-muted-foreground">
                                     Get real-world, senior-level guidance instantly
                                 </p>
