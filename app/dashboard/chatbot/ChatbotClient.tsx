@@ -30,7 +30,7 @@ const ChatbotClient = () => {
                 }} />
             <div className='flex flex-col items-center justify-center h-full'>
                 <EmptyState
-                    title="Your Gaurav Bhaiya is ready to assist you!" />
+                    title="Your Senior is ready to assist you!" />
                 <Button
                     variant="outline"
                     className='mt-4 cursor-pointer group'

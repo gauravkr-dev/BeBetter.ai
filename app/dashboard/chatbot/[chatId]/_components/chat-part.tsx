@@ -108,7 +108,7 @@ const ChatPart = () => {
                     </div>
                 ) : messageList.length === 0 ? (
                     <div className='flex-1 flex items-center justify-center'>
-                        <EmptyState title="Your Gaurav Bhaiya is ready for help!" />
+                        <EmptyState title="Your Senior is ready for help!" />
                     </div>
                 ) : (
                     messageList.map((message, index) => (
