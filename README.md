@@ -6,6 +6,11 @@ Short description: BeBetter.ai is a Next.js TypeScript application that provides
 
 - https://be-better-ai.vercel.app
 
+## Video Demo
+
+- https://1drv.ms/v/c/31a9485100315802/IQD6DyXcodyBToQbMPwfcX7bAf66asp1IBBo64OM-J7-NFg?e=bVt0bB
+
+
 ## Tech Stack
 
 - Frontend: Next.js (App Router), React, TypeScript
