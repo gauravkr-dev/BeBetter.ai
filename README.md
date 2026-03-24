@@ -243,11 +243,3 @@ This repository does not include a test suite by default. Add unit / integration
 This repository does not contain a license file. If you want to open-source it, consider adding a `LICENSE` (for example, MIT).
 
 ---
-
-If you'd like, I can also:
-
-- generate a `.env.example` file in the repo with the keys above
-- add a basic `Dockerfile` and `docker-compose.yml` for local development
-- produce example requests for the TRPC/route handlers
-
-Tell me which of these you'd like next.
