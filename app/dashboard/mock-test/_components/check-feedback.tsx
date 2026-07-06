@@ -11,13 +11,14 @@ import { useResumeFilter } from "@/modules/resume/hooks/use-filter";
 import { toast } from "sonner";
 import { useConfirm } from "@/hooks/use-confirm";
 import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 import { RemoveMockTestDialog } from "./remove-mock-test-dialog";
-import Link from "next/link";
 
 export const CheckFeedbackPart = () => {
     const [filters, setFilters] = useResumeFilter();
     const trpc = useTRPC();
     const queryClient = useQueryClient();
+    const router = useRouter();
     const { data: mockTests } = useSuspenseQuery(trpc.mockTest.getMany.queryOptions({ page: filters.page }));
     // API returns a paginated payload like { items: Resume[], totalPages: number }
     const items: any[] = Array.isArray(mockTests) ? mockTests : (mockTests?.items ?? []);
@@ -62,14 +63,15 @@ export const CheckFeedbackPart = () => {
                             </p>
                             <p className='text-sm mt-2 truncate'>Check it now!</p>
                         </div>
-                        <Link href={`/dashboard/mock-test-analysis/${mockTest.id}`}>
-                            <Button
-                                className='group mt-4 w-full text-sm h-8 hover:cursor-pointer'
-                                variant='outline'>
-                                Check
-                                <ArrowRight className='size-4 group-hover:translate-x-1 transition-transform' />
-                            </Button>
-                        </Link>
+                        <Button
+                            className='group mt-4 w-full text-sm h-8 hover:cursor-pointer'
+                            variant='outline'
+                            onClick={() =>
+                                router.push(`/dashboard/mock-test-analysis/${mockTest.id}`)
+                            }>
+                            Check
+                            <ArrowRight className='size-4 group-hover:translate-x-1 transition-transform' />
+                        </Button>
                         <RemoveMockTestDialog
                             onRemove={() => {
                                 confirmRemove().then((confirmed) => {

@@ -14,7 +14,7 @@ import { AgentDeleteUpdateDialog } from "./agent-delete-update-dialog";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { useConfirm } from "@/hooks/use-confirm";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export const CheckFeedbackPart = () => {
     const [filters, setFilters] = useAgentsFilter();
@@ -43,6 +43,7 @@ export const CheckFeedbackPart = () => {
         "Delete Feedback",
         "Are you sure you want to delete this feedback? This action cannot be undone.",
     )
+    const router = useRouter();
     return (
         <>
             <RemoveConfirmation />
@@ -65,14 +66,13 @@ export const CheckFeedbackPart = () => {
                             </p>
                             <p className='text-sm mt-2 truncate'>Let&apos;s check it now!</p>
                         </div>
-                        <Link href={`/dashboard/interview-analysis/${agent.id}`} className="absolute inset-0">
-                            <Button
-                                className='group mt-4 w-full text-sm h-8 hover:cursor-pointer'
-                                variant='outline'>
-                                View
-                                <ArrowRight className='size-4 group-hover:translate-x-1 transition-transform' />
-                            </Button>
-                        </Link>
+                        <Button
+                            className='group mt-4 w-full text-sm h-8 hover:cursor-pointer'
+                            variant='outline'
+                            onClick={() => { router.push(`/dashboard/interview-analysis/${agent.id}`) }}>
+                            View
+                            <ArrowRight className='size-4 group-hover:translate-x-1 transition-transform' />
+                        </Button>
                         <AgentDeleteUpdateDialog
                             onRemove={() => {
                                 confirmRemove().then((confirmed) => {
