@@ -8,6 +8,7 @@ import FooterSection from './_components/footer'
 import Pricing from './_components/price'
 import AboutSection from './_components/about-section'
 import { FeaturesSection } from './_components/features-section'
+import SmoothScroll from '@/components/smooth-scroll'
 
 
 
@@ -21,7 +22,8 @@ const page = async () => {
         redirect('/dashboard')
     }
     return (
-        <div>
+        <div className="max-w-screen mx-auto">
+            <SmoothScroll />
             <Navbar />
             <CtaSection />
             <FeaturesSection />

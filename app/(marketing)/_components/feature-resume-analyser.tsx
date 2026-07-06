@@ -1,20 +1,20 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function FeatureResumeAnalyzer() {
     return (
-        <section className="w-full py-18">
-            <div className="container mx-auto px-6">
-                <div className="grid md:grid-cols-2 gap-16 items-center">
+        <section className="max-w-6xl mx-auto py-12">
+            <div className="container mx-auto  px-1 md:px-6">
+                <div className="grid md:grid-cols-2 gap-6 items-center">
 
                     {/* Left Side - Content */}
-                    <div className="space-y-6">
+                    <div className="space-y-6 border border-border rounded-2xl p-6">
 
-                        <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
+                        <h2 className="text-2xl md:text-3xl font-medium font-serif tracking-tight">
                             Get Instant Resume Feedback With AI
                         </h2>
 
@@ -57,21 +57,21 @@ export default function FeatureResumeAnalyzer() {
                         <div className="pt-6">
                             <Link href="/sign-up">
                                 <Button className="group cursor-pointer" variant={"outline"}>
+                                    <Sparkles />
                                     Analyse Your Resume
-                                    <ArrowRight className="group-hover:translate-x-1 transition-transform" />
                                 </Button>
                             </Link>
                         </div>
                     </div>
 
                     {/* Right Side - Image */}
-                    <div className="relative flex justify-center">
+                    <div className="relative flex justify-center border border-border rounded-2xl h-full">
                         <div className="relative w-full max-w-md aspect-square rounded-2xl flex items-center justify-center">
                             <Image
                                 src="/resume-header.svg"
                                 alt="AI Resume Analyzer Illustration"
                                 fill
-                                className="object-contain p-6"
+                                className="object-contain"
                             />
                         </div>
                     </div>

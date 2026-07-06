@@ -1,20 +1,20 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import { MessageCircleQuestionMark } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function FeatureAISeniorChat() {
     return (
-        <section className="w-full py-18">
-            <div className="container mx-auto px-6">
-                <div className="grid md:grid-cols-2 gap-16 items-center">
+        <section className="py-12 max-w-6xl mx-auto">
+            <div className="container mx-auto  px-1 md:px-6">
+                <div className="grid md:grid-cols-2 gap-6 items-center">
 
                     {/* Left Side - Content */}
-                    <div className="space-y-6">
+                    <div className="space-y-6 border border-border rounded-2xl p-6">
 
-                        <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
+                        <h2 className="text-2xl md:text-3xl font-medium font-serif tracking-tight">
                             Chat With Your Personal AI Senior
                         </h2>
 
@@ -57,21 +57,21 @@ export default function FeatureAISeniorChat() {
                         <div className="pt-6">
                             <Link href="/sign-up">
                                 <Button className="group cursor-pointer" variant={"outline"}>
+                                    <MessageCircleQuestionMark />
                                     Start Chatting
-                                    <ArrowRight className="group-hover:translate-x-1 transition-transform" />
                                 </Button>
                             </Link>
                         </div>
                     </div>
 
                     {/* Right Side - Image */}
-                    <div className="relative flex justify-center">
+                    <div className="relative flex justify-center border border-border rounded-2xl h-full">
                         <div className="relative w-full max-w-md aspect-square rounded-2xl flex items-center justify-center">
                             <Image
                                 src="/chat-bot.svg"
                                 alt="AI Senior Chat Illustration"
                                 fill
-                                className="object-contain p-6"
+                                className="object-contain"
                             />
                         </div>
                     </div>

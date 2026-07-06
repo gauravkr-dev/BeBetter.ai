@@ -1,31 +1,31 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import { FileText } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function FeatureMockTest() {
     return (
-        <section className="w-full py-18">
-            <div className="container mx-auto px-6">
-                <div className="grid md:grid-cols-2 gap-16 items-center">
+        <section className="max-w-6xl mx-auto py-12">
+            <div className="container mx-auto  px-1 md:px-6">
+                <div className="grid md:grid-cols-2 gap-6 items-center">
 
                     {/* Left Side - Image */}
-                    <div className="relative flex justify-center order-1 md:order-none">
+                    <div className="relative flex justify-center order-1 md:order-none border border-border rounded-2xl h-full">
                         <div className="relative w-full max-w-md aspect-square rounded-2xl flex items-center justify-center">
                             <Image
                                 src="/online-test.svg"
                                 alt="Smart Mock Test Illustration"
                                 fill
-                                className="object-contain p-6"
+                                className="object-contain"
                             />
                         </div>
                     </div>
 
                     {/* Right Side - Content */}
-                    <div className="space-y-6">
-                        <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
+                    <div className="space-y-6 border border-border rounded-2xl p-6">
+                        <h2 className="text-2xl md:text-3xl font-medium font-serif tracking-tight">
                             Personalized Tests That Match Your Level
                         </h2>
 
@@ -68,8 +68,8 @@ export default function FeatureMockTest() {
                         <div className="pt-6">
                             <Link href="/sign-up">
                                 <Button className="group cursor-pointer" variant={"outline"}>
+                                    <FileText />
                                     Take a Mock Test
-                                    <ArrowRight className="group-hover:translate-x-1 transition-transform" />
                                 </Button>
                             </Link>
                         </div>

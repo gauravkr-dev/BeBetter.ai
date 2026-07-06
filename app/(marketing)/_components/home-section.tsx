@@ -34,7 +34,7 @@ const CtaSection = ({ variant }: CtaSectionProps) => {
                 {/* Outer wrapper: full-width extended background (top and bottom) */}
                 <div
                     className={cn(
-                        "relative min-h-[70vh] w-full pb-24 md:pb-32",
+                        "relative min-h-[10vh] w-full pb-24 md:pb-32",
                         isLight ? "bg-neutral-50" : "bg-neutral-950"
                     )}
                     data-theme={theme}
@@ -50,7 +50,7 @@ const CtaSection = ({ variant }: CtaSectionProps) => {
                         aria-hidden
                     />
                     {/* Inner CTA container: content band with focused grid */}
-                    <div className="relative mx-auto flex min-h-[70vh] max-w-7xl flex-col items-center justify-center px-4 pt-24 pb-24 md:pt-32 md:pb-32">
+                    <div className="relative mx-auto flex min-h-[10vh] max-w-7xl flex-col items-center justify-center px-4 pt-24 pb-24 md:pt-32 md:pb-32">
                         {/* Subtle grid background (radial mask for content area) */}
                         <div
                             className={cn(

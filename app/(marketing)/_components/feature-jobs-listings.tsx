@@ -1,31 +1,31 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import { Handbag } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function FeatureJobListings() {
     return (
-        <section className="w-full py-18">
-            <div className="container mx-auto px-6">
-                <div className="grid md:grid-cols-2 gap-16 items-center">
+        <section className="max-w-6xl mx-auto py-12">
+            <div className="container mx-auto  px-1 md:px-6">
+                <div className="grid md:grid-cols-2 gap-6 items-center">
 
                     {/* Left Side - Image */}
-                    <div className="relative flex justify-center">
+                    <div className="relative flex justify-center border border-border rounded-2xl h-full">
                         <div className="relative w-full max-w-md aspect-square rounded-2xl flex items-center justify-center">
                             <Image
                                 src="/jobs.svg"
                                 alt="Smart Job Listings Illustration"
                                 fill
-                                className="object-contain p-6"
+                                className="object-contain"
                             />
                         </div>
                     </div>
 
                     {/* Right Side - Content */}
-                    <div className="space-y-6">
-                        <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
+                    <div className="space-y-6 border border-border rounded-2xl p-6">
+                        <h2 className="text-2xl md:text-3xl font-medium font-serif tracking-tight">
                             Discover Jobs That Match Your Tech Stack
                         </h2>
 
@@ -68,8 +68,8 @@ export default function FeatureJobListings() {
                         <div className="pt-6">
                             <Link href="/sign-up">
                                 <Button className="group cursor-pointer" variant={"outline"}>
+                                    <Handbag />
                                     Explore Jobs
-                                    <ArrowRight className="group-hover:translate-x-1 transition-transform" />
                                 </Button>
                             </Link>
                         </div>

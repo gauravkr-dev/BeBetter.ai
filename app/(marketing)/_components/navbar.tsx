@@ -44,10 +44,10 @@ export const Navbar = () => {
         return () => window.removeEventListener("scroll", onScroll);
     }, []);
     return (
-        <div className="relative">
+        <div className="relative max-w-6xl mx-auto">
             <header>
                 <nav className={`fixed top-0 left-0 z-20 w-full transition-all duration-300 backdrop-blur-sm ${scrolled ? 'border-b' : 'border-b-0'}`}>
-                    <div className="mx-auto max-w-5xl px-6">
+                    <div className="mx-auto max-w-6xl px-4">
                         <div className="relative flex flex-wrap items-center justify-between gap-6 py-6 transition-all duration-200 lg:gap-0">
                             <div className="flex w-full items-center gap-6 lg:w-auto">
                                 <Link

@@ -33,7 +33,7 @@ const links = [
 export default function FooterSection() {
     return (
         <footer className="py-8 md:py-12 dark:bg-[#0A0A0A]">
-            <div className="mx-auto max-w-5xl px-6">
+            <div className="mx-auto max-w-6xl px-6">
                 <Link
                     href="/"
                     aria-label="go home"

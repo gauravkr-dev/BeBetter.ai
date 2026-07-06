@@ -1,19 +1,14 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Github, Instagram, Linkedin, Mail } from "lucide-react";
+import { ArrowRight, Github, Linkedin, Mail, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function AboutSection() {
     return (
-        <section className="relative w-full py-20 dark:bg-[#0A0A0A] md:px-12 px-4" id="about">
-            <h1 className="absolute -top-10 left-0 w-full flex items-start justify-center
-                 text-[60px] font-bold
-                select-none pointer-events-none font-serif text-muted-foreground/10">
-                ABOUT
-            </h1>
-            <div className="container mx-auto px-6">
+        <section className="relative w-full py-20 dark:bg-[#0A0A0A] md:px-12 px-4 " id="about">
+            <div className="container mx-auto  px-1 md:px-6 max-w-6xl">
                 <div className="grid md:grid-cols-2 gap-24 md:gap-12 items-center">
 
                     {/* Left Side - Founder Image */}
@@ -23,7 +18,7 @@ export default function AboutSection() {
                             <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 p-[4px]">
                                 <div className="w-full h-full rounded-full bg-background flex items-center justify-center">
                                     <Image
-                                        src="/gaurav-photo.png" // <-- apni edited image ka path daal dena
+                                        src="/gaurav.jpeg" // <-- apni edited image ka path daal dena
                                         alt="Founder"
                                         fill
                                         className="rounded-full object-cover"
@@ -34,7 +29,7 @@ export default function AboutSection() {
                                 </p>
                                 <p className="text-center mt-8 font-serif">Founder & CEO</p>
                                 <div className="absolute top-0 right-0 flex flex-col items-center gap-2">
-                                    <Link href="https://github.com/gauravkr-dev">
+                                    <Link href="https://github.com/gauravkr474">
                                         <Button variant={"outline"} className="mt-4 cursor-pointer">
                                             <Github />
                                         </Button>
@@ -44,12 +39,12 @@ export default function AboutSection() {
                                             <Linkedin />
                                         </Button>
                                     </Link>
-                                    <Link href="https://www.instagram.com/gauravkr_474">
+                                    <Link href="https://x.com/gauravkr474">
                                         <Button variant={"outline"} className="mt-4 cursor-pointer">
-                                            <Instagram />
+                                            <X />
                                         </Button>
                                     </Link>
-                                    <Link href="mailto:gauravkumar803109@gmail.com">
+                                    <Link href="mailto:gauravlabs.dev@gmail.com">
                                         <Button variant={"outline"} className="mt-4 cursor-pointer">
                                             <Mail />
                                         </Button>
@@ -62,7 +57,7 @@ export default function AboutSection() {
 
                     {/* Right Side - Text Content */}
                     <div className="text-center md:text-left space-y-6">
-                        <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
+                        <h2 className="text-2xl md:text-3xl font-medium font-serif tracking-tight">
                             Building The Future of Career Preparation
                         </h2>
 

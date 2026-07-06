@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { TRPCReactProvider } from "@/trpc/client";
 import { NuqsAdapter } from "nuqs/adapters/next"
 import { ThemeProvider } from "@/lib/theme-provider";
+import NextTopLoader from "nextjs-toploader";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -33,6 +34,11 @@ export default function RootLayout({
               enableSystem
               disableTransitionOnChange
             >
+              <NextTopLoader
+                color="#EDCA8A"
+                height={3}
+                showSpinner={false}
+              />
               {children}
               <Toaster />
             </ThemeProvider>
