@@ -6,6 +6,11 @@ Short description: BeBetter.ai is a Next.js TypeScript application that provides
 
 - https://be-better-ai.vercel.app
 
+## Video Demo
+
+- https://1drv.ms/v/c/31a9485100315802/IQD6DyXcodyBToQbMPwfcX7bAf66asp1IBBo64OM-J7-NFg?e=bVt0bB
+
+
 ## Tech Stack
 
 - Frontend: Next.js (App Router), React, TypeScript
@@ -238,11 +243,3 @@ This repository does not include a test suite by default. Add unit / integration
 This repository does not contain a license file. If you want to open-source it, consider adding a `LICENSE` (for example, MIT).
 
 ---
-
-If you'd like, I can also:
-
-- generate a `.env.example` file in the repo with the keys above
-- add a basic `Dockerfile` and `docker-compose.yml` for local development
-- produce example requests for the TRPC/route handlers
-
-Tell me which of these you'd like next.
