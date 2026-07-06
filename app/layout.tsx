@@ -6,6 +6,7 @@ import { TRPCReactProvider } from "@/trpc/client";
 import { NuqsAdapter } from "nuqs/adapters/next"
 import { ThemeProvider } from "@/lib/theme-provider";
 import NextTopLoader from "nextjs-toploader";
+import { Analytics } from "@vercel/analytics/next"
 
 const inter = Inter({
   subsets: ["latin"],
@@ -39,6 +40,7 @@ export default function RootLayout({
                 height={3}
                 showSpinner={false}
               />
+              <Analytics />
               {children}
               <Toaster />
             </ThemeProvider>
