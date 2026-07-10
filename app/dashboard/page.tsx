@@ -15,6 +15,10 @@ const page = async () => {
     if (!session) {
         redirect('/')
     }
+
+    if (session) {
+        redirect('/dashboard/interview');
+    }
     return (
         <div className="md:px-8 px-4 my-6">
             <section className="w-full">

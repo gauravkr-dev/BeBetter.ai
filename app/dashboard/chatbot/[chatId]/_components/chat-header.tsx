@@ -17,7 +17,7 @@ const ChatHeader = ({ setOpenDialog }: ChatHeaderProps) => {
     return (
         <div className='flex items-center justify-between mt-4'>
 
-            <h1 className='text-lg font-medium flex items-center gap-2'> <CircleUser /> Gaurav (Senior)</h1>
+            <h1 className='text-lg font-medium flex items-center gap-2'> <CircleUser />Your Senior</h1>
             <Button
                 variant="outline"
                 className='cursor-pointer group'

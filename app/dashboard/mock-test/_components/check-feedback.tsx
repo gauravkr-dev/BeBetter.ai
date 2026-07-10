@@ -13,6 +13,7 @@ import { useConfirm } from "@/hooks/use-confirm";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { RemoveMockTestDialog } from "./remove-mock-test-dialog";
+import Link from "next/link";
 
 export const CheckFeedbackPart = () => {
     const [filters, setFilters] = useResumeFilter();
@@ -63,15 +64,17 @@ export const CheckFeedbackPart = () => {
                             </p>
                             <p className='text-sm mt-2 truncate'>Check it now!</p>
                         </div>
-                        <Button
-                            className='group mt-4 w-full text-sm h-8 hover:cursor-pointer'
-                            variant='outline'
-                            onClick={() =>
-                                router.push(`/dashboard/mock-test-analysis/${mockTest.id}`)
-                            }>
-                            Check
-                            <ArrowRight className='size-4 group-hover:translate-x-1 transition-transform' />
-                        </Button>
+                        <Link href={`/dashboard/mock-test-analysis/${mockTest.id}`} className="text-sm h-8 mt-4">
+                            <Button
+                                className='group w-full cursor-pointer'
+                                variant='outline'
+                                onClick={() =>
+                                    router.push(`/dashboard/mock-test-analysis/${mockTest.id}`)
+                                }>
+                                Check
+                                <ArrowRight className='size-4 group-hover:translate-x-1 transition-transform' />
+                            </Button>
+                        </Link>
                         <RemoveMockTestDialog
                             onRemove={() => {
                                 confirmRemove().then((confirmed) => {

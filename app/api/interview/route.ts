@@ -21,11 +21,30 @@ export async function POST(req: Request) {
         .where(eq(sessionTranscripts.agentId, agentId))
         .orderBy(asc(sessionTranscripts.sequence));
 
+    const previousMessages = transcripts
+        .map((t) => {
+            if (t.speaker === "user") {
+                return {
+                    role: "user" as const,
+                    content: t.text,
+                };
+            }
 
-    const previousMessages = transcripts.map(t => ({
-        role: t.speaker as "user" | "assistant",
-        content: t.text,
-    }));
+            if (t.speaker === "agent") {
+                return {
+                    role: "assistant" as const,
+                    content: t.text,
+                };
+            }
+
+            return null;
+        })
+        .filter(
+            (message): message is {
+                role: "user" | "assistant";
+                content: string;
+            } => message !== null,
+        );
 
     let stage: string;
     if (followupCount === 1) {

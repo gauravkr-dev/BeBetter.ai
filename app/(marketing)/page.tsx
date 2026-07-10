@@ -19,7 +19,7 @@ const page = async () => {
     })
 
     if (session) {
-        redirect('/dashboard')
+        redirect('/dashboard/interview');
     }
     return (
         <div className="max-w-screen mx-auto">

@@ -148,10 +148,12 @@ export const DashboardSidebar = ({ initialValues }: DashboardSidebarProps) => {
                             {Section.map((item) => (
                                 <SidebarMenuItem key={item.href}>
                                     <SidebarMenuButton asChild className={cn(pathname === item.href && 'bg-sidebar-accent hover:bg-sidebar-accent hover:text-sidebar-accent-foreground text-sidebar-accent-foreground')}>
-                                        <button className="flex items-center  cursor-pointer mb-2" onClick={() => onClickOptions(item.href)}>
-                                            <item.icon className="mr-2 h-4 w-4 font-medium" />
-                                            <span className="text-sm font-medium">{item.label}</span>
-                                        </button>
+                                        <Link href={item.href} className="flex items-center gap-2 mb-2 w-full border">
+                                            <button className="flex items-center  cursor-pointer" onClick={() => onClickOptions(item.href)}>
+                                                <item.icon className="mr-2 h-4 w-4 font-medium" />
+                                                <span className="text-sm font-medium">{item.label}</span>
+                                            </button>
+                                        </Link>
                                     </SidebarMenuButton>
                                 </SidebarMenuItem>
                             ))}

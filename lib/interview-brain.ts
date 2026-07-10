@@ -1,19 +1,9 @@
 import { buildSystemPrompt } from "@/lib/prompts/buildSystemPrompt";
-
-import OpenAI from "openai";
+import { client } from "./openai";
 
 if (!process.env.OPENROUTER_API_KEY) {
     throw new Error("OPENROUTER_API_KEY is missing in env");
 }
-
-export const InterviewBrain = new OpenAI({
-    apiKey: process.env.OPENROUTER_API_KEY,
-    baseURL: "https://openrouter.ai/api/v1",
-    defaultHeaders: {
-        "HTTP-Referer": "http://localhost:3000", // prod me apna domain
-        "X-Title": "AI Interview App",
-    },
-});
 
 interface GetAgentReplyParams {
     agentName: string;
@@ -33,10 +23,13 @@ export const getAgentReply = async ({
     previousMessages,
 }: GetAgentReplyParams) => {
     const systemPrompt = buildSystemPrompt(agentName, agentInstruction, stage);
-    const response = await InterviewBrain.chat.completions.create({
-        model: "arcee-ai/trinity-large-preview:free", // ✅ free + fast
-        temperature: 0.7,
+    const response = await client.chat.completions.create({
+
+        model:
+            "llama-3.1-8b-instant",
+
         messages: [
+
             {
                 role: "system",
                 content: systemPrompt,
